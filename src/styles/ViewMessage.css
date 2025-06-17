@@ -1,0 +1,84 @@
+.viewMessageContainer {
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    max-width: 700px;
+    margin: 2rem auto;
+  }
+  
+  /*Message Content*/
+  .viewMessageTitle {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+  }
+  
+  .viewMessageAuthor {
+    font-weight: 600;
+    font-size: 1.2rem;
+    margin-bottom: 0.1rem;
+  }
+  
+  .viewMessageDate {
+    font-size: 0.9em;
+    color: gray;
+    margin-top: -0.2rem;
+    margin-bottom: 1rem;
+  }
+  
+  .viewMessageContent {
+    font-size: 1.5rem;
+    line-height: 1.6;
+    margin-bottom: 2rem;
+  }
+  
+  /*Comments Section*/
+  .viewMessagePage .commentsSection {
+    margin-top: 2rem;
+  }
+  
+  .viewMessagePage .commentList {
+    list-style: none;
+    padding-left: 0;
+    margin-bottom: 1.5rem;
+  }
+  
+  .viewMessagePage .commentList li {
+    background: #f8f9fa;
+    padding: 0.75rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+  }
+  
+  .viewMessagePage form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  .viewMessagePage input[type="text"] {
+    padding: 0.6rem;
+    border: 1px solid #ced4da;
+    border-radius: 8px;
+    font-size: 1rem;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+  .viewMessagePage button[type="submit"] {
+    padding: 0.6rem;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    border: none;
+    transition: background-color 0.2s;
+  }
+  
+  .viewMessageContainer,
+  .viewMessageContent,
+  .viewMessagePage .commentList li {
+    word-wrap: break-word;
+    overflow-wrap: anywhere; /* Ensures long words break properly */
+  }
+

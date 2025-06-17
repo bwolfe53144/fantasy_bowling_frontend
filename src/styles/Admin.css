@@ -1,0 +1,147 @@
+.admin-page .pageContainer {
+  padding: 20px;
+}
+
+.admin-page section,
+.admin-page .section-block,
+.admin-page .admin-section {
+  margin-bottom: 30px;
+}
+
+.admin-section {
+  margin-top: 30px;
+}
+
+.admin-locktime-section {
+  padding: 20px;
+  border-top: 1px solid #eee;
+  margin-top: 20px;
+}
+
+.schedule-generator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.admin-column {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.admin-page h1,
+.admin-page h2 {
+  margin-bottom: 12px;
+}
+
+/*Inputs and Selects*/
+.admin-input,
+.admin-select,
+.admin-page input[type="text"],
+.admin-page input[type="number"],
+.admin-page input[type="datetime-local"],
+.admin-page select {
+  width: 100%;
+  max-width: 400px;
+  padding: 8px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+.admin-page input[type="text"],
+.admin-page input[type="number"],
+.admin-page input[type="datetime-local"] {
+  margin-bottom: 16px;
+}
+
+.admin-input-row {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.admin-league-locktime {
+  margin-bottom: 10px;
+}
+
+/*Buttons*/
+.admin-button {
+  display: inline-block;
+  width: 100%;
+  max-width: 300px;
+  padding: 10px 16px;
+  margin-top: 10px;
+  margin-left: 10px;
+  font-size: 14px;
+  border: none;
+  border-radius: 6px;
+  background-color: #ccc;
+  color: #000;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.admin-button.success {
+  background-color: #28a745;
+  color: white;
+}
+
+.admin-button.danger {
+  background-color: #dc3545;
+  color: white;
+}
+
+.admin-button:hover {
+  background-color: #0056b3;
+}
+
+.admin-button.success:hover {
+  background-color: #218838;
+}
+
+.admin-button.danger:hover {
+  background-color: #c82333;
+}
+
+.admin-button:disabled,
+.admin-page button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+/* Raw buttons inside admin-page */
+.admin-page button {
+  margin-left: 10px;
+  margin-top: 10px;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 4px;
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+}
+
+.admin-form-card {
+  margin-top: 16px;
+  padding: 16px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+/*Responsive*/
+@media (min-width: 768px) {
+  .admin-page {
+    margin-left: 40px !important;
+  }
+}
+
+@media (min-width: 1024px) {
+  .admin-page {
+    margin-left: 60px;
+  }
+}
+

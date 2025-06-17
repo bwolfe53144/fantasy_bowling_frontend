@@ -1,0 +1,127 @@
+.week-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin: 1rem 0;
+}
+
+.week-filters label {
+  display: flex;
+  flex-direction: column;
+  font-weight: bold;
+}
+
+.week-filters input {
+  margin-top: 0.25rem;
+  padding: 0.4rem 0.6rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 100px;
+}
+
+.weekSelect {
+  margin-bottom: 1rem;
+}
+
+.bowling-teams {
+  font-size: 1.3rem;
+  margin-bottom: 2rem;
+}
+
+.graphPageStats .mainPage h1 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.graphPageStats .mainPage h2 {
+  font-size: 1.5rem;
+  margin-top: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.graphPageStats .mainPage h3 {
+  font-size: 1.2rem;
+  margin-top: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.graphPageStats .mainPage button {
+  font-weight: 600;
+  padding: 0.5rem 1rem;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  margin-bottom: 1rem;
+}
+
+/*Tables: Stats and Player Stat*/
+.statsTable {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid #d1d5db; 
+  margin-top: 1rem;
+  background-color: white;
+  font-family: sans-serif;
+}
+
+.statsTable thead {
+  background-color: #f3f4f6; 
+}
+
+.statsTable th,
+.statsTable td {
+  border: 1px solid #d1d5db;
+  padding: 0.5rem;
+  text-align: left;
+}
+
+.statsTable tbody tr:nth-child(even) {
+  background-color: #f9fafb; 
+}
+
+.playerStatsTable {
+  border: none;
+  border-collapse: collapse;
+}
+
+/*Responsiveness*/
+@media (max-width: 800px) {
+  .pageContainer.graphPageStats {
+    grid-template-columns: 1fr;
+    grid-template-rows: minmax(70px, auto) 1fr minmax(60px, auto);
+  }
+
+  .pageContainer.graphPageStats .footer {
+    margin: 0;
+    width: 100%;
+    grid-row: 3;
+    grid-column: 1 / -1;
+  }
+
+  .pageContainer.graphPageStats .header {
+    grid-row: 1;
+  }
+
+  .pageContainer.graphPageStats .mainPage {
+    display: block;
+    overflow-x: auto;
+    overflow-y: auto;
+    grid-row: 2;
+    grid-column: 1 / -1;
+    margin-bottom: 1rem;
+    padding: 1rem;
+  }
+
+  body.menuOpen .pageContainer.graphPageStats .mainPage {
+    display: none;
+  }
+
+  .pageContainer.graphPageStats .hamburger {
+    display: block;
+    font-size: 2rem;
+  }
+
+  .pageContainer.graphPageStats .headerLeft {
+    margin-left: 3rem;
+  }
+}

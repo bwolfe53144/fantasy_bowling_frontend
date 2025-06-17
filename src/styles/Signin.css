@@ -1,0 +1,717 @@
+.signin-page {
+  background-color: rgba(20, 20, 20, 0.85);
+  width: 100vw;
+  height: 100vh;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Container under the bowling alley */
+.signin-container {
+  flex: 1;
+  width: 100%;
+  min-height: calc(100vh - 300px); /* fill space under bowling alley */
+  box-sizing: border-box;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  color: #f5f5f5;
+  backdrop-filter: blur(5px);
+}
+
+/* Styled form */
+.signin-form {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+/* Centered elements */
+.signin-form h2,
+.signin-form .error,
+.signin-form button,
+.signin-form .home-link {
+  grid-column: 1 / -1;
+  text-align: center;
+}
+
+/* Input fields */
+.signin-form input {
+  padding: 0.75rem;
+  border: 1px solid #555;
+  background-color: #2a2a2a;
+  color: #f5f5f5;
+  border-radius: 6px;
+  font-size: 1rem;
+  width: 100%;
+}
+
+.signin-form input::placeholder {
+  color: #aaa;
+}
+
+/* Sign in button */
+.signin-form button {
+  padding: 0.75rem;
+  background-color: #f02222;
+  color: #1a1a1a;
+  font-weight: bold;
+  font-size: 1rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.signin-form button:hover {
+  background-color: #990000;
+}
+
+.signin-form .error {
+  color: #ff4d4d;
+  font-weight: bold;
+  text-align: center;
+}
+
+.signin-form .home-link {
+  color: #ccc;
+  display: inline-block;
+  margin-top: 0.5rem;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.signin-form .home-link:hover {
+  color: #fff;
+}
+
+.signin-form input:focus {
+  outline: none;
+  border: 1px solid #f02222; /* red border */
+  box-shadow: 0 0 0 2px rgba(240, 34, 34, 0.4); /* subtle red glow */
+}
+
+.bowling-alley {
+  position: relative;
+  width: 100%;
+  height: 300px;
+  background: linear-gradient(to bottom, #3e3e3e, #1e1e1e);
+  overflow: hidden;
+  border-top: 4px solid #000;
+  border-bottom: 4px solid #000;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.fantasy-title {
+  position: relative;
+  font-size: 4rem;
+  font-weight: bold;
+  color: #fff;
+  opacity: 0;
+  text-align: center; 
+  white-space: normal;
+  animation: fadeIn 1s ease-in-out 2.5s forwards;
+  z-index: 3;
+  max-width: 70%; 
+  line-height: 1.2;
+  display: block;
+  word-wrap: break-word; 
+  hyphens: auto; 
+  padding-right: 10vw; 
+  margin-top: 0px;
+}
+
+.ball {
+  position: absolute;
+  bottom: 30px;
+  left: 0; /* Start at left edge */
+  width: 50px;
+  height: 50px;
+  background: radial-gradient(circle at 30% 30%, #f02222, #990000);
+  border-radius: 50%;
+  animation: roll 3s ease-in-out forwards;
+  z-index: 2;
+}
+
+.pins {
+  position: absolute;
+  top: calc(45% + ((100vh - 400px) / 100) * 2); 
+  left: calc(60.7vw + ((100vw - 400px) / 100) * 2.5); 
+  transform: translateY(-50%);
+  width: 200px;
+  height: 200px;
+}
+
+.pin {
+  position: absolute;
+  width: 40px;
+  height: 80px;
+  background-image: url("/bowling-146776_1280.png");
+  background-size: cover;
+  background-position: center;
+  border-radius: 6px;
+}
+
+/* Pin placements in a triangular layout */
+#pin1 {
+  top: 80px;
+  left: 0px;
+  animation: fallLeft 1s ease-in-out 1.7s forwards;
+}
+
+/* Row 2 */
+#pin2 {
+  top: 60px;
+  left: 30px;
+  animation: fallRight 1s ease-in-out 1.75s forwards;
+}
+
+#pin3 {
+  top: 100px;
+  left: 30px;
+  animation: fallLeft 1s ease-in-out 1.8s forwards;
+}
+
+/* Row 3 */
+#pin4 {
+  top: 40px;
+  left: 60px;
+  animation: fallRight 1s ease-in-out 1.85s forwards;
+}
+
+#pin5 {
+  top: 80px;
+  left: 60px;
+  animation: fallLeft 1s ease-in-out 1.9s forwards;
+}
+
+#pin6 {
+  top: 120px;
+  left: 60px;
+  animation: fallRight 1s ease-in-out 1.95s forwards;
+}
+
+/* Row 4 */
+#pin7 {
+  top: 20px;
+  left: 90px;
+  animation: fallLeftNoFade 1s ease-in-out 2s forwards;
+}
+
+#pin8 {
+  top: 60px;
+  left: 90px;
+  animation: fallRight 1s ease-in-out 2.05s forwards;
+}
+
+#pin9 {
+  top: 100px;
+  left: 90px;
+  animation: fallLeft 1s ease-in-out 2.1s forwards;
+}
+
+#pin10 {
+  top: 140px;
+  left: 90px;
+  animation: fallRight 1s ease-in-out 2.15s forwards;
+}
+
+/* Ball rolling animation */
+@keyframes roll {
+  0% {
+    left: -100px;
+    bottom: 2rem;
+    transform: rotate(0deg);
+  }
+
+  100% {
+    left: calc(80.1vw - ((100vw - 400px) / 100) * 20);
+    bottom: calc(35px + ((100vh - 400px) / 100) * 20);
+    transform: rotate(720deg);
+  }
+}
+
+/* Pin fall animations */
+@keyframes fallLeft {
+  0% {
+    transform: rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: rotate(-90deg) translateX(-30px);
+    opacity: 0;
+  }
+}
+
+@keyframes fallRight {
+  0% {
+    transform: rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: rotate(90deg) translateX(30px);
+    opacity: 0;
+  }
+}
+
+@keyframes fallLeftNoFade {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(-180deg) translateX(2.15vw);
+  }
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
+}
+
+/*Responsive Layout*/
+@media (max-height: 649px) {
+  .bowling-alley {
+    height: 50vh;
+    max-height: 300px;
+  }
+}
+
+@media (max-width: 449px) and (max-height: 449px) {
+  .fantasy-title {
+    font-size: 3.2rem;
+  }
+
+  .ball {
+    width: 30px;
+    height: 30px;
+  }
+
+  .pin {
+    width: 30px;
+    height: 60px;
+  }
+
+  .pins {
+    top: calc(60% - ((100vh - 400px) / 100) * 10); 
+    left: calc(52.7vw - ((100vw - 400px) / 100) * 5); 
+  }
+
+  @keyframes roll {
+    100% {
+      left: calc(73.3vw - ((100vw - 400px) / 100) * 28);
+      bottom: calc(11.5vh + ((100vh - 400px) / 100) * 18);
+      transform: rotate(720deg);
+    }
+  }
+}
+
+@media (max-width: 449px) and (min-height: 450px) {
+  .fantasy-title {
+    font-size: 3.2rem;
+  }
+
+  .pins {
+    top: calc(55% + ((100vh - 400px) / 100) * 5); 
+    left: calc(53vw - ((100vw - 400px) / 100) * 5); 
+  }
+
+  .ball {
+    width: 30px;
+    height: 30px;
+  }
+
+  .pin {
+    width: 30px;
+    height: 60px;
+  }
+
+  @keyframes roll {
+    100% {
+      left: calc(73.3vw - ((100vw - 400px) / 100) * 28);
+      bottom: calc(11.5vh + ((100vh - 400px) / 100) * 10);
+      transform: rotate(720deg);
+    }
+  }
+}
+
+@media (max-width: 449px) and (min-height: 600px) {
+  .pins {
+    top: 55%; 
+    left: calc(53vw - ((100vw - 400px) / 100) * 5); 
+  }
+
+  @keyframes roll {
+    100% {
+      left: calc(73.3vw - ((100vw - 400px) / 100) * 28);
+      bottom: 100px;
+      transform: rotate(720deg);
+    }
+  }
+}
+
+@media (min-width: 450px) and (min-height: 600px) {
+  @keyframes roll {
+    100% {
+      left: calc(81.3vw - ((100vw - 400px) / 100) * 28);
+      bottom: 80px;
+      transform: rotate(720deg);
+    }
+  }
+}
+
+@media (min-width: 575px) {
+  .fantasy-title {
+    font-size: 4rem;
+  }
+
+  .pins {
+    left: calc(60.7vw - ((100vw - 400px) / 100) * 5); 
+  }
+}
+
+@media (min-width: 727px) {
+  .pins {
+    left: calc(87.7vw - ((100vw - 400px) / 100) * 30); 
+  }
+}
+
+@media (min-width: 1000px) {
+  .fantasy-title {
+    font-size: calc(4rem + (100vw - 400px) * 0.04);
+  }
+
+  .pins {
+    left: calc(95.7vw - ((100vw - 400px) / 100) * 30); 
+  }
+}
+
+
+
+@media (min-width: 575px) and (max-height: 449px) {
+  @keyframes roll {
+    100% {
+      left: calc(81.3vw - ((100vw - 400px) / 100) * 28);
+      bottom: calc(11.5vh + ((100vh - 400px) / 100) * 18);
+      transform: rotate(720deg);
+    }
+  }
+}
+
+@media (min-width: 727px) and (max-height: 449px) {
+  @keyframes roll {
+    100% {
+      left: calc(105.7vw - ((100vw - 400px) / 100) * 48);
+      bottom: calc(11.5vh + ((100vh - 400px) / 100) * 18);
+      transform: rotate(720deg);
+    }
+  }
+}
+
+@media (min-width: 1000px) and (max-height: 449px) {
+  @keyframes roll {
+    100% {
+      left: calc(115vw - ((100vw - 400px) / 100) * 51);
+      bottom: calc(11.5vh + ((100vh - 400px) / 100) * 18);
+      transform: rotate(720deg);
+    }
+  }
+}
+
+@media (min-width: 575px) and (min-height: 450px) {
+  @keyframes roll {
+    100% {
+      left: calc(81.3vw - ((100vw - 400px) / 100) * 28);
+      bottom: calc(8vh + ((100vh - 400px) / 100) * 18);
+      transform: rotate(720deg);
+    }
+  }
+}
+
+@media (min-width: 727px) and (min-height: 450px) {
+  @keyframes roll {
+    100% {
+      left: calc(106.5vw - ((100vw - 400px) / 100) * 50);
+      bottom: calc(9.5vh + ((100vh - 400px) / 100) * 18);
+      transform: rotate(720deg);
+    }
+  }
+}
+
+@media (min-width: 1000px) and (min-height: 450px) {
+  @keyframes roll {
+    100% {
+      left: calc(114.8vw - ((100vw - 400px) / 100) * 51);
+      bottom: calc(9.5vh + ((100vh - 400px) / 100) * 18);
+      transform: rotate(720deg);
+    }
+  }
+}
+
+@media (min-width: 575px) and (min-height: 600px) {
+  @keyframes roll {
+    100% {
+      left: calc(81.3vw - ((100vw - 400px) / 100) * 28);
+      bottom: 85px;
+      transform: rotate(720deg);
+    }
+  }
+}
+
+@media (min-width: 727px) and (min-height: 600px) {
+  @keyframes roll {
+    100% {
+      left: calc(106.5vw - ((100vw - 400px) / 100) * 50);
+      bottom: 85px;
+      transform: rotate(720deg);
+    }
+  }
+}
+
+@media (min-width: 1000px) and (min-height: 600px) {
+  @keyframes roll {
+    100% {
+      left: calc(114.8vw - ((100vw - 400px) / 100) * 51);
+      bottom: 85px;
+      transform: rotate(720deg);
+    }
+  }
+}
+
+@media (min-width: 400px) {
+  #pin1 {
+    animation: fallLeft 1s ease-in-out 1.9s forwards;
+  }
+  
+  #pin2 {
+    animation: fallRight 1s ease-in-out 1.95s forwards;
+  }
+  
+  #pin3 {
+    animation: fallLeft 1s ease-in-out 2s forwards;
+  }
+  
+  #pin4 {
+    animation: fallRight 1s ease-in-out 2.05s forwards;
+  }
+  
+  #pin5 {
+    animation: fallLeft 1s ease-in-out 2.1s forwards;
+  }
+  
+  #pin6 {
+    animation: fallRight 1s ease-in-out 2.15s forwards;
+  }
+  
+  #pin7 {
+    animation: fallLeftNoFade 1s ease-in-out 2.2s forwards;
+  }
+  
+  #pin8 {
+    animation: fallRight 1s ease-in-out 2.25s forwards;
+  }
+  
+  #pin9 {
+    animation: fallLeft 1s ease-in-out 2.3s forwards;
+  }
+  
+  #pin10 {
+    animation: fallRight 1s ease-in-out 2.35s forwards;
+  }
+}
+
+@media (min-width: 727px) {
+  #pin1 {
+    animation: fallLeft 1s ease-in-out 2.1s forwards;
+  }
+  
+  #pin2 {
+    animation: fallRight 1s ease-in-out 2.15s forwards;
+  }
+  
+  #pin3 {
+    animation: fallLeft 1s ease-in-out 2.2s forwards;
+  }
+  
+  #pin4 {
+    animation: fallRight 1s ease-in-out 2.25s forwards;
+  }
+  
+  #pin5 {
+    animation: fallLeft 1s ease-in-out 2.3s forwards;
+  }
+  
+  #pin6 {
+    animation: fallRight 1s ease-in-out 2.35s forwards;
+  }
+  
+  #pin7 {
+    animation: fallLeftNoFade 1s ease-in-out 2.4s forwards;
+  }
+  
+  #pin8 {
+    animation: fallRight 1s ease-in-out 2.45s forwards;
+  }
+  
+  #pin9 {
+    animation: fallLeft 1s ease-in-out 2.5s forwards;
+  }
+  
+  #pin10 {
+    animation: fallRight 1s ease-in-out 2.55s forwards;
+  }
+}
+
+@media (min-width: 900px) {
+  #pin1 {
+    animation: fallLeft 1s ease-in-out 2.2s forwards;
+  }
+  
+  #pin2 {
+    animation: fallRight 1s ease-in-out 2.25s forwards;
+  }
+  
+  #pin3 {
+    animation: fallLeft 1s ease-in-out 2.3s forwards;
+  }
+  
+  #pin4 {
+    animation: fallRight 1s ease-in-out 2.35s forwards;
+  }
+  
+  #pin5 {
+    animation: fallLeft 1s ease-in-out 2.4s forwards;
+  }
+  
+  #pin6 {
+    animation: fallRight 1s ease-in-out 2.45s forwards;
+  }
+  
+  #pin7 {
+    animation: fallLeftNoFade 1s ease-in-out 2.5s forwards;
+  }
+  
+  #pin8 {
+    animation: fallRight 1s ease-in-out 2.55s forwards;
+  }
+  
+  #pin9 {
+    animation: fallLeft 1s ease-in-out 2.6s forwards;
+  }
+  
+  #pin10 {
+    animation: fallRight 1s ease-in-out 2.65s forwards;
+  }
+}
+
+@media (min-width: 1100px) {
+  #pin1 {
+    animation: fallLeft 1s ease-in-out 2.3s forwards;
+  }
+  
+  #pin2 {
+    animation: fallRight 1s ease-in-out 2.35s forwards;
+  }
+  
+  #pin3 {
+    animation: fallLeft 1s ease-in-out 2.4s forwards;
+  }
+  
+  #pin4 {
+    animation: fallRight 1s ease-in-out 2.45s forwards;
+  }
+  
+  #pin5 {
+    animation: fallLeft 1s ease-in-out 2.5s forwards;
+  }
+  
+  #pin6 {
+    animation: fallRight 1s ease-in-out 2.55s forwards;
+  }
+  
+  #pin7 {
+    animation: fallLeftNoFade 1s ease-in-out 2.6s forwards;
+  }
+  
+  #pin8 {
+    animation: fallRight 1s ease-in-out 2.65s forwards;
+  }
+  
+  #pin9 {
+    animation: fallLeft 1s ease-in-out 2.7s forwards;
+  }
+  
+  #pin10 {
+    animation: fallRight 1s ease-in-out 2.75s forwards;
+  }
+}
+
+@media (min-width: 1400px) {
+  #pin1 {
+    animation: fallLeft 1s ease-in-out 2.4s forwards;
+  }
+  
+  #pin2 {
+    animation: fallRight 1s ease-in-out 2.45s forwards;
+  }
+  
+  #pin3 {
+    animation: fallLeft 1s ease-in-out 2.5s forwards;
+  }
+  
+  #pin4 {
+    animation: fallRight 1s ease-in-out 2.55s forwards;
+  }
+  
+  #pin5 {
+    animation: fallLeft 1s ease-in-out 2.6s forwards;
+  }
+  
+  #pin6 {
+    animation: fallRight 1s ease-in-out 2.65s forwards;
+  }
+  
+  #pin7 {
+    animation: fallLeftNoFade 1s ease-in-out 2.7s forwards;
+  }
+  
+  #pin8 {
+    animation: fallRight 1s ease-in-out 2.75s forwards;
+  }
+  
+  #pin9 {
+    animation: fallLeft 1s ease-in-out 2.8s forwards;
+  }
+  
+  #pin10 {
+    animation: fallRight 1s ease-in-out 2.85s forwards;
+  }
+}
+
+@media (min-width: 400px) {
+  .fantasy-title {
+    animation: fadeIn 1s ease-in-out 2.6s forwards;
+  }
+}
+
+@media (min-width: 727px) {
+  .fantasy-title {
+    animation: fadeIn 1s ease-in-out 2.9s forwards;
+  }
+}
+
+@media (min-width: 1100px) {
+  .fantasy-title {
+    animation: fadeIn 1s ease-in-out 3s forwards;
+  }
+}

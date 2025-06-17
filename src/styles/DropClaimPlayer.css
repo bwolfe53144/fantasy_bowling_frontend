@@ -1,0 +1,46 @@
+  .dropClaimPage h1 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    color: #222;
+  }
+  
+  .dropClaimPage p {
+    font-size: 1.15rem;
+    margin-bottom: 1.5rem;
+    color: #333;
+  }
+  
+  .dropClaimPage h3 {
+    font-size: 1.3rem;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    color: #444;
+  }
+  
+  .dropClaimPage label {
+    display: flex;
+    align-items: center;
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin-bottom: 0.75rem;
+    cursor: pointer;
+    user-select: none;
+    color: #222;
+  }
+  
+  .dropClaimPage input[type="radio"] {
+    margin-right: 0.6rem;
+    accent-color: #007BFF;
+    cursor: pointer;
+    width: 18px;
+    height: 18px;
+  }
+  
+  .dropClaimPage em {
+    font-style: italic;
+    color: #666;
+    margin-left: 0.3rem;
+  }
+
+
+  

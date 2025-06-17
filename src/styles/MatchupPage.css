@@ -1,0 +1,195 @@
+.matchupHeader {
+  display: grid;
+  grid-template-columns: auto 80px auto;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  width: 100%;
+  max-width: 80%;
+  margin: 0 auto;
+  position: relative;
+}
+
+.scrollWrapper {
+  overflow-x: auto;
+  width: 100%;
+}
+
+.scrollWrapper .matchupHeader {
+  min-width: 350px; /* Minimum width for horizontal scroll */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: nowrap;
+  white-space: nowrap;
+}
+
+.pageContainer.matchupPage .mainPage {
+  padding-left: 1rem; 
+}
+
+.teamInfo {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 1rem;
+  flex: 1 1 0;
+  min-width: 0;              
+  justify-content: flex-end; 
+}
+
+.matchupHeader .teamInfo:last-child {
+  justify-content: flex-start; 
+}
+
+.teamText {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;               
+  overflow-wrap: break-word; 
+  word-break: normal;         
+}
+
+.matchupPage h1 {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.leftName {
+  text-align: right;
+}
+
+.vs {
+  margin: 0 1rem;
+  font-size: 1.5rem;
+  font-weight: bold;
+  padding: 0 0.5rem;
+  white-space: nowrap;
+}
+
+.teamName {
+  font-weight: bold;
+  margin-top: 0.25rem;
+  white-space: normal;       /* allow wrapping */
+  overflow-wrap: break-word;
+  word-break: normal;
+}
+
+.teamInfo .teamName {
+  /* same styles, no duplication */
+  font-weight: bold;
+  margin-top: 0.25rem;
+  white-space: normal;
+}
+
+.teamInfo .ownerName {
+  font-size: 0.875rem;
+  color: #666;
+}
+
+/* Avatar */
+
+.avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 0.25rem;
+}
+
+/* Table styles */
+
+.bowlerTable {
+  width: 100%;
+  max-width: 800px;
+  margin: 2rem auto; /* center horizontally */
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+
+.bowlerTable th,
+.bowlerTable td {
+  padding: 0.75rem 0.5rem;
+  text-align: center;
+  border-bottom: 1px solid #ddd;
+}
+
+.bowlerTable td.bowlerName {
+  text-align: left;
+  padding-left: 1rem;
+}
+
+.bowlerTable td.bowlerScore {
+  text-align: right;
+  padding-right: 1rem;
+}
+
+.bowlerTable td.positionLabel {
+  font-weight: bold;
+  color: #444;
+}
+
+.bowlerTable td.positionCol,
+.bowlerTable th.positionCol {
+  width: 90px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Bold row */
+
+.boldRow td {
+  font-weight: bold;
+  color: #333;
+}
+
+/* Responsive styles */
+@media (max-width: 600px) {
+  .pageContainer.matchupPage {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: minmax(70px, auto) 1fr minmax(60px, auto);
+  }
+
+  .pageContainer.matchupPage .header {
+    grid-row: 1;
+  }
+
+  .pageContainer.matchupPage .mainPage {
+    display: block;
+    overflow-x: auto;
+    overflow-y: auto;
+    grid-row: 2;
+    grid-column: 1 / -1;
+    margin-bottom: 0;
+  }
+
+  .pageContainer.matchupPage .footer {
+    margin: 0;
+    width: 100%;
+    grid-row: 3;
+    grid-column: 1 / -1;
+  }
+
+  body.menuOpen .pageContainer.matchupPage .mainPage {
+    display: none;
+  }
+
+  .pageContainer.matchupPage .hamburger {
+    display: block;
+    font-size: 2rem;
+  }
+
+  .vs {
+    margin: 0 0.1rem;
+  }
+}
+
+@media (min-width: 800px) {
+  .teamText {
+    font-size: 2rem;
+  }
+}

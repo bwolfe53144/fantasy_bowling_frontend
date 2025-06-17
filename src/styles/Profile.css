@@ -1,0 +1,68 @@
+.edit-team-button {
+  background-color: #3b82f6;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  text-decoration: none;
+  display: inline-block;
+  margin: 1rem 0; /* vertical margin */
+}
+
+.edit-team-button:hover {
+  background-color: #2563eb;
+}
+
+.pageContainer.profile table {
+  max-width: 900px; 
+  border-collapse: collapse;
+  margin: 1rem 0;
+}
+
+.pageContainer.profile th,
+.pageContainer.profile td {
+  padding: 0.5rem 1rem;
+  text-align: left;
+}
+
+/* Responsive styles for small screens */
+@media (max-width: 600px) {
+  .pageContainer.profile {
+    grid-template-columns: 1fr;
+    grid-template-rows: minmax(70px, auto) 1fr minmax(60px, auto);
+  }
+
+  .pageContainer.profile .footer {
+    margin: 0;
+    width: 100%;
+    grid-row: 3;
+    grid-column: 1 / -1;
+  }
+
+  .pageContainer.profile .header {
+    grid-row: 1;
+  }
+
+  .pageContainer.profile .mainPage {
+    display: block;
+    overflow-x: auto;
+    overflow-y: auto;
+    grid-row: 2;
+    grid-column: 1 / -1;
+    margin-bottom: 0;
+  }
+
+  body.menuOpen .pageContainer.profile .mainPage {
+    display: none;
+  }
+
+  .pageContainer.profile .hamburger {
+    display: block;
+    font-size: 2rem;
+  }
+
+  .pageContainer.profile .headerLeft {
+    margin-left: 3rem;
+  }
+}
+
+  

@@ -1,0 +1,21 @@
+.loadImgContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    width: 100vw; 
+    text-align: center;
+  }
+  
+  .loadImg {
+    max-width: 150px; 
+    height: auto;
+    animation: spin 1.5s linear infinite;
+  }
+  
+  /* Add this keyframes rule */
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }

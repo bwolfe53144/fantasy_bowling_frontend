@@ -1,0 +1,167 @@
+.pageContainer.rosterpage h1 {
+  font-size: 1.5rem; /* Smaller title for roster page */
+  margin-bottom: 1rem;
+}
+
+.pageContainer.rosterpage .mainPage {
+  padding-left: 1rem; /* Less padding on smaller screens */
+}
+
+.rosterTableWrapper {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+}
+
+.rosterTable {
+  width: 100%;
+  margin-top: 2rem;
+  border-collapse: collapse;
+}
+
+.arrowButton {
+  border: 0.5px solid #ccc;
+  background: white;
+  height: 36px;
+  width: 36px;
+  cursor: pointer;
+  font-size: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+  padding: 0;
+  margin: 0;
+  transition: background-color 0.2s ease;
+}
+
+.arrowButton:first-child {
+  border-right: none;
+  border-radius: 4px 0 0 4px;
+}
+
+.arrowButton:last-child {
+  border-left: none;
+  border-radius: 0 4px 4px 0;
+}
+
+.arrowButton:disabled {
+  opacity: 0.4;
+  cursor: default;
+  background-color: #f9f9f9;
+}
+
+.weekSelectorContainer {
+  display: flex;
+  align-items: center;
+}
+
+.selectWeekWrapper {
+  display: flex;
+  align-items: center;
+  border-radius: 4px;
+  overflow: hidden;
+  height: 36px;
+}
+
+.weekSelectorContainer select {
+  border: 1px solid #ccc;
+  outline: none;
+  padding: 0 0.75rem;
+  height: 100%;
+  font-size: 1rem;
+  appearance: none;
+  background-color: white;
+  min-width: 120px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.viewRosterButton {
+  margin-left: 2rem;
+  padding: 0.7rem 1rem;
+  border-radius: 10px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.submitLineupButton {
+  padding: 0.7rem 1.5rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  margin-top: 1.5rem;
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+}
+
+.emptyPlayersMessage {
+  padding: 2rem;
+  text-align: center;
+  font-size: 1.2rem;
+  color: #777;
+}
+
+@media (max-width: 940px) {
+  .pageContainer.rosterpage {
+    grid-template-columns: 1fr;
+    grid-template-rows: minmax(70px, auto) 1fr minmax(60px, auto);
+  }
+
+  .pageContainer.rosterpage .footer {
+    margin: 0;
+    width: 100%;
+    grid-row: 3;
+    grid-column: 1 / -1;
+  }
+
+  .pageContainer.rosterpage .header {
+    grid-row: 1;
+  }
+
+  .pageContainer.rosterpage .mainPage {
+    display: block;
+    overflow-x: auto;
+    overflow-y: auto;
+    grid-row: 2;
+    grid-column: 1 / -1;
+    margin-bottom: 0;
+  }
+
+  body.menuOpen .pageContainer.rosterpage .mainPage {
+    display: none;
+  }
+
+  .pageContainer.rosterpage .hamburger {
+    display: block;
+    font-size: 2rem;
+  }
+
+  .pageContainer.rosterpage .headerLeft {
+    margin-left: 3rem;
+  }
+
+  .rosterTable {
+    min-width: 700px;
+  }
+}
+
+@media (max-width: 500px) {
+  .viewRosterButton {
+    margin-left: 2rem;
+    padding: 0.7rem 0.7rem;
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 400px) {
+  .viewRosterButton {
+    margin-left: 1rem;
+    padding: 0.5rem 0.5rem;
+    font-size: 0.7rem;
+  }
+}
+
+  

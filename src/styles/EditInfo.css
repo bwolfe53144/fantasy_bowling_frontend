@@ -1,0 +1,193 @@
+.mainPage.editInfo {
+  max-width: 1000px;
+  margin: 2rem auto 4rem;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+  gap: 0.5rem;
+}
+
+.mainPage.editInfo h2 {
+  margin-bottom: 1.5rem;
+  font-weight: 700;
+  font-size: 1.8rem;
+  color: #333;
+  text-align: center;
+}
+
+/*Radio Buttons*/
+.radioGroup {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+[type="radio"] {
+  cursor: pointer;
+  margin-right: 0.25rem;
+}
+
+label {
+  cursor: pointer;
+  font-weight: 500;
+  color: #444;
+  user-select: none;
+}
+
+.EditTeamName,
+.ColorSelector,
+.AvatarUploader,
+.EmailSubscription {
+  margin-bottom: 2rem;
+}
+
+/* ===== Avatar Uploader ===== */
+.AvatarUploader {
+  text-align: center;
+}
+
+.AvatarUploader img {
+  max-width: 150px;
+  max-height: 150px;
+  border-radius: 50%;
+  border: 2px solid #ddd;
+  margin-bottom: 1rem;
+  object-fit: cover;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+.AvatarUploader input[type="file"] {
+  display: block;
+  margin: 0.5rem auto 1rem;
+  cursor: pointer;
+}
+
+.AvatarUploader button {
+  background-color: #2f86eb;
+  color: white;
+  border: none;
+  padding: 0.6rem 1.3rem;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.AvatarUploader button:disabled {
+  background-color: #aaa;
+  cursor: not-allowed;
+}
+
+.AvatarUploader button:hover:not(:disabled) {
+  background-color: #1e5bb8;
+}
+
+/* ===== Email Subscription ===== */
+.EmailSubscription {
+  max-width: 400px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.EmailSubscription input[type="email"] {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border-radius: 5px;
+  border: 1px solid #bbb;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+}
+
+.EmailSubscription input[type="email"]:focus {
+  outline: none;
+  border-color: #2f86eb;
+  box-shadow: 0 0 4px #2f86ebaa;
+}
+
+.EmailSubscription button {
+  margin-top: 0.75rem;
+  padding: 0.6rem 1.5rem;
+  background-color: #2f86eb;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.EmailSubscription button:hover {
+  background-color: #1e5bb8;
+}
+
+.EmailSubscription .error {
+  color: #e03e3e;
+  font-weight: 600;
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+}
+
+/*Responsive*/
+@media (max-width: 480px) {
+  .mainPage.editInfo {
+    margin: 1rem;
+    padding: 1.5rem 1rem;
+  }
+
+  .mainPage.editInfo h2 {
+    font-size: 1.5rem;
+  }
+
+  .EmailSubscription {
+    max-width: 100%;
+  }
+}
+
+@media (min-width: 1200px) {
+  .mainPage.editInfo {
+    width: 900px;
+    justify-content: left;
+  }
+
+  .mainPage.editInfo h2 {
+    font-size: 2rem;
+    text-align: left;
+  }
+
+  .radioGroup {
+    gap: 2.5rem;
+    font-size: 1rem;
+    justify-content: left;
+  }
+
+  .EditTeamName,
+  .ColorSelector,
+  .AvatarUploader,
+  .EmailSubscription {
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+  }
+
+  .AvatarUploader img {
+    max-width: 120px;
+    max-height: 120px;
+  }
+
+  .AvatarUploader button,
+  .EmailSubscription button {
+    width: 2rem;
+    font-size: 0.9rem;
+    padding: 0.5rem 1.2rem;
+  }
+
+  .EmailSubscription input[type="email"] {
+    font-size: 0.95rem;
+    padding: 0.5rem 0.75rem;
+  }
+
+  label {
+    font-size: 0.95rem;
+  }
+}

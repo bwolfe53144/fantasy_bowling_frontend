@@ -1,0 +1,193 @@
+.highlight-player {
+  background-color: #ffff99; /* Light yellow highlight */
+  font-weight: bold;
+}
+
+.claimed-by-other {
+  background-color: #fff3cd; /* soft yellow */
+}
+
+.claimButton {
+  padding: 0.5rem 0.7rem;
+  margin: 0.1rem;
+  font-size: 0.9rem;
+}
+
+.claimed-label {
+  margin-left: 8px;
+  padding: 2px 6px;
+  background-color: #ffc107;
+  color: #212529;
+  font-size: 0.75rem;
+  border-radius: 4px;
+  font-weight: bold;
+}
+
+.baseFilterWrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px 20px; /* column-gap row-gap */
+  align-items: center;
+}
+
+.statsFilterContainer {
+  margin: 20px 0;
+  padding: 16px;
+  border: 1px solid #ccc;
+  border-radius: 12px;
+  background-color: #f9f9f9;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  row-gap: 20px;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+
+.gamesContainer {
+  position: relative;
+  bottom: 0.3rem;
+}
+
+.statsFilterContainer label {
+  margin-right: 6px;
+  font-weight: 600;
+}
+
+.statsFilterContainer select,
+.statsFilterContainer input[type="number"],
+.statsFilterContainer input[type="text"],
+.statsFilterContainer button {
+  flex: 1 1 180px;
+  min-width: 120px;
+  max-width: 250px;
+  box-sizing: border-box;
+}
+
+.statsFilterContainer button {
+  padding: 8px 12px;
+  font-size: 14px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+  flex: 0 0 auto;
+}
+
+.playerButton {
+  display: inline-block;
+  width: 125px;
+  margin: 2rem 1rem 2rem 0;
+  padding: 0.7rem 1rem;
+  font-size: 1rem;
+  font-weight: 500;
+  border-radius: 8px;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.page-number {
+  margin: 0 1.5rem 0 0.5rem;
+  font-weight: 600;
+}
+
+.playerButton:disabled {
+  background-color: #ccc !important; /* Gray background */
+  color: #666 !important;            /* Dim text */
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.lastYearButton {
+  margin-left: 1rem;
+  margin-top: 1rem;
+  position: relative;
+  bottom: 0.8rem;
+}
+
+.playerStatsTable th {
+  font-size: 1rem;
+}
+
+.mainPage.player-page,
+.mainPage.statpage {
+  padding: 1rem;
+}
+
+/* Responsive */
+
+@media (max-width: 975px) {
+  .pageContainer.player-page {
+    grid-template-columns: 1fr;
+    grid-template-rows: minmax(70px, auto) 1fr minmax(60px, auto);
+  }
+
+  .pageContainer.player-page .footer {
+    margin: 0;
+    width: 100%;
+    grid-row: 3;
+    grid-column: 1 / -1;
+  }
+
+  .pageContainer.player-page .header {
+    grid-row: 1;
+  }
+
+  .pageContainer.player-page .mainPage {
+    display: block;
+    overflow-x: auto;
+    overflow-y: auto;
+    grid-row: 2;
+    grid-column: 1 / -1;
+    margin-bottom: 0;
+  }
+
+  body.menuOpen .pageContainer.player-page .mainPage {
+    display: none;
+  }
+
+  .pageContainer.player-page .hamburger {
+    display: block;
+    font-size: 2rem;
+  }
+
+  .pageContainer.player-page .headerLeft {
+    margin-left: 3rem;
+  }
+
+  .playerStatsTable th {
+    font-size: 0.9rem;
+  }
+
+  .horizontalStickyBar {
+    position: sticky;
+    left: 0;
+    z-index: 10;
+  }
+
+  .horizontalScrollArea {
+    overflow-x: auto;
+  }
+}
+
+@media (max-width: 450px) {
+  .playerPagButton {
+    font-size: 0.8rem;
+    max-width: 20px;
+  }
+}
+
+@media (max-width: 375px) {
+  .page-number {
+    font-size: 0.7rem;
+  }
+}
+
+@media (max-width: 345px) {
+  .page-number {
+    display: none;
+  }
+}
+  
+
+  
