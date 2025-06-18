@@ -24,7 +24,7 @@ export const enrichRecentMatchesWithScores = async (recentMatches) => {
   const getPoints = (scores) => calculateFantasyPoints(scores ? [scores] : []);
 
   const weekTeamScores = {};
-  const weekTeamMeta = {}; // 🆕 Store team avatar and name
+  const weekTeamMeta = {};
 
   for (const { week, rosters, scores } of results) {
     const teamScores = {};
@@ -36,7 +36,13 @@ export const enrichRecentMatchesWithScores = async (recentMatches) => {
       return acc;
     }, {});
 
-    for (const [teamId, teamRoster] of Object.entries(rosterByTeam)) {
+    const matchTeamIds = recentMatches
+      .filter(m => m.week === week)
+      .flatMap(m => [m.team1Id, m.team2Id]);
+
+    for (const teamId of matchTeamIds) {
+      const teamRoster = rosterByTeam[teamId] || [];
+
       const starters = teamRoster.filter(r =>
         starterOrder.includes(normalize(r.position))
       );
@@ -46,17 +52,33 @@ export const enrichRecentMatchesWithScores = async (recentMatches) => {
         return acc + getPoints(playerScore);
       }, 0);
 
-      const teamInfo = teamRoster[0]?.team;
-
       teamScores[teamId] = teamScore;
+
+      let teamInfo = teamRoster[0]?.team;
+
+      // fallback to match-level metadata if no players exist
+      if (!teamInfo) {
+        const match = recentMatches.find(
+          m => m.week === week && (m.team1Id === teamId || m.team2Id === teamId)
+        );
+        teamInfo = match?.team1Id === teamId ? match?.team1 : match?.team2;
+      }
 
       if (teamInfo) {
         teamMeta[teamId] = {
-          name: teamInfo.name,
-          wins: teamInfo.wins,
-          losses: teamInfo.losses,
-          ties: teamInfo.ties,
+          name: teamInfo.name || "Unknown Team",
+          wins: teamInfo.wins ?? 0,
+          losses: teamInfo.losses ?? 0,
+          ties: teamInfo.ties ?? 0,
           avatarUrl: teamInfo.owner?.avatarUrl || null
+        };
+      } else {
+        teamMeta[teamId] = {
+          name: "Unknown Team",
+          wins: 0,
+          losses: 0,
+          ties: 0,
+          avatarUrl: null
         };
       }
     }

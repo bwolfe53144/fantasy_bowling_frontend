@@ -51,8 +51,8 @@ export default function Schedule() {
       try {
         const res = await fetch("http://localhost:5000/schedule");
         const data = await res.json();
-
         const enriched = await enrichRecentMatchesWithScores(data.schedule);
+        console.log(enriched);
         setSchedule(enriched);
         setPlayoffStartWeek(data.playoffWeek);
         setLoading(false);
@@ -70,7 +70,7 @@ export default function Schedule() {
     acc[match.week].push(match);
     return acc;
   }, {});
-
+  
   const allWeeks = [
     ...new Set([...Object.keys(weeks).map(Number), ...playoffWeeks]),
   ].sort((a, b) => a - b);
