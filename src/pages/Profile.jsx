@@ -179,23 +179,25 @@ const Profile = () => {
       <div className="mainPage">
         <div>
           <h1>Profile</h1>
-
+  
           {/* Claims Section */}
           <Claims myClaims={myClaims} />
-
-          {/* Team's Recent Schedule */}
-          <MatchupTable
-            matches={enrichedMatches}
-            teamName={user.team.name}
-            completedWeeks={completedWeeks}
-            currentWeek={currentWeek}
-          />
-
+  
+          {/* Team's Recent Schedule (only if user has a team) */}
+          {user.team && (
+            <MatchupTable
+              matches={enrichedMatches}
+              teamName={user.team.name}
+              completedWeeks={completedWeeks}
+              currentWeek={currentWeek}
+            />
+          )}
+  
           {/* Edit Team Info Button */}
           <Link to="/edit-team" style={buttonStyle} className="edit-team-button">
             Customize My Profile
           </Link>
-
+  
           {/* Starred Messages */}
           {starredMessages.length > 0 && (
             <div>
