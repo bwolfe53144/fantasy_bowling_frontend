@@ -199,8 +199,11 @@ const Players = () => {
     setCurrentPage(0);
   };
 
-  const renderSortableHeader = (label, field) => (
-    <th onClick={() => handleSort(field)} style={{ cursor: 'pointer' }}>
+  const renderSortableHeader = (label, field, style = {}) => (
+    <th 
+      onClick={() => handleSort(field)} 
+      style={{ cursor: 'pointer', ...style }}
+    >
       {label} {sortField === field ? (sortOrder === "asc" ? "▲" : "▼") : "●"}
     </th>
   );
@@ -244,19 +247,21 @@ const Players = () => {
   
         <div className="horizontalScrollArea">
           <table className="playerStatsTable" border="1">
-            <thead className="statsHeader" style={{ backgroundColor, color }}>
-              <tr>
-                {renderSortableHeader("Name", "name")}
-                {renderSortableHeader("League", "league")}
-                {renderSortableHeader("Position", "position")}
-                {renderSortableHeader("Games", "games")}
-                {renderSortableHeader("Total Pins", "totalPins")}
-                {renderSortableHeader("Average", "average")}
-                {renderSortableHeader("Total Fantasy Points", "totalPoints")}
-                {renderSortableHeader("Avg Fan Ppg", "avgFanppg")}
-                {(user?.role === "ADMIN" || user?.role === "MANAGER" || user?.role === "SUPERADMIN") && <th>Actions</th>}
-              </tr>
-            </thead>
+          <thead className="statsHeader">
+            <tr>
+              {renderSortableHeader("Name", "name", { backgroundColor, color })}
+              {renderSortableHeader("League", "league", { backgroundColor, color })}
+              {renderSortableHeader("Position", "position", { backgroundColor, color })}
+              {renderSortableHeader("Games", "games", { backgroundColor, color })}
+              {renderSortableHeader("Total Pins", "totalPins", { backgroundColor, color })}
+              {renderSortableHeader("Average", "average", { backgroundColor, color })}
+              {renderSortableHeader("Total Fantasy Points", "totalPoints", { backgroundColor, color })}
+              {renderSortableHeader("Avg Fan Ppg", "avgFanppg", { backgroundColor, color })}
+              {(user?.role === "ADMIN" || user?.role === "MANAGER" || user?.role === "SUPERADMIN") && (
+                <th style={{ backgroundColor, color }}>Actions</th>
+              )}
+            </tr>
+          </thead>
             <tbody>
               {sortedData.length > 0 ? (
                 sortedData

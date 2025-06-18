@@ -95,12 +95,12 @@ const Stats = () => {
   };
 
   // Render table header with sorting arrows
-  const renderSortableHeader = (label, field) => {
+  const renderSortableHeader = (label, field, style = {}) => {
     const sortDirection = sortField === field ? sortOrder : 'none';
     return (
       <th
         onClick={() => handleSort(field)}
-        style={{ cursor: 'pointer' }}
+        style={{ cursor: 'pointer', ...style }}
         aria-sort={sortDirection}
         role="columnheader"
         scope="col"
@@ -245,21 +245,21 @@ const Stats = () => {
         <div className="horizontalScrollArea">
           <table className="playerStatsTable" border="1" role="table" aria-label="Player statistics table">
             <caption className="sr-only">Player Statistics Table</caption>
-            <thead style={{ backgroundColor, color }}>
+            <thead>
               <tr>
-                {renderSortableHeader("Name", "name")}
-                {renderSortableHeader("League", "league")}
-                {renderSortableHeader(showLastYear ? "Pos" : "Position", "position")}
-                {renderSortableHeader("Games", "games")}
-                {renderSortableHeader(showLastYear ? "Pins" : "Total Pins", "totalPins")}
-                {renderSortableHeader(showLastYear ? "Avg" : "Average", "average")}
-                {renderSortableHeader(showLastYear ? "Fan Pts" : "Total Fantasy Points", "totalPoints")}
-                {renderSortableHeader("Avg Fan Ppg", "avgFanppg")}
-                {showLastYear && renderSortableHeader("LY Games", "lyGames")}
-                {showLastYear && renderSortableHeader("LY Avg", "lyAverage")}
-                {showLastYear && renderSortableHeader("LY Fan Pts", "lyPoints")}
-                {showLastYear && renderSortableHeader("LY Fan Ppg", "lyFppg")}
-                {!showLastYear && <th>Team</th>}
+                {renderSortableHeader("Name", "name", { backgroundColor, color })}
+                {renderSortableHeader("League", "league", { backgroundColor, color })}
+                {renderSortableHeader(showLastYear ? "Pos" : "Position", "position", { backgroundColor, color })}
+                {renderSortableHeader("Games", "games", { backgroundColor, color })}
+                {renderSortableHeader(showLastYear ? "Pins" : "Total Pins", "totalPins", { backgroundColor, color })}
+                {renderSortableHeader(showLastYear ? "Avg" : "Average", "average", { backgroundColor, color })}
+                {renderSortableHeader(showLastYear ? "Fan Pts" : "Total Fantasy Points", "totalPoints", { backgroundColor, color })}
+                {renderSortableHeader("Avg Fan Ppg", "avgFanppg", { backgroundColor, color })}
+                {showLastYear && renderSortableHeader("LY Games", "lyGames", { backgroundColor, color })}
+                {showLastYear && renderSortableHeader("LY Avg", "lyAverage", { backgroundColor, color })}
+                {showLastYear && renderSortableHeader("LY Fan Pts", "lyPoints", { backgroundColor, color })}
+                {showLastYear && renderSortableHeader("LY Fan Ppg", "lyFppg", { backgroundColor, color })}
+                {!showLastYear && <th style={{ backgroundColor, color }}>Team</th>}
               </tr>
             </thead>
             <tbody>
