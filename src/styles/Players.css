@@ -118,8 +118,8 @@
 }
 
 .playerStatsTable thead th:first-child {
-  background-color: var(--user-header-color, black);
-  color: var(--user-header-font-color, white);
+  background-color: var(--user-header-color);
+  color: var(--user-header-font-color);
   position: sticky;
   left: 0;
   z-index: 3;
@@ -141,19 +141,12 @@
   text-overflow: ellipsis;
 }
 
-/* Make sure header has higher z-index */
-.playerStatsTable thead th:first-child {
-  z-index: 3;
-  background-color: white; /* header bg */
-}
-
 .mainPage.player-page,
 .mainPage.statpage {
   padding: 1rem;
 }
 
 /* Responsive */
-
 @media (max-width: 975px) {
   .pageContainer.player-page {
     grid-template-columns: 1fr;
