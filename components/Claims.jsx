@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 
 const Claims = ({ myClaims }) => {
   if (myClaims.length === 0) {
-    return <p>No claims have been made yet.</p>;
+    return <p>You have no claims currently.</p>;
   }
 
   return (

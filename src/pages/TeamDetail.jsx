@@ -125,16 +125,16 @@ const TeamDetail = () => {
             <TeamInfo team={team} />
           </div>
 
-          <div className="bottomHalf">
-            {sortedPlayers.length > 0 && (
+          {sortedPlayers.length > 0 && (
+            <div className="bottomHalf">
               <PlayerTable
                 players={sortedPlayers}
                 sortField={sortField}
                 sortOrder={sortOrder}
                 onSort={handleSort}
               />
-            )}
-          </div>
+            </div>
+          )}
 
           <div className="matchupTableWrapper">
             {enrichedMatches.length > 0 && (
