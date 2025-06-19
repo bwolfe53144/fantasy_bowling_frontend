@@ -24,6 +24,7 @@ export const getRecentMatches = (teamName, currentWeek) => API.get(`/api/matches
 export const getRoster = (teamId, week) => API.get(`/roster/${teamId}/${week}`);
 export const getRosterLockStatus = (teamId, week) => API.get(`/roster-lock-status/${teamId}/${week}`);
 export const getRostersForWeek = (week) => API.get(`/rostersForTheWeek/${week}`);
+export const getSchedule = () => API.get("/api/schedule");
 export const getStarredMessages = (userId) => API.get(`/api/starred-messages/${userId}`);
 export const getTeamById = (teamId) => API.get(`/team-by-id/${teamId}`);
 export const getTeamByName = (teamName) => API.get(`/team/${encodeURIComponent(teamName)}`);

@@ -6,6 +6,7 @@ import Navbar from "../../components/Navbar.jsx";
 import Footer from "../../components/Footer.jsx";
 import LoadingScreen from "../../components/LoadingScreen.jsx";
 import MatchList from "../../components/MatchList.jsx";
+import { getSchedule } from "../utils/api.js";
 import { enrichRecentMatchesWithScores } from "../utils/enrichMatches.js";
 import { getThemeColors } from "../utils/themeColors.js";
 import "../styles/Schedule.css"
@@ -49,8 +50,8 @@ export default function Schedule() {
   useEffect(() => {
     const fetchSchedule = async () => {
       try {
-        const res = await fetch("http://localhost:5000/schedule");
-        const data = await res.json();
+        const res = await getSchedule();
+        const data = res.data;
         const enriched = await enrichRecentMatchesWithScores(data.schedule);
         console.log(enriched);
         setSchedule(enriched);
