@@ -15,7 +15,7 @@ const Players = () => {
   const { user, teams, loading, players } = useContext(AuthContext);
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(0);
-  const playersPerPage = 30;
+  const playersPerPage = 50;
   const [sortedData, setSortedData] = useState([]);
   const [sortField, setSortField] = useState(null);
   const [sortOrder, setSortOrder] = useState("asc");

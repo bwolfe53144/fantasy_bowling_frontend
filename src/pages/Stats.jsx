@@ -15,7 +15,7 @@ import '../styles/Stats.css';
 const Stats = () => {
   const { user, teams, players, loading } = useContext(AuthContext);
   const [currentPage, setCurrentPage] = useState(0);
-  const playersPerPage = 30;
+  const playersPerPage = 50;
   const [sortField, setSortField] = useState(null);
   const [sortOrder, setSortOrder] = useState("asc");
   const [sortPosition, setSortPosition] = useState("");
