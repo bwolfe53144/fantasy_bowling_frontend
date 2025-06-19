@@ -2,7 +2,6 @@
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
-  color-scheme: light dark;
   color: black;
   background-color: white;
   font-synthesis: none;
@@ -347,3 +346,19 @@ body.menuOpen .navBtn {
     padding-left: 60px;
   }
 }
+
+/*@media (prefers-color-scheme: dark) {
+  input[type="text"],
+  input[type="number"],
+  select,
+  textarea {
+    background-color: #1e1e1e;
+    color: #f0f0f0;
+    border: 1px solid #444;
+  }
+
+  input::placeholder,
+  textarea::placeholder {
+    color: #aaa;
+  }
+}*/
