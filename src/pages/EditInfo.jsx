@@ -155,8 +155,9 @@ export default function EditInfo() {
           visible={teamNameEditVisible}
           name={newTeamName}
           setName={setNewTeamName}
-          onSave={(close) => (close ? handleTeamNameChange() : setTeamNameEditVisible(true))}
+          onSubmit={handleTeamNameChange}
           onCancel={() => setTeamNameEditVisible(false)}
+          onShowInput={() => setTeamNameEditVisible(true)}
           buttonStyle={buttonStyle}
         />
         {/* Color Picker */}

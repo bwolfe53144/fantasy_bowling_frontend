@@ -1,8 +1,6 @@
-import React from "react";
-
-export default function EditTeamName({ visible, name, setName, onSave, onCancel, buttonStyle }) {
+export default function EditTeamName({ visible, name, setName, onSubmit, onCancel, onShowInput, buttonStyle }) {
   return !visible ? (
-    <button style={buttonStyle} onClick={() => onSave(true)}>Change Team Name</button>
+    <button style={buttonStyle} onClick={onShowInput}>Change Team Name</button>
   ) : (
     <div>
       <input
@@ -12,8 +10,8 @@ export default function EditTeamName({ visible, name, setName, onSave, onCancel,
         onChange={(e) => setName(e.target.value)}
         style={{ marginRight: "0.5rem" }}
       />
-      <button style={buttonStyle} onClick={() => onSave(false)}>Submit</button>
-      <button onClick={onCancel} style={{ marginLeft: "0.5rem" }}>Cancel</button>
+      <button style={buttonStyle} onClick={onSubmit}>Submit</button>
+      <button className="cancelButton" onClick={onCancel}>Cancel</button>
     </div>
   );
 }
