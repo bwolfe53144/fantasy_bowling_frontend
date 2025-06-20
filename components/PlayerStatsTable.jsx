@@ -41,69 +41,68 @@ export default function PlayerStatsTable({ players, isSinglePlayerPage = false }
       </select>
 
       {selectedWeek !== null && (
-                <div className="horizontalScrollArea">
+        <div className="horizontalScrollArea">
+          <table>
+            <thead>
+              <tr>
+                <th className="sticky-col">{isSinglePlayerPage ? "League" : "Player Name"}</th>
+                {showPosition && <th>Team Pos</th>}
+                <th>Points</th>
+                <th>Avg</th>
+                <th>G1</th>
+                <th>G2</th>
+                <th>G3</th>
+                <th>Series</th>
+              </tr>
+            </thead>
+            <tbody>
+              {[...players]
+                .sort((a, b) => {
+                  const posA = parseInt(a.position) || 99;
+                  const posB = parseInt(b.position) || 99;
+                  return posA - posB;
+                })
+                .map((player) => {
+                  const thisWeekScore = player.weekScores?.find((ws) => ws.week === selectedWeek);
+                  const prevScores = player.weekScores?.filter((ws) => ws.week < selectedWeek) || [];
+                  const fantasyPoints = thisWeekScore ? calculateFantasyPoints([thisWeekScore]) : null;
+                  const g1 = thisWeekScore?.game1 ?? "-";
+                  const g2 = thisWeekScore?.game2 ?? "-";
+                  const g3 = thisWeekScore?.game3 ?? "-";
+                  const avg = (() => {
+                    if (thisWeekScore?.average) return thisWeekScore.average;
+                    if (!prevScores.length) return 0;
+                    const pseudoPlayer = { ...player, weekScores: prevScores };
+                    const stats = processPlayerStats(pseudoPlayer);
+                    return stats.average || 0;
+                  })();
+                  const series = [g1, g2, g3].every((val) => typeof val === "number") ? g1 + g2 + g3 : "-";
 
-  <table>
-    <thead>
-      <tr>
-        {showPosition && <th>Team Pos</th>}
-        <th>{isSinglePlayerPage ? "League" : "Player Name"}</th>
-        <th>Points</th>
-        <th>Avg</th>
-        <th>G1</th>
-        <th>G2</th>
-        <th>G3</th>
-        <th>Series</th>
-      </tr>
-    </thead>
-    <tbody>
-      {[...players]
-        .sort((a, b) => {
-          const posA = a.position ? parseInt(a.position) || 99 : 99;
-          const posB = b.position ? parseInt(b.position) || 99 : 99;
-          return posA - posB;
-        })
-        .map((player) => {
-          const thisWeekScore = player.weekScores?.find((ws) => ws.week === selectedWeek);
-          const prevScores = player.weekScores?.filter((ws) => ws.week < selectedWeek) || [];
-          const fantasyPoints = thisWeekScore ? calculateFantasyPoints([thisWeekScore]) : null;
-          const g1 = thisWeekScore?.game1 ?? "-";
-          const g2 = thisWeekScore?.game2 ?? "-";
-          const g3 = thisWeekScore?.game3 ?? "-";
-          const avg = (() => {
-            if (thisWeekScore?.average) return thisWeekScore.average;
-            if (!prevScores.length) return 0;
-            const pseudoPlayer = { ...player, weekScores: prevScores };
-            const stats = processPlayerStats(pseudoPlayer);
-            return stats.average || 0;
-          })();
-          const series = [g1, g2, g3].every((val) => typeof val === "number") ? g1 + g2 + g3 : "-";
-
-          return (
-            <tr key={`${player.name}-${player.league}`}>
-              {showPosition && <td>{player.position || "-"}</td>}
-              <td>
-                {isSinglePlayerPage ? (
-                  player.league
-                ) : (
-                  <Link to={`/player/${encodeURIComponent(player.name)}`}>
-                    {`${getBaseName(player.name)} (${player.league})`}
-                  </Link>
-                )}
-              </td>
-              <td>{typeof fantasyPoints === "number" ? fantasyPoints.toFixed(2) : "-"}</td>
-              <td>{avg.toFixed(2)}</td>
-              <td>{g1}</td>
-              <td>{g2}</td>
-              <td>{g3}</td>
-              <td>{series}</td>
-            </tr>
-          );
-        })}
-    </tbody>
-  </table>
-  </div>
-)}
+                  return (
+                    <tr key={`${player.name}-${player.league}`}>
+                      <td className="sticky-col">
+                        {isSinglePlayerPage ? (
+                          player.league
+                        ) : (
+                          <Link to={`/player/${encodeURIComponent(player.name)}`}>
+                            {`${getBaseName(player.name)} (${player.league})`}
+                          </Link>
+                        )}
+                      </td>
+                      {showPosition && <td>{player.position || "-"}</td>}
+                      <td>{typeof fantasyPoints === "number" ? fantasyPoints.toFixed(2) : "-"}</td>
+                      <td>{avg.toFixed(2)}</td>
+                      <td>{g1}</td>
+                      <td>{g2}</td>
+                      <td>{g3}</td>
+                      <td>{series}</td>
+                    </tr>
+                  );
+                })}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   );
 }
