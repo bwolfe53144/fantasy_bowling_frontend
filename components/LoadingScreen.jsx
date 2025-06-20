@@ -7,10 +7,11 @@ const LoadingScreen = () => {
     '/rockstar.png',
     '/venomshock.png',
     '/ultimateinferno.png',
-    '/3doffsetsolid.png',
-    '/protonphysix.png',
+    '/3doffset.png',
     '/realitycheck.png',
-    '/phase2.png'
+    '/phase2.png',
+    '/iqruby.png',
+    '/norules.png',
   ];
 
   const [selectedImage] = useState(() => {
