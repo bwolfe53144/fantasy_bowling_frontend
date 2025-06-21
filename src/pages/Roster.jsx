@@ -199,7 +199,7 @@ export default function Roster() {
             {!showCreateTeamForm ? (
               <button
                 style={themeStyle}
-                className="createTeamToggleButton"
+                className="rosterButton"
                 onClick={() => setShowCreateTeamForm(true)}
               >
                 Create Team
@@ -208,11 +208,12 @@ export default function Roster() {
               <div className="createTeamForm">
                 <input
                   type="text"
+                  className="teamNameInput"
                   value={teamName}
                   onChange={(e) => setTeamName(e.target.value)}
                   placeholder="Enter your team name"
                 />
-                <button onClick={handleCreateTeam}>Submit</button>
+                <button className="rosterSubmitButton" onClick={handleCreateTeam}>Submit</button>
               </div>
             )}
           </>
@@ -234,7 +235,7 @@ export default function Roster() {
             {players.length > 0 && (
               <button
                 style={buttonStyle}
-                className="viewRosterButton"
+                className="rosterButton"
                 onClick={() => navigate("/regular-roster")}
               >
                 View Regular Roster
@@ -253,7 +254,7 @@ export default function Roster() {
               <button
                 style={buttonStyle}
                 onClick={handleSubmit}
-                className="submitLineupButton"
+                className="rosterSubmitButton"
               >
                 Submit Lineup for Week {currentWeek}
               </button>
