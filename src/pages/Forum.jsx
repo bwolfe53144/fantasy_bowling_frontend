@@ -253,8 +253,11 @@ const Forum = () => {
                   </div>
                   <p className="authorName">By: {getAuthorName(message)}</p>
                   <p className="messageDate">Posted: {formatDate(message.createdAt)}</p>
-                  <p>{message.content}</p>
-                  <button style={buttonStyle}
+                  <p>
+                    {message.content.length > 100
+                      ? `${message.content.slice(0, 100)}...`
+                      : message.content}
+                  </p>                  <button style={buttonStyle}
                     className="messageButton"
                     onClick={() => navigate(`/message/${message.id}`)}
                   >
