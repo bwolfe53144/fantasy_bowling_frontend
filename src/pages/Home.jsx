@@ -140,8 +140,8 @@ export default function Home() {
                 {updatedTeams.map((team, index) => (
                   <tr key={index} className={myTeam === team.name ? "highlight" : ""}>
                     <td>{index + 1}</td>
-                    <td>
-                      <Link to={`/team/${team.name}`} className="teamLink">
+                    <td className="teamLink">
+                      <Link to={`/team/${team.name}`}>
                         {team.trophy ? team.trophy : team.clinched}{team.name}
                       </Link>
                     </td>
