@@ -9,14 +9,6 @@ body.rules-bg {
   overflow-x: hidden;
 }
 
-.pageContainer.rules {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  background-color: transparent;
-  color: white;
-}
-
 .mainPage.rules {
   background-color: transparent;
   font-weight: bold;
@@ -26,8 +18,12 @@ body.rules-bg {
 }
 
 .footer.rules {
-  background-color: transparent;
+  background-color: rgba(0, 0, 0, 0.8) !important; /* Solid dark bg with slight opacity */
   color: white;
+  flex-shrink: 0;
+  z-index: 10;  /* ensure it stacks on top */
+  position: relative; /* reset if absolute/fixed */
+  padding: 1rem;
 }
 
 /* Score Text Styling */
