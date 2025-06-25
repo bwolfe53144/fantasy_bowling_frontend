@@ -1,36 +1,54 @@
+body.rules-bg {
+  background-image: url("/pexels-pavel-danilyuk-7429597.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed; /* Helps prevent white flicker */
+  background-color: #000;       /* Fallback in case image fails */
+  color: white;
+  overflow-x: hidden;
+}
+
+.pageContainer.rules {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: transparent;
+  color: white;
+}
+
+.mainPage.rules {
+  background-color: transparent;
+  font-weight: bold;
+  padding: 2rem;
+  flex-grow: 1;
+  color: white;
+}
+
+.footer.rules {
+  background-color: transparent;
+  color: white;
+}
+
+/* Score Text Styling */
 .scoreText {
-    display: flex;
-    justify-content: space-around;
-    flex-wrap: wrap;
-    gap: 1rem; 
-  }
-  
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.scoreText p {
+  min-width: 200px;
+  flex: 1 1 45%;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 849px) {
   .scoreText p {
-    min-width: 200px; 
+    flex: 1 1 100%;
   }
-
-  .mainPage.rules {
-    background-color: rgba(0, 0, 0, 0); 
-    font-weight: bold;
-    color: white;
-  }
-
-  body.rules-bg {
-    background-image: url("/pexels-pavel-danilyuk-7429597.jpg");
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-  }
-
-  .footer.rules {
-    background-color: rgba(0, 0, 0, 0); 
-  }
-  
-  /* For screens narrower than 850px */
-  @media (max-width: 849px) {
-    .scoreText p {
-      flex: 1 1 48%; 
-    }
-  }
+}
 
   
