@@ -151,11 +151,12 @@ button:focus-visible {
 }
 
 html, body {
+  background-color: transparent;
   margin: 0;
   padding: 0;
   height: 100%;
   width: 100%;
-  overflow-x: hidden; /* Prevent horizontal scrolling */
+  overflow-x: hidden; 
   font-family: sans-serif;
   font-size: 16px;
 }
