@@ -151,12 +151,11 @@ button:focus-visible {
 }
 
 html, body {
-  background-color: black;
   margin: 0;
   padding: 0;
   height: 100%;
   width: 100%;
-  overflow-x: hidden; 
+  overflow-x: hidden; /* Prevent horizontal scrolling */
   font-family: sans-serif;
   font-size: 16px;
 }
@@ -201,7 +200,7 @@ html, body {
   flex-direction: column;
   overflow-x: hidden;
   overflow-y: auto;
-  min-height: calc(100vh - 130px);  
+  height: 100%;
   min-width: auto;
   align-self: stretch;
 }
@@ -214,7 +213,7 @@ html, body {
   position: static;
   justify-content: center;
   gap: 10px;
-  background-color: transparent;
+  background-color: #f2f2f2;
 }
 
 .aboutLink {
@@ -273,16 +272,6 @@ body.menuOpen .navBtn {
   flex: none;
 }
 
-.background-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0,0,0,0.5);
-  z-index: -1;
-}
-
 @media (max-width: 300px) {
   .avatar {
     display: none;
@@ -333,7 +322,6 @@ body.menuOpen .navBtn {
     display: block;
     overflow-x: auto;
     overflow-y: auto;
-    min-height: calc(100vh - 130px);    
     grid-row: 2;
     grid-column: 1 / -1;
     margin-bottom: 0px;
@@ -358,9 +346,7 @@ body.menuOpen .navBtn {
     padding-left: 60px;
   }
 }
-.pageContainer, .mainPage, .footer {
-  outline: 1px solid red;
-}
+
 /*@media (prefers-color-scheme: dark) {
   input[type="text"],
   input[type="number"],

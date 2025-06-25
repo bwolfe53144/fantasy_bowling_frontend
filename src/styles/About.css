@@ -58,18 +58,13 @@
     width: 90%; 
   }
 
-  .pageContainer.about-page {
-    background-color: transparent; /* ensure it's not default white */
-    min-height: 100vh;
-  }
-
   .background-overlay {
     position: fixed;
     top: 0;
     left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5);
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5); /* adjust alpha if needed */
     z-index: -1;
     pointer-events: none;
   }
