@@ -12,13 +12,12 @@ body.rules-bg {
 .mainPage.rules {
   background-color: transparent;
   font-weight: bold;
-  padding: 2rem;
   flex-grow: 1;
   color: white;
 }
 
 .footer.rules {
-  background-color: rgba(0, 0, 0, 0.8) !important; /* Solid dark bg with slight opacity */
+  background-color: transparent !important; /* Solid dark bg with slight opacity */
   color: white;
   flex-shrink: 0;
   z-index: 10;  /* ensure it stacks on top */
