@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState, useRef, useEffect } from "react";
 import { AuthContext } from "../src/utils/AuthContext";
 import { getThemeColors } from "../src/utils/themeColors";
 
@@ -22,6 +22,19 @@ const BaseFilters = ({
 }) => {
   const { user } = useContext(AuthContext);
   const { buttonBackground, buttonColor } = getThemeColors(user?.color);
+
+  const [leagueDropdownOpen, setLeagueDropdownOpen] = useState(false);
+  const leagueDropdownRef = useRef(null);
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (leagueDropdownRef.current && !leagueDropdownRef.current.contains(event.target)) {
+        setLeagueDropdownOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const buttonStyle = {
     backgroundColor: buttonBackground,
@@ -54,20 +67,72 @@ const BaseFilters = ({
         </select>
       </div>
 
-      <div className="filterItem">
-        <label htmlFor="leagueFilter">League:</label>
-        <select
-          id="leagueFilter"
-          value={leagueFilter}
-          onChange={(e) => setLeagueFilter(e.target.value)}
+      <div className="filterItem" ref={leagueDropdownRef}>
+        <label htmlFor="leagueFilter">Leagues:</label>
+        <div
+          className="customDropdown"
+          style={{
+            border: "1px solid #ccc",
+            padding: "0.5rem",
+            borderRadius: "5px",
+            cursor: "pointer",
+            position: "relative",
+            minWidth: "150px"
+          }}
+          onClick={() => setLeagueDropdownOpen(!leagueDropdownOpen)}
         >
-          <option value="">All</option>
-          {uniqueLeagues.map((league, index) => (
-            <option key={index} value={league}>
-              {league}
-            </option>
-          ))}
-        </select>
+          <span title={leagueFilter.length > 0 ? leagueFilter.join(", ") : "All Leagues"}>
+            {leagueFilter.length === 0
+              ? "All"
+              : (() => {
+                  const preview = leagueFilter.slice(0, 2).map(name =>
+                    name.length > 10 ? name.slice(0, 7) + "..." : name
+                  );
+                  const moreCount = leagueFilter.length - preview.length;
+                  return preview.join(", ") + (moreCount > 0 ? ` +${moreCount} more` : "");
+                })()}
+          </span>
+          <div
+            className="dropdownMenu"
+            style={{
+              display: leagueDropdownOpen ? "block" : "none",
+              position: "absolute",
+              top: "100%",
+              left: 0,
+              right: 0,
+              backgroundColor: "white",
+              border: "1px solid #ccc",
+              zIndex: 1000,
+              maxHeight: "200px",
+              overflowY: "auto"
+            }}
+          >
+            {uniqueLeagues.map((league, idx) => {
+              const isSelected = leagueFilter.includes(league);
+              return (
+                <div
+                  key={idx}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setLeagueFilter((prev) =>
+                      prev.includes(league)
+                        ? prev.filter((l) => l !== league)
+                        : [...prev, league]
+                    );
+                  }}
+                  style={{
+                    padding: "0.5rem",
+                    backgroundColor: isSelected ? "#007BFF" : "white",
+                    color: isSelected ? "white" : "black",
+                    cursor: "pointer"
+                  }}
+                >
+                  {league}
+                </div>
+              );
+            })}
+          </div>
+        </div>
       </div>
 
       <div className="filterItem gamesContainer">

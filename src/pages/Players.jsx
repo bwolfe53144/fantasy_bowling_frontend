@@ -20,7 +20,7 @@ const Players = () => {
   const [sortField, setSortField] = useState(null);
   const [sortOrder, setSortOrder] = useState("asc");
   const [sortPosition, setSortPosition] = useState("");
-  const [leagueFilter, setLeagueFilter] = useState("");
+  const [leagueFilter, setLeagueFilter] = useState([]);;
   const [gamesFilter, setGamesFilter] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredData, setFilteredData] = useState([]);
@@ -87,8 +87,8 @@ const Players = () => {
     if (gamesFilter !== null) {
       data = data.filter(player => player.games >= gamesFilter);
     }
-    if (leagueFilter) {
-      data = data.filter(player => player.league === leagueFilter);
+    if (leagueFilter.length > 0) {
+      data = data.filter(player => leagueFilter.includes(player.league));
     }
     if (sortPosition) {
       data = data.filter(player => String(player.position).toLowerCase() === sortPosition.toLowerCase());
