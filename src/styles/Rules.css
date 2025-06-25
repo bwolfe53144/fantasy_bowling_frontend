@@ -33,4 +33,6 @@
     }
   }
 
-  
+  * {
+    outline: 1px solid red !important;
+  }
