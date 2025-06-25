@@ -358,7 +358,9 @@ body.menuOpen .navBtn {
     padding-left: 60px;
   }
 }
-
+.pageContainer, .mainPage, .footer {
+  outline: 1px solid red;
+}
 /*@media (prefers-color-scheme: dark) {
   input[type="text"],
   input[type="number"],
