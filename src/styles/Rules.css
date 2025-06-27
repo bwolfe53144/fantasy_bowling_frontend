@@ -35,15 +35,19 @@
 
   @media (max-width: 500px) {
     .pageContainer.rules {
-      grid-template-rows: minmax(70px, auto) 1fr; /* remove footer row */
+      display: flex;
+      flex-direction: column;
+      min-height: 100dvh;
     }
   
-    .pageContainer.rules .mainPage {
-      grid-row: 2 / 3; /* make sure main content fills the space */
+    .mainPage.rules {
+      flex-grow: 1;
+      overflow: auto;
+      background-color: transparent;
     }
-    
+  
     .footer.rules {
-      display: none ;
+      display: none !important;
     }
   }
 
