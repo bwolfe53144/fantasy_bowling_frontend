@@ -355,7 +355,7 @@ html, body {
   height: 100% !important;
   width: 100% !important;
   overflow-x: hidden !important;
-  background: none !important; /* remove lightcyan */
+  background: none !important;
 }
 
 body.rules-bg {
@@ -366,26 +366,37 @@ body.rules-bg {
 }
 
 .pageContainer.rules {
-  outline: 2px solid red !important;
-  background: rgba(255, 0, 0, 0.05) !important; /* subtle red tint */
+  outline: 4px solid red !important;
+  background: rgba(255, 0, 0, 0.15) !important;
   min-height: 100vh !important;
   display: flex !important;
   flex-direction: column !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important;
 }
 
 .mainPage.rules {
-  outline: 2px solid blue !important;
-  background: rgba(0, 0, 255, 0.05) !important; /* subtle blue tint */
+  outline: 4px solid blue !important;
+  background: rgba(0, 0, 255, 0.15) !important;
   flex-grow: 1 !important;
   overflow: auto !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+  min-height: 0 !important; /* prevent overflow issues */
 }
 
 .footer.rules {
-  outline: 2px solid green !important;
-  background: rgba(0, 255, 0, 0.05) !important;
-  display: none !important; /* hide footer */
+  outline: 4px solid green !important;
+  background: rgba(0, 255, 0, 0.15) !important;
+  display: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+  height: 0 !important;
+  min-height: 0 !important;
 }
-
 /*@media (prefers-color-scheme: dark) {
   input[type="text"],
   input[type="number"],
