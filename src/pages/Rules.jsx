@@ -16,8 +16,10 @@ const Rules = () => {
   }, [isMenuOpen]);
 
   useEffect(() => {
+    document.documentElement.classList.add("rules-bg");
     document.body.classList.add("rules-bg");
     return () => {
+      document.documentElement.classList.remove("rules-bg");
       document.body.classList.remove("rules-bg");
     };
   }, []);

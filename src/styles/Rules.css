@@ -9,17 +9,19 @@
   min-width: 200px; 
 }
 
+/* Main content styling for rules page */
 .mainPage.rules {
-  background-color: rgba(0, 0, 0, 0); 
+  position: relative;
+  z-index: 1;
+  background-color: transparent !important;
   font-weight: bold;
   color: white;
-  position: relative; /* ensure stacking context */
-  z-index: 1; /* stay above the fixed background */
 }
 
-/* Add the fixed background on html via pseudo-element */
+/* Fixed background image via ::before on html */
 html.rules-bg {
   position: relative;
+  min-height: 100%;
 }
 
 html.rules-bg::before {
@@ -30,21 +32,26 @@ html.rules-bg::before {
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  z-index: -1; /* behind everything */
+  z-index: -9999;
   pointer-events: none;
 }
 
-/* Fallback solid background on body to cover overscroll area */
+/* Transparent body so fixed background shows through */
 body.rules-bg {
-  background-color: black; /* solid fallback color */
+  background-color: transparent;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  position: relative;
+  z-index: 0;
 }
 
-/* Footer stays transparent */
+/* Transparent footer */
 .footer.rules {
-  background-color: rgba(0, 0, 0, 0); 
+  background-color: transparent !important;
 }
 
-/* For screens narrower than 850px */
+/* Responsive adjustments */
 @media (max-width: 849px) {
   .scoreText p {
     flex: 1 1 48%; 
