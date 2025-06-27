@@ -48,7 +48,7 @@ body.rules-bg {
     grid-template-columns: unset !important;
 
     /* Add light green translucent bg to debug space it takes */
-    background-color: rgba(0, 255, 0, 0.1) !important;
+    background-color: rgba(0, 255, 0, 0.4) !important; /* stronger green */
   }
 
   .mainPage.rules {
