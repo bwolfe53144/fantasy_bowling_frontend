@@ -35,9 +35,11 @@
 
   @media (max-width: 500px) {
     .pageContainer.rules {
-      display: flex;
+      display: flex !important;
       flex-direction: column;
       min-height: 100dvh;
+      grid-template-rows: unset !important;
+      grid-template-columns: unset !important;
     }
   
     .mainPage.rules {
