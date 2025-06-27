@@ -349,13 +349,34 @@ body.menuOpen .navBtn {
   }
 }
 
-body, html, .pageContainer, .mainPage {
-  background: transparent !important;
-  background-image: none !important;
+html, body {
+  background: lightcyan !important;
   margin: 0 !important;
   padding: 0 !important;
-  border: none !important;
-  overflow: visible !important;
+  height: 100% !important;
+  width: 100% !important;
+  overflow-x: hidden !important;
+}
+
+.pageContainer.rules {
+  outline: 3px solid red !important;
+  background: rgba(255, 0, 0, 0.1) !important; /* faint red */
+  min-height: 100vh !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+.mainPage.rules {
+  outline: 3px solid blue !important;
+  background: rgba(0, 0, 255, 0.1) !important; /* faint blue */
+  flex-grow: 1 !important;
+  overflow: auto !important;
+}
+
+.footer.rules {
+  outline: 3px solid green !important;
+  background: rgba(0, 255, 0, 0.1) !important; /* faint green */
+  display: none !important; /* hide footer for test */
 }
 
 /*@media (prefers-color-scheme: dark) {
