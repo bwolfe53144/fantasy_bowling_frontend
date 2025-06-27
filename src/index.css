@@ -298,8 +298,7 @@ body.menuOpen .navBtn {
 @media (max-width: 500px) {
   .pageContainer {
     grid-template-columns: 1fr;
-    /* Remove the footer row to avoid reserved space */
-    grid-template-rows: minmax(70px, auto) 1fr; 
+    grid-template-rows: minmax(70px, auto) 1fr minmax(60px, auto);
   }
 
   .navbar {
@@ -309,11 +308,10 @@ body.menuOpen .navBtn {
   }
 
   .footer {
-    display: none !important; /* Hide footer completely */
     margin: 0;
     width: 100%;
-    grid-row: unset;
-    grid-column: unset;
+    grid-row: 3;
+    grid-column: 1 / -1;
   }
 
   .header {
@@ -326,7 +324,7 @@ body.menuOpen .navBtn {
     overflow-y: auto;
     grid-row: 2;
     grid-column: 1 / -1;
-    margin-bottom: 0;
+    margin-bottom: 0px;
   }
 
   body.menuOpen .mainPage {
@@ -348,7 +346,6 @@ body.menuOpen .navBtn {
     padding-left: 60px;
   }
 }
-
 
 /*@media (prefers-color-scheme: dark) {
   input[type="text"],
