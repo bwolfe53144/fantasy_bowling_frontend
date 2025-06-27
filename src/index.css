@@ -349,6 +349,15 @@ body.menuOpen .navBtn {
   }
 }
 
+body, html, .pageContainer, .mainPage {
+  background: transparent !important;
+  background-image: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+  overflow: visible !important;
+}
+
 /*@media (prefers-color-scheme: dark) {
   input[type="text"],
   input[type="number"],
