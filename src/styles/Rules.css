@@ -1,36 +1,54 @@
 .scoreText {
-    display: flex;
-    justify-content: space-around;
-    flex-wrap: wrap;
-    gap: 1rem; 
-  }
-  
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  gap: 1rem; 
+}
+
+.scoreText p {
+  min-width: 200px; 
+}
+
+.mainPage.rules {
+  background-color: rgba(0, 0, 0, 0); 
+  font-weight: bold;
+  color: white;
+  position: relative; /* ensure stacking context */
+  z-index: 1; /* stay above the fixed background */
+}
+
+/* Add the fixed background on html via pseudo-element */
+html.rules-bg {
+  position: relative;
+}
+
+html.rules-bg::before {
+  content: "";
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-image: url("/pexels-pavel-danilyuk-7429597.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  z-index: -1; /* behind everything */
+  pointer-events: none;
+}
+
+/* Fallback solid background on body to cover overscroll area */
+body.rules-bg {
+  background-color: black; /* solid fallback color */
+}
+
+/* Footer stays transparent */
+.footer.rules {
+  background-color: rgba(0, 0, 0, 0); 
+}
+
+/* For screens narrower than 850px */
+@media (max-width: 849px) {
   .scoreText p {
-    min-width: 200px; 
+    flex: 1 1 48%; 
   }
-
-  .mainPage.rules {
-    background-color: rgba(0, 0, 0, 0); 
-    font-weight: bold;
-    color: white;
-  }
-
-  body.rules-bg {
-    background-image: url("/pexels-pavel-danilyuk-7429597.jpg");
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-  }
-
-  .footer.rules {
-    background-color: rgba(0, 0, 0, 0); 
-  }
-  
-  /* For screens narrower than 850px */
-  @media (max-width: 849px) {
-    .scoreText p {
-      flex: 1 1 48%; 
-    }
-  }
+}
 
   
