@@ -350,33 +350,40 @@ body.menuOpen .navBtn {
 }
 
 html, body {
-  background: lightcyan !important;
   margin: 0 !important;
   padding: 0 !important;
   height: 100% !important;
   width: 100% !important;
   overflow-x: hidden !important;
+  background: none !important; /* remove lightcyan */
+}
+
+body.rules-bg {
+  background-image: url("/pexels-pavel-danilyuk-7429597.jpg") !important;
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
 }
 
 .pageContainer.rules {
-  outline: 3px solid red !important;
-  background: rgba(255, 0, 0, 0.1) !important; /* faint red */
+  outline: 2px solid red !important;
+  background: rgba(255, 0, 0, 0.05) !important; /* subtle red tint */
   min-height: 100vh !important;
   display: flex !important;
   flex-direction: column !important;
 }
 
 .mainPage.rules {
-  outline: 3px solid blue !important;
-  background: rgba(0, 0, 255, 0.1) !important; /* faint blue */
+  outline: 2px solid blue !important;
+  background: rgba(0, 0, 255, 0.05) !important; /* subtle blue tint */
   flex-grow: 1 !important;
   overflow: auto !important;
 }
 
 .footer.rules {
-  outline: 3px solid green !important;
-  background: rgba(0, 255, 0, 0.1) !important; /* faint green */
-  display: none !important; /* hide footer for test */
+  outline: 2px solid green !important;
+  background: rgba(0, 255, 0, 0.05) !important;
+  display: none !important; /* hide footer */
 }
 
 /*@media (prefers-color-scheme: dark) {
