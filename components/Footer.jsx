@@ -1,8 +1,8 @@
 import { Link } from "react-router-dom";
 
-const Footer = ({ page }) => {
+const Footer = () => {
   return (
-    <div className={`footer ${page === "rules" ? "rules" : ""}`}>
+    <div className="footer">
       <Link to="/about" className="aboutLink">
         About
       </Link>
