@@ -1,73 +1,90 @@
-.scoreText {
-  display: flex;
-  justify-content: space-around;
-  flex-wrap: wrap;
-  gap: 1rem; 
+html, body {
+  background: url("/pexels-pavel-danilyuk-7429597.jpg") no-repeat center center fixed !important;
+  background-size: cover !important;
+  background-color: transparent !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+  outline: none !important;
+  height: 100%;
+  width: 100%;
 }
 
-.scoreText p {
-  min-width: 200px; 
-}
-
-.mainPage.rules {
-  font-weight: bold;
-  color: white;
-
-  /* Debugging translucent red overlay to see container */
-  background-color: rgba(255, 0, 0, 0.1) !important;
-
-  /* Optional outline for debugging */
-  outline: 2px solid rgba(255, 0, 0, 0.3);
-}
-
+/* Body when rules page background is active */
 body.rules-bg {
-  background-image: url("/pexels-pavel-danilyuk-7429597.jpg");
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-
-  /* Subtle transparent blue overlay on background image */
-  background-color: rgba(0, 0, 255, 0.1);
-  background-blend-mode: overlay;
-
-  /* Optional outline for debugging */
-  outline: 2px solid rgba(0, 0, 255, 0.3);
+  background-image: url("/pexels-pavel-danilyuk-7429597.jpg") !important;
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  background-color: transparent !important;
+  outline: none !important;
+  border: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  height: 100%;
+  width: 100%;
 }
 
+/* Container for rules page */
+.pageContainer.rules {
+  background-color: transparent !important;
+  border: none !important;
+  outline: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  display: flex !important;
+  flex-direction: column;
+  min-height: 100dvh !important; /* full viewport height */
+  grid-template-rows: unset !important;
+  grid-template-columns: unset !important;
+}
+
+/* Main content area */
+.mainPage.rules {
+  background-color: transparent !important;
+  font-weight: bold;
+  color: white !important;
+  border: none !important;
+  outline: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  flex-grow: 1;
+  overflow: auto;
+  min-height: 0; /* prevent overflow issues */
+}
+
+/* Hide footer and remove its space */
 .footer.rules {
-  background-color: rgba(0, 0, 0, 0);
+  display: none !important;
+  background: none !important;
+  border: none !important;
+  outline: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  height: 0 !important;
+  min-height: 0 !important;
 }
 
-/* For screens narrower than 850px */
-@media (max-width: 849px) {
-  .scoreText p {
-    flex: 1 1 48%; 
-  }
-}
-
+/* For small screens - explicit overrides */
 @media (max-width: 500px) {
   .pageContainer.rules {
     display: flex !important;
     flex-direction: column;
-    min-height: 100dvh;
+    min-height: 100dvh !important;
     grid-template-rows: unset !important;
     grid-template-columns: unset !important;
-
-    /* Debug outline to see container size */
-    outline: 2px dashed rgba(0, 255, 0, 0.5);
   }
 
   .mainPage.rules {
     flex-grow: 1;
     overflow: auto;
-
-    /* Override red overlay for smaller screens with transparent bg */
     background-color: transparent !important;
-    outline: none !important;
   }
 
   .footer.rules {
     display: none !important;
+    height: 0 !important;
+    min-height: 0 !important;
   }
 }
 
