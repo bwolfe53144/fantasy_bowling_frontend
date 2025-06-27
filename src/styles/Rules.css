@@ -88,5 +88,20 @@ html.rules-bg::before {
   pointer-events: none;
 }
 
+@media (max-width: 500px) {
+  .footer.rules {
+    display: flex !important;
+    position: relative !important;
+    width: 100%;
+    height: auto;
+    min-height: 60px;
+    z-index: 2;
+  }
+
+  .mainPage.rules {
+    padding-bottom: 80px; /* space so footer doesn't cover content */
+  }
+}
+
 
   
