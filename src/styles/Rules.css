@@ -33,4 +33,10 @@
     }
   }
 
+  @media (max-width: 500px) {
+    .footer.rules {
+      display: none ;
+    }
+  }
+
   
