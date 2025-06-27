@@ -1,61 +1,53 @@
 html,
 body {
-  margin: 0 !important;
-  padding: 0 !important;
-  border: none !important;
-  outline: none !important;
+  margin: 0;
+  padding: 0;
   height: 100%;
   width: 100%;
-  background-color: black; /* Fallback to avoid white flash */
+  background-color: black;
+  background-image: url("/pexels-pavel-danilyuk-7429597.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: scroll; /* Avoid white bar bug */
+  overscroll-behavior-y: contain;
 }
 
-/* Rules page background setup */
 body.rules-bg {
   background-image: url("/pexels-pavel-danilyuk-7429597.jpg") !important;
-  background-size: cover !important;
-  background-position: center center !important;
-  background-repeat: no-repeat !important;
-  background-attachment: fixed !important;
-  background-color: black !important;
 }
 
-/* Rules page container */
 .pageContainer.rules {
-  display: flex !important;
+  display: flex;
   flex-direction: column;
-  min-height: 100dvh !important;
-  background: transparent !important;
-  margin: 0 !important;
-  padding: 0 !important;
+  min-height: 100%;
+  background: transparent;
+  padding: 0;
+  margin: 0;
+  border: none;
 }
 
-/* Main content area */
 .mainPage.rules {
-  flex: 1 1 auto;
-  overflow-y: auto;
-  overflow-x: hidden;
-  background-color: transparent !important;
+  flex-grow: 1;
+  overflow: auto;
+  background-color: transparent;
+  color: white;
   font-weight: bold;
-  color: white !important;
-  padding: 0 !important;
-  margin: 0 !important;
-  min-height: 0; /* Prevent overflow clipping */
+  margin: 0;
+  padding: 0;
+  border: none;
 }
 
-/* Hide footer completely */
 .footer.rules {
   display: none !important;
-  visibility: hidden !important;
   height: 0 !important;
   min-height: 0 !important;
+  background: none !important;
   margin: 0 !important;
   padding: 0 !important;
-  background: none !important;
   border: none !important;
-  outline: none !important;
 }
 
-/* ScoreText Layout */
 .scoreText {
   display: flex;
   justify-content: space-around;
@@ -67,7 +59,7 @@ body.rules-bg {
   min-width: 200px;
 }
 
-/* Responsive tweaks */
+/* Responsive Adjustments */
 @media (max-width: 849px) {
   .scoreText p {
     flex: 1 1 48%;
@@ -76,12 +68,14 @@ body.rules-bg {
 
 @media (max-width: 500px) {
   .pageContainer.rules {
-    min-height: 100dvh !important;
+    display: flex !important;
+    flex-direction: column;
+    min-height: 100%;
   }
 
   .mainPage.rules {
     flex-grow: 1;
-    overflow-y: auto;
+    overflow: auto;
     background-color: transparent !important;
   }
 
