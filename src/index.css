@@ -366,25 +366,21 @@ body.rules-bg {
 }
 
 .pageContainer.rules {
-  outline: 4px solid red !important;
-  background: rgba(255, 0, 0, 0.15) !important;
-  min-height: 100vh !important;
   display: flex !important;
   flex-direction: column !important;
+  min-height: 100vh !important;
   margin: 0 !important;
   padding: 0 !important;
-  border: none !important;
 }
 
 .mainPage.rules {
-  outline: 4px solid blue !important;
-  background: rgba(0, 0, 255, 0.15) !important;
-  flex-grow: 1 !important;
-  overflow: auto !important;
   margin: 0 !important;
   padding: 0 !important;
   border: none !important;
-  min-height: 0 !important; /* prevent overflow issues */
+  min-height: 0 !important;
+  height: 100% !important; /* fill parent height */
+  background-color: transparent !important;
+  overflow: auto !important;
 }
 
 .footer.rules {
