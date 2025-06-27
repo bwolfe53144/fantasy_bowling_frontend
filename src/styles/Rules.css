@@ -13,7 +13,7 @@
 .mainPage.rules {
   position: relative;
   z-index: 1;
-  background-color: transparent !important;
+  background-color: rgba(0, 0, 0, 0.5) !important; 
   font-weight: bold;
   color: white;
 }
@@ -48,7 +48,14 @@ body.rules-bg {
 
 /* Transparent footer */
 .footer.rules {
-  background-color: transparent !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background-color: rgba(0, 0, 0, 0.5) !important; 
+  color: white;
+  z-index: 2; /* above the background */
 }
 
 /* Responsive adjustments */
