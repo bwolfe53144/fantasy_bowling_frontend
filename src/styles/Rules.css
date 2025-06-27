@@ -1,60 +1,65 @@
 .scoreText {
-    display: flex;
-    justify-content: space-around;
-    flex-wrap: wrap;
-    gap: 1rem; 
-  }
-  
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  gap: 1rem; 
+}
+
+.scoreText p {
+  min-width: 200px; 
+}
+
+.mainPage.rules {
+  background-color: rgba(0, 0, 0, 0); 
+  font-weight: bold;
+  color: white;
+  /* Add a translucent red overlay for debugging container background */
+  background-color: rgba(255, 0, 0, 0.1) !important; 
+}
+
+body.rules-bg {
+  background-image: url("/pexels-pavel-danilyuk-7429597.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  /* Add a subtle transparent overlay to see background image with some color */
+  background-color: rgba(0, 0, 255, 0.1);
+  background-blend-mode: overlay;
+}
+
+.footer.rules {
+  background-color: rgba(0, 0, 0, 0); 
+}
+
+/* For screens narrower than 850px */
+@media (max-width: 849px) {
   .scoreText p {
-    min-width: 200px; 
+    flex: 1 1 48%; 
+  }
+}
+
+@media (max-width: 500px) {
+  .pageContainer.rules {
+    display: flex !important;
+    flex-direction: column;
+    min-height: 100dvh;
+    grid-template-rows: unset !important;
+    grid-template-columns: unset !important;
+
+    /* Add light green translucent bg to debug space it takes */
+    background-color: rgba(0, 255, 0, 0.1) !important;
   }
 
   .mainPage.rules {
-    background-color: rgba(0, 0, 0, 0); 
-    font-weight: bold;
-    color: white;
-  }
-
-  body.rules-bg {
-    background-image: url("/pexels-pavel-danilyuk-7429597.jpg");
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
+    flex-grow: 1;
+    overflow: auto;
+    background-color: transparent;
   }
 
   .footer.rules {
-    background-color: rgba(0, 0, 0, 0); 
+    display: none !important;
   }
-  
-  /* For screens narrower than 850px */
-  @media (max-width: 849px) {
-    .scoreText p {
-      flex: 1 1 48%; 
-    }
-  }
-
-  @media (max-width: 500px) {
-    .pageContainer.rules {
-      display: flex !important;
-      flex-direction: column;
-      min-height: 100dvh;
-      grid-template-rows: unset !important;
-      grid-template-columns: unset !important;
-    }
-  
-    .mainPage.rules {
-      flex-grow: 1;
-      overflow: auto;
-      background-color: transparent;
-    }
-  
-    .footer.rules {
-      display: none !important;
-    }
-  }
-
-  .pageContainer.rules {
-    background: blue !important;
-  }
+}
 
   
