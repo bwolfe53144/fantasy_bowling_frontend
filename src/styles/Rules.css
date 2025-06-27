@@ -10,11 +10,14 @@
 }
 
 .mainPage.rules {
-  background-color: rgba(0, 0, 0, 0); 
   font-weight: bold;
   color: white;
-  /* Add a translucent red overlay for debugging container background */
-  background-color: rgba(255, 0, 0, 0.1) !important; 
+
+  /* Debugging translucent red overlay to see container */
+  background-color: rgba(255, 0, 0, 0.1) !important;
+
+  /* Optional outline for debugging */
+  outline: 2px solid rgba(255, 0, 0, 0.3);
 }
 
 body.rules-bg {
@@ -23,13 +26,16 @@ body.rules-bg {
   background-position: center;
   background-repeat: no-repeat;
 
-  /* Add a subtle transparent overlay to see background image with some color */
+  /* Subtle transparent blue overlay on background image */
   background-color: rgba(0, 0, 255, 0.1);
   background-blend-mode: overlay;
+
+  /* Optional outline for debugging */
+  outline: 2px solid rgba(0, 0, 255, 0.3);
 }
 
 .footer.rules {
-  background-color: rgba(0, 0, 0, 0); 
+  background-color: rgba(0, 0, 0, 0);
 }
 
 /* For screens narrower than 850px */
@@ -47,14 +53,17 @@ body.rules-bg {
     grid-template-rows: unset !important;
     grid-template-columns: unset !important;
 
-    /* Add light green translucent bg to debug space it takes */
-    background-color: rgba(0, 255, 0, 0.4) !important; /* stronger green */
+    /* Debug outline to see container size */
+    outline: 2px dashed rgba(0, 255, 0, 0.5);
   }
 
   .mainPage.rules {
     flex-grow: 1;
     overflow: auto;
-    background-color: transparent;
+
+    /* Override red overlay for smaller screens with transparent bg */
+    background-color: transparent !important;
+    outline: none !important;
   }
 
   .footer.rules {
