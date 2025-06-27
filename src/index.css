@@ -349,50 +349,7 @@ body.menuOpen .navBtn {
   }
 }
 
-html, body {
-  margin: 0 !important;
-  padding: 0 !important;
-  height: 100% !important;
-  width: 100% !important;
-  overflow-x: hidden !important;
-  background: none !important;
-}
 
-body.rules-bg {
-  background-image: url("/pexels-pavel-danilyuk-7429597.jpg") !important;
-  background-size: cover !important;
-  background-position: center !important;
-  background-repeat: no-repeat !important;
-}
-
-.pageContainer.rules {
-  display: flex !important;
-  flex-direction: column !important;
-  min-height: 100vh !important;
-  margin: 0 !important;
-  padding: 0 !important;
-}
-
-.mainPage.rules {
-  margin: 0 !important;
-  padding: 0 !important;
-  border: none !important;
-  min-height: 0 !important;
-  height: 100% !important; /* fill parent height */
-  background-color: transparent !important;
-  overflow: auto !important;
-}
-
-.footer.rules {
-  outline: 4px solid green !important;
-  background: rgba(0, 255, 0, 0.15) !important;
-  display: none !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  border: none !important;
-  height: 0 !important;
-  min-height: 0 !important;
-}
 /*@media (prefers-color-scheme: dark) {
   input[type="text"],
   input[type="number"],
