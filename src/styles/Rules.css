@@ -58,4 +58,27 @@ body.rules-bg {
   }
 }
 
+html.rules-bg, body.rules-bg {
+  overscroll-behavior: none; /* prevent bounce */
+  overscroll-behavior-y: contain;
+  overscroll-behavior-x: none;
+  -webkit-overflow-scrolling: auto !important;
+  touch-action: none;
+}
+
+html.rules-bg::before {
+  content: "";
+  position: fixed;
+  top: -10vh;
+  left: 0;
+  width: 100%;
+  height: 120vh;
+  background-image: url("/pexels-pavel-danilyuk-7429597.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  z-index: -9999;
+  pointer-events: none;
+}
+
   
