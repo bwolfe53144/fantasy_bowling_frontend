@@ -1,102 +1,36 @@
-html, body {
-  background: url("/pexels-pavel-danilyuk-7429597.jpg") no-repeat center center fixed !important;
-  background-size: cover !important;
-  background-color: transparent !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  border: none !important;
-  outline: none !important;
-  height: 100%;
-  width: 100%;
-  overflow-x: hidden;
-}
-
-/* Body with rules background */
-body.rules-bg {
-  background-image: url("/pexels-pavel-danilyuk-7429597.jpg") !important;
-  background-size: cover !important;
-  background-position: center !important;
-  background-repeat: no-repeat !important;
-  background-color: transparent !important;
-  height: 100%;
-  width: 100%;
-}
-
-/* Rules container */
-.pageContainer.rules {
-  display: flex !important;
-  flex-direction: column;
-  min-height: 100dvh;
-  background: transparent !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  border: none !important;
-  outline: none !important;
-}
-
-/* Main rules content */
-.mainPage.rules {
-  flex-grow: 1;
-  overflow: auto;
-  background-color: transparent !important;
-  font-weight: bold;
-  color: white !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  border: none !important;
-  outline: none !important;
-}
-
-/* Hide footer on rules page */
-.footer.rules {
-  display: none !important;
-  height: 0 !important;
-  padding: 0 !important;
-  margin: 0 !important;
-  border: none !important;
-  background: none !important;
-  min-height: 0 !important;
-}
-
-/* Score section layout */
 .scoreText {
-  display: flex;
-  justify-content: space-around;
-  flex-wrap: wrap;
-  gap: 1rem;
-}
-
-.scoreText p {
-  min-width: 200px;
-}
-
-/* Responsive layout for < 850px */
-@media (max-width: 849px) {
-  .scoreText p {
-    flex: 1 1 48%;
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    gap: 1rem; 
   }
-}
-
-/* Mobile-specific layout < 500px */
-@media (max-width: 500px) {
-  .pageContainer.rules {
-    display: flex !important;
-    flex-direction: column;
-    min-height: 100dvh;
-    grid-template-rows: unset !important;
-    grid-template-columns: unset !important;
+  
+  .scoreText p {
+    min-width: 200px; 
   }
 
   .mainPage.rules {
-    flex-grow: 1;
-    overflow: auto;
-    background-color: transparent !important;
+    background-color: rgba(0, 0, 0, 0); 
+    font-weight: bold;
+    color: white;
+  }
+
+  body.rules-bg {
+    background-image: url("/pexels-pavel-danilyuk-7429597.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
   }
 
   .footer.rules {
-    display: none !important;
-    height: 0 !important;
-    min-height: 0 !important;
+    background-color: rgba(0, 0, 0, 0); 
   }
-}
+  
+  /* For screens narrower than 850px */
+  @media (max-width: 849px) {
+    .scoreText p {
+      flex: 1 1 48%; 
+    }
+  }
+
   
