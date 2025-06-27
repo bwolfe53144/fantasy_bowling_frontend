@@ -99,7 +99,7 @@ html.rules-bg::before {
   }
 
   .mainPage.rules {
-    padding-bottom: 120px; /* space so footer doesn't cover content */
+    padding-bottom: 130px; /* space so footer doesn't cover content */
   }
 }
 
