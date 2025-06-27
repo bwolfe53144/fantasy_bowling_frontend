@@ -1,83 +1,87 @@
-html, body {
-  background: url("/pexels-pavel-danilyuk-7429597.jpg") no-repeat center center fixed !important;
-  background-size: cover !important;
-  background-color: transparent !important;
+html,
+body {
   margin: 0 !important;
   padding: 0 !important;
   border: none !important;
   outline: none !important;
   height: 100%;
   width: 100%;
+  background-color: black; /* Fallback to avoid white flash */
 }
 
-/* Body when rules page background is active */
+/* Rules page background setup */
 body.rules-bg {
   background-image: url("/pexels-pavel-danilyuk-7429597.jpg") !important;
   background-size: cover !important;
-  background-position: center !important;
+  background-position: center center !important;
   background-repeat: no-repeat !important;
-  background-color: transparent !important;
-  outline: none !important;
-  border: none !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  height: 100%;
-  width: 100%;
+  background-attachment: fixed !important;
+  background-color: black !important;
 }
 
-/* Container for rules page */
+/* Rules page container */
 .pageContainer.rules {
-  background-color: transparent !important;
-  border: none !important;
-  outline: none !important;
-  margin: 0 !important;
-  padding: 0 !important;
   display: flex !important;
   flex-direction: column;
-  min-height: 100dvh !important; /* full viewport height */
-  grid-template-rows: unset !important;
-  grid-template-columns: unset !important;
+  min-height: 100dvh !important;
+  background: transparent !important;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
 /* Main content area */
 .mainPage.rules {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  overflow-x: hidden;
   background-color: transparent !important;
   font-weight: bold;
   color: white !important;
-  border: none !important;
-  outline: none !important;
-  margin: 0 !important;
   padding: 0 !important;
-  flex-grow: 1;
-  overflow: auto;
-  min-height: 0; /* prevent overflow issues */
+  margin: 0 !important;
+  min-height: 0; /* Prevent overflow clipping */
 }
 
-/* Hide footer and remove its space */
+/* Hide footer completely */
 .footer.rules {
   display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
   background: none !important;
   border: none !important;
   outline: none !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  height: 0 !important;
-  min-height: 0 !important;
 }
 
-/* For small screens - explicit overrides */
+/* ScoreText Layout */
+.scoreText {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.scoreText p {
+  min-width: 200px;
+}
+
+/* Responsive tweaks */
+@media (max-width: 849px) {
+  .scoreText p {
+    flex: 1 1 48%;
+  }
+}
+
 @media (max-width: 500px) {
   .pageContainer.rules {
-    display: flex !important;
-    flex-direction: column;
     min-height: 100dvh !important;
-    grid-template-rows: unset !important;
-    grid-template-columns: unset !important;
   }
 
   .mainPage.rules {
     flex-grow: 1;
-    overflow: auto;
+    overflow-y: auto;
     background-color: transparent !important;
   }
 
@@ -87,5 +91,4 @@ body.rules-bg {
     min-height: 0 !important;
   }
 }
-
   
