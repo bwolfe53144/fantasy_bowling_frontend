@@ -21,9 +21,7 @@ const AdminPage = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [removeTeamName, setRemoveTeamName] = useState("");
   const [weeks, setWeeks] = useState(10);
-  const [season, setSeason] = useState(2025);
   const [skipWeeksArray, setSkipWeeksArray] = useState([]);
-  const [response, setResponse] = useState(null);
   const [showLockSetter, setShowLockSetter] = useState(false);
 
   useEffect(() => {
@@ -109,12 +107,9 @@ const AdminPage = () => {
               <AdminRoleChange />
               <AdminAssignPlayer teams={teams} />
               <AdminScheduleGenerator
-                setResponse={setResponse}
                 setSkipWeeksArray={setSkipWeeksArray}
                 weeks={weeks}
                 setWeeks={setWeeks}
-                season={season}
-                setSeason={setSeason}
               />
               <button
                 onClick={() => setShowLockSetter(true)}

@@ -1,31 +1,30 @@
 import React, { useState } from "react";
 import { generateTheSchedule } from "../src/utils/api";
 
-const AdminScheduleGenerator = ({ setResponse, setSkipWeeksArray }) => {
-  const [season, setSeason] = useState(new Date().getFullYear());
+const AdminScheduleGenerator = ({ setSkipWeeksArray }) => {
   const [weeks, setWeeks] = useState(14);
   const [numSkippedWeeks, setNumSkippedWeeks] = useState(0);
 
   const generateSchedule = async () => {
     try {
+      const currentYear = new Date().getFullYear();
       const totalWeeks = parseInt(weeks);
       const numToSkip = parseInt(numSkippedWeeks);
       const skipWeeks = [];
-  
-      // Skip the first N weeks
+
       for (let i = 1; i <= numToSkip; i++) {
         skipWeeks.push(i);
       }
-  
+
       setSkipWeeksArray(skipWeeks);
-  
-      const res = await generateTheSchedule({
+
+      await generateTheSchedule({
         weeks: totalWeeks,
-        season: parseInt(season),
+        season: currentYear,
         skipWeeks,
       });
-  
-      setResponse(res.data);
+
+      window.confirm("Schedule generated successfully! Ready to continue?");
     } catch (err) {
       console.error(err);
       alert("Failed to generate schedule.");
@@ -35,13 +34,6 @@ const AdminScheduleGenerator = ({ setResponse, setSkipWeeksArray }) => {
   return (
     <div className="admin-section admin-column">
       <h1>Schedule Generator</h1>
-      <label>Season Year:</label>
-      <input
-        type="number"
-        value={season}
-        onChange={(e) => setSeason(e.target.value)}
-        className="admin-input"
-      />
       <label>Weeks:</label>
       <input
         type="number"
