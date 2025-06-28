@@ -11,6 +11,11 @@ import { getThemeColors } from "../utils/themeColors";
 import { processPlayerStats } from "../utils/ProcessPlayerStats";
 import "../styles/RegularRoster.css";
 
+function capitalizePosition(pos) {
+  if (!pos) return "";
+  return pos.charAt(0).toUpperCase() + pos.slice(1).toLowerCase();
+}
+
 export default function RegularRoster() {
   const { user, loading } = useContext(AuthContext);
   const [players, setPlayers] = useState([]);
@@ -86,8 +91,8 @@ export default function RegularRoster() {
       const usedPositions = new Set();
 
       const initialized = teamWithScores.players.map(player => {
-        const primary = player.position;
-        let setPosition = player.setPosition || "";
+        const primary = capitalizePosition(player.position);
+        let setPosition = player.setPosition ? capitalizePosition(player.setPosition) : "";
 
         if (setPosition && usedPositions.has(setPosition)) {
           setPosition = flexBenchPool.find(fb => !usedPositions.has(fb)) || "";
@@ -125,20 +130,22 @@ export default function RegularRoster() {
 
   // === Update Position Handler ===
   const updatePosition = (id, newPosition) => {
+    newPosition = capitalizePosition(newPosition);
+
     setPlayers(prev =>
       prev.map(p =>
         p.id === id
           ? { ...p, setPosition: newPosition }
           : p.setPosition === newPosition
-            ? { ...p, setPosition: "" }
-            : p
+          ? { ...p, setPosition: "" }
+          : p
       )
     );
 
     setAssignedPositions(prev => {
       const updated = { ...prev };
       Object.keys(updated).forEach(pid => {
-        if (parseInt(pid) !== id && updated[pid] === newPosition) {
+        if (pid !== id && updated[pid] === newPosition) {
           updated[pid] = "";
         }
       });
@@ -176,73 +183,73 @@ export default function RegularRoster() {
       <Header onToggleMenu={setIsMenuOpen} isMenuOpen={isMenuOpen} />
       <Navbar />
       <div className="mainPage">
-      <div className="roster-content">
+        <div className="roster-content">
 
-        <h1 style={{ fontSize: "20px", fontWeight: "bold" }}>Set Your Regular Roster</h1>
-        <p>This is your default lineup for all weeks that haven't started. You can edit week-by-week later.</p>
+          <h1 style={{ fontSize: "20px", fontWeight: "bold" }}>Set Your Regular Roster</h1>
+          <p>This is your default lineup for all weeks that haven't started. You can edit week-by-week later.</p>
 
-        <div className="regroster-table-wrapper">
-          <table className="roster-table">
-            <thead>
-              <tr> 
-                <th style={themeStyle}>Name (Position)</th>
-                <th style={themeStyle}>Set Position</th>
-                <th style={themeStyle}>Average</th>
-                <th style={themeStyle}>Total Points</th>
-                <th style={themeStyle}>Avg Fantasy PPG</th>
-                <th style={themeStyle}>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {players.map(player => (
-                <tr key={player.id}>
-                  <td>{player.name} ({player.allowedPositions[0]})</td>
-                  <td>
-                    <select
-                      value={player.setPosition || ""}
-                      onChange={(e) => updatePosition(player.id, e.target.value)}
-                    >
-                      <option value="">Select Position</option>
-                      {player.allowedPositions.map((pos, idx) => (
-                        <option key={`${player.id}-${idx}`} value={pos}>
-                          {pos}
-                        </option>
-                      ))}
-                    </select>
-                  </td>
-                  <td>{player.avg}</td>
-                  <td>{player.totalPoints}</td>
-                  <td>{player.avgFanppg}</td>
-                  <td>
-                    <button
-                      className="drop-button"
-                      onClick={() => dropMyPlayer(player.id)}
-                    >
-                      Drop
-                    </button>
-                  </td>
+          <div className="regroster-table-wrapper">
+            <table className="roster-table">
+              <thead>
+                <tr>
+                  <th style={themeStyle}>Name (Position)</th>
+                  <th style={themeStyle}>Set Position</th>
+                  <th style={themeStyle}>Average</th>
+                  <th style={themeStyle}>Total Points</th>
+                  <th style={themeStyle}>Avg Fantasy PPG</th>
+                  <th style={themeStyle}>Action</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+                {players.map(player => (
+                  <tr key={player.id}>
+                    <td>{player.name} ({capitalizePosition(player.allowedPositions[0])})</td>
+                    <td>
+                      <select
+                        value={player.setPosition || ""}
+                        onChange={(e) => updatePosition(player.id, e.target.value)}
+                      >
+                        <option value="">Select Position</option>
+                        {[...new Set(player.allowedPositions.map(capitalizePosition))].map((pos, idx) => (
+                          <option key={`${player.id}-${idx}`} value={pos}>
+                            {pos}
+                          </option>
+                        ))}
+                      </select>
+                    </td>
+                    <td>{player.avg}</td>
+                    <td>{player.totalPoints}</td>
+                    <td>{player.avgFanppg}</td>
+                    <td>
+                      <button
+                        className="drop-button"
+                        onClick={() => dropMyPlayer(player.id)}
+                      >
+                        Drop
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
 
-        <button
-          className="submitLineupButton"
-          style={buttonStyle}
-          onClick={() =>
-            handleSaveRegularRoster({
-              players,
-              user,
-              currentWeek,
-              flexBenchPool,
-              setIsSaving,
-            })
-          }
-          disabled={isSaving}
-        >
-          {isSaving ? "Saving..." : "Save Regular Roster"}
-        </button>
+          <button
+            className="submitLineupButton"
+            style={buttonStyle}
+            onClick={() =>
+              handleSaveRegularRoster({
+                players,
+                user,
+                currentWeek,
+                flexBenchPool,
+                setIsSaving,
+              })
+            }
+            disabled={isSaving}
+          >
+            {isSaving ? "Saving..." : "Save Regular Roster"}
+          </button>
         </div>
       </div>
       <Footer />
