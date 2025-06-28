@@ -16,6 +16,7 @@
   background-color: rgba(0, 0, 0, 0.5) !important; 
   font-weight: bold;
   color: white;
+  padding: 0;
 }
 
 /* Fixed background image via ::before on html */
@@ -53,7 +54,7 @@ body.rules-bg {
   align-items: center;
   gap: 1rem;
   padding: 1rem;
-  background-color: transparent !important; 
+  background-color: rgba(0, 0, 0, 0.5) !important; 
   color: white;
   z-index: 2; /* above the background */
 }
