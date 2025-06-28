@@ -11,8 +11,11 @@ const About = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   useEffect(() => {
+    document.documentElement.classList.add("about-bg");
     document.body.classList.add("about-bg");
+  
     return () => {
+      document.documentElement.classList.remove("about-bg");
       document.body.classList.remove("about-bg");
     };
   }, []);
@@ -27,40 +30,38 @@ const About = () => {
   }
 
   return (
-  <div className="pageContainer about-page">
-    <div className="background-overlay"></div> {/* Dark overlay for readability */}
-
-    <Header onToggleMenu={setIsMenuOpen} isMenuOpen={isMenuOpen} />
-    <Navbar />
-
-    <main className="mainPage about-content">
-      <h1>About the League</h1>
-      <p>
-        My name is Brian. I decided to start a fantasy bowling league for the 2023-2024 season. I have been
-        playing fantasy sports for 23 years. I enjoy working with data and have a Bachelor's degree in Mathematics.
-      </p>
-      <p>
-        Last year, I decided to learn how to make my own website, so the 2025-2026 season will be the first to
-        use this website. I tried to include as many features as I could to make the user experience amazing.
-      </p>
-
-      <section className="thanks-section">
-        <h2>Thanks &amp; Credits</h2>
-        <p>Special thanks for the pictures and backgrounds used on this site to:</p>
-        <ul>
-          <li><strong>Discord</strong> by Toms Design</li>
-          <li><strong>GitHub</strong> by Pengedar Seni on IconScout</li>
-          <li><strong>Red bowling ball with pins</strong> — Photo by Blend Archive on Unsplash</li>
-          <li><strong>Orange bowling ball with pins</strong> — Photo by Michelle McEwen on Unsplash</li>
-          <li><strong>Blue bowling ball with pins</strong> — Photo by Ella Christenson on Unsplash</li>
-          <li><strong>Bowling lane picture</strong> — Photo by Pavel Danilyuk</li>
-        </ul>
-      </section>
-    </main>
-
-    <Footer />
-  </div>
-);
+    <div className="pageContainer about-page">
+      <Header onToggleMenu={setIsMenuOpen} isMenuOpen={isMenuOpen} />
+      <Navbar />
+  
+      <main className="mainPage about">
+        <h1>About the League</h1>
+        <p>
+          My name is Brian. I decided to start a fantasy bowling league for the 2023-2024 season. I have been
+          playing fantasy sports for 23 years. I enjoy working with data and have a Bachelor's degree in Mathematics.
+        </p>
+        <p>
+          Last year, I decided to learn how to make my own website, so the 2025-2026 season will be the first to
+          use this website. I tried to include as many features as I could to make the user experience amazing.
+        </p>
+  
+        <section className="thanks-section">
+          <h2>Thanks &amp; Credits</h2>
+          <p>Special thanks for the pictures and backgrounds used on this site to:</p>
+          <ul>
+            <li><strong>Discord</strong> by Toms Design</li>
+            <li><strong>GitHub</strong> by Pengedar Seni on IconScout</li>
+            <li><strong>Red bowling ball with pins</strong> — Photo by Blend Archive on Unsplash</li>
+            <li><strong>Orange bowling ball with pins</strong> — Photo by Michelle McEwen on Unsplash</li>
+            <li><strong>Blue bowling ball with pins</strong> — Photo by Ella Christenson on Unsplash</li>
+            <li><strong>Bowling lane picture</strong> — Photo by Pavel Danilyuk</li>
+          </ul>
+        </section>
+      </main>
+  
+      <Footer page="about" />
+    </div>
+  );
 };
 
 export default About;
