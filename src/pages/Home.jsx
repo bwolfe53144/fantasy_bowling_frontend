@@ -119,10 +119,10 @@ export default function Home() {
       <div className="mainPage homepage">
         <h1 className="mainTitle">Fantasy Bowling League</h1>
         <div className="standingsContainer">
-          <div className="standingsInner">
             <div className="standingsHeader">
               <h2 className="standingsTitle">Standings</h2>
             </div>
+            <div className="horizontalScrollArea">
             <table>
               <caption className="visually-hidden">Fantasy Bowling League Standings</caption>
               <thead style={tableHeaderStyle}>
@@ -154,13 +154,13 @@ export default function Home() {
                 ))}
               </tbody>
             </table>
+            </div>
             {anyClinched && (
               <div className="clinchLegend">
                 <p><strong>*</strong> Clinched Playoffs</p>
                 <p><strong>**</strong> Clinched Bye</p>
               </div>
             )}
-          </div>
         </div>
       </div>
       <Footer />
