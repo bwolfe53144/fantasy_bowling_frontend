@@ -24,8 +24,10 @@ const ClaimedPlayers = () => {
 
   // Set background class
   useEffect(() => {
+    document.documentElement.classList.add("claimed-bg");
     document.body.classList.add("claimed-bg");
     return () => {
+      document.documentElement.classList.remove("claimed-bg");
       document.body.classList.remove("claimed-bg");
     };
   }, []);

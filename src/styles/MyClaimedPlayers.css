@@ -1,45 +1,3 @@
-body.claimed-bg {
-  background-image: url("/michelle-mcewen-yk2VUa5vtA0-unsplash.jpg");
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
-  color: white;
-  overflow-x: hidden;
-  position: relative;
-}
-
-body.claimed-bg .footer {
-  background-color: rgba(0, 0, 0, 0);
-  color: white;
-  padding: 1rem 2rem;
-  text-align: center;
-}
-
-.pageContainer {
-  position: relative;
-  z-index: 0;
-}
-
-.background-overlay {
-  background-color: rgba(0, 0, 0, 0.6); /* tweak alpha to your liking */
-  height: 100vh;
-  left: 0;
-  pointer-events: none;
-  position: fixed;
-  top: 0;
-  width: 100vw;
-  z-index: -1;
-}
-
-.mainPage.my-claimed-players {
-  background-color: rgba(0, 0, 0, 0);
-  border-radius: 10px;
-  font-weight: bold;
-  margin: 2rem auto;
-  max-width: 900px;
-  padding: 1.5rem 2rem;
-}
-
 .my-claimed-players {
   font-size: 1.15rem;
   padding-bottom: 1rem;
@@ -69,7 +27,9 @@ body.claimed-bg .footer {
   top: 0.8rem;
 }
 
-/*Buttons*/
+/* ============================= */
+/* Buttons                       */
+/* ============================= */
 .remove-claim-button {
   background-color: #c44540;
   border: none;
@@ -113,4 +73,82 @@ body.claimed-bg .footer {
   font-size: 2rem;
   margin-top: 2rem;
   text-align: center;
+}
+
+/* ============================= */
+/* Main content container        */
+/* ============================= */
+.mainPage.my-claimed-players {
+  position: relative;
+  z-index: 1;
+  background-color: rgba(0, 0, 0, 0.5) !important; 
+  border-radius: 10px;
+  font-weight: bold;
+  margin: 2rem auto;
+  max-width: 900px;
+  padding: 1.5rem 2rem;
+  color: white;
+}
+
+/* ============================= */
+/* Fixed background              */
+/* ============================= */
+html.claimed-bg {
+  position: relative;
+  min-height: 100%;
+}
+
+html.claimed-bg::before {
+  content: "";
+  position: fixed;
+  top: -10vh;
+  left: 0;
+  width: 100%;
+  height: 120vh;
+  background-image: url("/michelle-mcewen-yk2VUa5vtA0-unsplash.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  z-index: -9999;
+  pointer-events: none;
+}
+
+/* Body transparent so bg shows */
+body.claimed-bg {
+  background-color: transparent;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  position: relative;
+  z-index: 0;
+}
+
+/* Footer styling */
+body.claimed-bg .footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background-color: transparent !important;
+  color: white;
+  z-index: 2;
+}
+
+/* ============================= */
+/* Mobile adjustments            */
+/* ============================= */
+@media (max-width: 500px) {
+  body.claimed-bg .footer {
+    display: flex !important;
+    position: relative !important;
+    width: 100%;
+    height: auto;
+    min-height: 60px;
+    z-index: 2;
+  }
+
+  .mainPage.my-claimed-players {
+    padding-bottom: 130px; /* space for footer */
+  }
 }
