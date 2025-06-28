@@ -9,8 +9,10 @@ const holidays = [
   "2026-01-01", // New Year's Day
 ];
 
-const AdminLockTimeSetter = ({ response, playerList, weeks, season, skipWeeksArray }) => {
+const AdminLockTimeSetter = ({ playerList }) => {
   const [leagueStartTimes, setLeagueStartTimes] = useState({});
+  const totalWeeks = 34;
+  const currentYear = new Date().getFullYear();
 
   // Get unique leagues from playerList
   const leagues = Array.from(new Set(playerList.map((p) => p.league)));
@@ -20,47 +22,51 @@ const AdminLockTimeSetter = ({ response, playerList, weeks, season, skipWeeksArr
   };
 
   const submitLocktimes = async () => {
+    // Find leagues with missing or invalid start times
+    const missingLeagues = leagues.filter(league => {
+      const time = leagueStartTimes[league];
+      return !time || isNaN(new Date(time));
+    });
+  
+    if (missingLeagues.length > 0) {
+      alert(`Please enter valid start times for: ${missingLeagues.join(", ")}`);
+      return; // prevent submission
+    }
+  
     const payload = [];
-
-    const totalWeeks = parseInt(weeks);
-    const skip = new Set(skipWeeksArray.map(Number));
-
+  
     leagues.forEach((league) => {
       const baseDate = new Date(leagueStartTimes[league]);
-      if (isNaN(baseDate)) return; // skip if no valid date
       let current = new Date(baseDate);
-
-      for (let actualWeek = 1; actualWeek <= totalWeeks; actualWeek++) {
+  
+      for (let week = 1; week <= totalWeeks; week++) {
         const dateStr = current.toISOString().split("T")[0];
         const isHoliday = holidays.includes(dateStr);
-        const isSkipped = skip.has(actualWeek);
-
-        if (!isHoliday && !isSkipped) {
+  
+        if (!isHoliday) {
           payload.push({
             league,
-            season: parseInt(season),
-            week: actualWeek,
+            season: currentYear,
+            week,
             lockTime: current.toISOString(),
           });
         }
-
+  
         current.setDate(current.getDate() + 7);
       }
     });
-
+  
     try {
       await setLocktimes(payload);
-      await resetRosters(season);
+      await resetRosters(currentYear);
       await resetPositions();
-
-      alert("Locktimes submitted and rosters/positions reset!");
+  
+      alert("Lock times submitted and rosters/positions reset!");
     } catch (err) {
       console.error(err);
-      alert("Failed to set locktimes or reset data.");
+      alert("Failed to set lock times or reset data.");
     }
   };
-
-  if (!response) return null; // Don't render if no schedule generated yet
 
   return (
     <div className="admin-locktime-section">
