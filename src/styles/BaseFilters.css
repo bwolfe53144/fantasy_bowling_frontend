@@ -1,0 +1,158 @@
+.baseFilterWrapper {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+  
+  .filterItem {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .leagueItem {
+    position: relative;
+  }
+  
+  .customDropdown {
+    border: 1px solid #ccc;
+    padding: 0.5rem;
+    border-radius: 5px;
+    cursor: pointer;
+    min-width: 150px;
+  }
+  
+  .dropdownMenu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background-color: white;
+    border: 1px solid #ccc;
+    z-index: 1000;
+    max-height: 200px;
+    overflow-y: auto;
+  }
+  
+  .dropdownMenu.open {
+    display: block;
+  }
+  
+  .dropdownItem {
+    padding: 0.5rem;
+    cursor: pointer;
+  }
+  
+  .dropdownItem:hover {
+    background-color: #f0f0f0;
+  }
+  
+  .dropdownItem.selected {
+    background-color: #007BFF;
+    color: white;
+  }
+  
+  .gamesContainer input {
+    width: 80px;
+  }
+  
+  .resetButton {
+    padding: 0.5rem;
+    min-width: 90px;
+    border: none;
+    border-radius: 10px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  
+  .lastYearButton {
+    padding: 0.7rem;
+    min-width: 150px;
+    border: none;
+    border-radius: 10px;
+    font-weight: bold;
+    cursor: pointer;
+  }.baseFilterWrapper {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+  
+  .filterItem {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .leagueItem {
+    position: relative;
+  }
+  
+  .customDropdown {
+    border: 1px solid #ccc;
+    padding: 0.5rem;
+    border-radius: 5px;
+    cursor: pointer;
+    min-width: 150px;
+  }
+  
+  .dropdownMenu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background-color: white;
+    border: 1px solid #ccc;
+    z-index: 1000;
+    max-height: 200px;
+    overflow-y: auto;
+  }
+  
+  .dropdownMenu.open {
+    display: block;
+  }
+  
+  .dropdownItem {
+    padding: 0.5rem;
+    cursor: pointer;
+  }
+  
+  .dropdownItem:hover {
+    background-color: #f0f0f0;
+  }
+  
+  .dropdownItem.selected {
+    background-color: #007BFF;
+    color: white;
+  }
+  
+  .gamesContainer input {
+    width: 80px;
+  }
+
+  .playerSearchInput {
+    min-width: 200px;
+    min-height: 30px;
+  }
+  
+  .resetButton {
+    padding: 0.5rem;
+    min-width: 90px;
+    border: none;
+    border-radius: 10px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  
+  .lastYearButton {
+    padding: 0.7rem;
+    min-width: 150px;
+    border: none;
+    border-radius: 10px;
+    font-weight: bold;
+    cursor: pointer;
+  }

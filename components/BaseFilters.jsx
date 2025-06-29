@@ -1,6 +1,7 @@
 import React, { useContext, useState, useRef, useEffect } from "react";
 import { AuthContext } from "../src/utils/AuthContext";
 import { getThemeColors } from "../src/utils/themeColors";
+import "../src/styles/BaseFilters.css";
 
 const BaseFilters = ({
   sortPosition,
@@ -39,13 +40,6 @@ const BaseFilters = ({
   const buttonStyle = {
     backgroundColor: buttonBackground,
     color: buttonColor,
-    padding: ".7rem",
-    minWidth: "90px",
-    border: "none",
-    borderRadius: "10px",
-    fontWeight: "bold",
-    cursor: "pointer",
-    marginLeft: "1rem",
   };
 
   return (
@@ -67,18 +61,10 @@ const BaseFilters = ({
         </select>
       </div>
 
-      <div className="filterItem" ref={leagueDropdownRef}>
+      <div className="filterItem leagueItem" ref={leagueDropdownRef}>
         <label htmlFor="leagueFilter">Leagues:</label>
         <div
           className="customDropdown"
-          style={{
-            border: "1px solid #ccc",
-            padding: "0.5rem",
-            borderRadius: "5px",
-            cursor: "pointer",
-            position: "relative",
-            minWidth: "150px"
-          }}
           onClick={() => setLeagueDropdownOpen(!leagueDropdownOpen)}
         >
           <span title={leagueFilter.length > 0 ? leagueFilter.join(", ") : "All Leagues"}>
@@ -92,21 +78,7 @@ const BaseFilters = ({
                   return preview.join(", ") + (moreCount > 0 ? ` +${moreCount} more` : "");
                 })()}
           </span>
-          <div
-            className="dropdownMenu"
-            style={{
-              display: leagueDropdownOpen ? "block" : "none",
-              position: "absolute",
-              top: "100%",
-              left: 0,
-              right: 0,
-              backgroundColor: "white",
-              border: "1px solid #ccc",
-              zIndex: 1000,
-              maxHeight: "200px",
-              overflowY: "auto"
-            }}
-          >
+          <div className={`dropdownMenu ${leagueDropdownOpen ? "open" : ""}`}>
             {uniqueLeagues.map((league, idx) => {
               const isSelected = leagueFilter.includes(league);
               return (
@@ -120,12 +92,7 @@ const BaseFilters = ({
                         : [...prev, league]
                     );
                   }}
-                  style={{
-                    padding: "0.5rem",
-                    backgroundColor: isSelected ? "#007BFF" : "white",
-                    color: isSelected ? "white" : "black",
-                    cursor: "pointer"
-                  }}
+                  className={`dropdownItem ${isSelected ? "selected" : ""}`}
                 >
                   {league}
                 </div>
@@ -141,12 +108,13 @@ const BaseFilters = ({
           id="gamesFilter"
           type="number"
           value={gamesFilter || ""}
-          onChange={(e) =>
-            setGamesFilter(e.target.value ? parseInt(e.target.value, 10) : null)
-          }
-          style={{ width: "80px" }}
+          onChange={(e) => setGamesFilter(e.target.value ? parseInt(e.target.value, 10) : null)}
         />
-        <button style={buttonStyle} onClick={() => setGamesFilter(null)}>
+        <button
+          className="resetButton"
+          style={buttonStyle}
+          onClick={() => setGamesFilter(null)}
+        >
           Reset
         </button>
       </div>
@@ -158,12 +126,13 @@ const BaseFilters = ({
             id="lyGamesFilter"
             type="number"
             value={lyGamesFilter || ""}
-            onChange={(e) =>
-              setLyGamesFilter(e.target.value ? parseInt(e.target.value, 10) : null)
-            }
-            style={{ width: "80px" }}
+            onChange={(e) => setLyGamesFilter(e.target.value ? parseInt(e.target.value, 10) : null)}
           />
-          <button style={buttonStyle} onClick={() => setLyGamesFilter(null)}>
+          <button
+            className="resetButton"
+            style={buttonStyle}
+            onClick={() => setLyGamesFilter(null)}
+          >
             Reset
           </button>
         </div>
@@ -174,6 +143,7 @@ const BaseFilters = ({
         <input
           id="nameSearch"
           type="text"
+          className="playerSearchInput"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder="Enter player name"
