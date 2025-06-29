@@ -56,6 +56,7 @@ export const generateTheSchedule = (data) => API.post('/generate-schedule', data
 export const postMessage = ({ title, content, authorId }) => API.post(`/messages`, { title, content, authorId });
 export const postRoster = (teamId, week, players) => API.post(`/roster`, { teamId, week, players });
 export const processClaim = (payload) => API.post('/api/admin-process-claim', payload);
+export const resetPassword = (token, data) => API.post(`/auth/reset-password/${token}`, data);
 export const resetPositions = () => API.post('/reset-positions');
 export const resetRosters = (season) => API.post('/reset-rosters', { season: parseInt(season) });
 export const saveRoster = (payload) => API.post('/roster', payload);
