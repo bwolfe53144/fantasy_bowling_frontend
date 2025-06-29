@@ -64,14 +64,14 @@ const Stats = () => {
     }
     if (searchQuery) {
       data = data.filter(player => player.name.toLowerCase().includes(searchQuery.toLowerCase()));
+    }
     if (showLastYear && lyGamesFilter !== null) {
       data = data.filter(player => parseInt(player.lyGames || 0) >= lyGamesFilter);
     }
-  }
 
     setFilteredData(data);
     setCurrentPage(0);
-  }, [searchQuery, gamesFilter, sortPosition, leagueFilter, teamFilter, allPlayers, loading]);
+  }, [searchQuery, gamesFilter, showLastYear, lyGamesFilter, sortPosition, leagueFilter, teamFilter, allPlayers, loading]);
 
   const { backgroundColor, color, buttonBackground, buttonColor } = getThemeColors(user?.color);
 
