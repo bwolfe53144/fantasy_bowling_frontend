@@ -49,6 +49,7 @@ export const completeWeekLock = (data) => API.post('/api/weeklocks/complete', da
 export const createPlayer = (newPlayer) => API.post(`/api/player`, newPlayer);
 export const createTeam = (userId, teamName) => API.post('/create-team', { userId, teamName });
 export const createWeekScore = (newScore) => API.post(`/api/weekscore`, newScore);
+export const forgotPassword = (data) => API.post("/auth/forgot-password", data);
 export const generatePlayoffs = (data) => API.post('/api/playoffs/generate', data);
 export const generateRoster = (teamId, week) => API.post('/generate-roster', { teamId, week });
 export const generateTheSchedule = (data) => API.post('/generate-schedule', data);
