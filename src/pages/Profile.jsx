@@ -184,7 +184,7 @@ const Profile = () => {
           <Claims myClaims={myClaims} />
   
           {/* Team's Recent Schedule (only if user has a team) */}
-          {user.team && (
+          {user.team && enrichedMatches.length > 0 && (
             <MatchupTable
               matches={enrichedMatches}
               teamName={user.team.name}
