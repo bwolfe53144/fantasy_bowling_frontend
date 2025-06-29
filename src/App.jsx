@@ -27,6 +27,7 @@ import Stats from "./pages/Stats";
 import Players from "./pages/Players";
 import ClaimedPlayers from "./pages/ClaimedPlayers";
 import About from "./pages/About";
+import ResetPassword from "./pages/ResetPassword";
 
 function App() {
   return (
@@ -59,6 +60,7 @@ function App() {
         <Route path="/drop-player/:playerId/:playerName/:playerLeague/:playerPosition" element={<DropClaimPlayer />} />
         <Route path="/bowling-team/:teamName/:league" element={<BowlingTeamPage />} />
         <Route path="/fantasy-stats/:teamName" element={<TeamFantasyStats />} />
+        <Route path="/reset-password/:token" element={<ResetPassword />} />
         <Route path="*" element={<ErrorPage />} />
       </Routes>
     </BrowserRouter>
