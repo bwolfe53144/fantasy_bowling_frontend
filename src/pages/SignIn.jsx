@@ -68,6 +68,7 @@ const Signin = () => {
               <input
                 name="username"
                 placeholder="Username"
+                value={form.username}
                 onChange={handleChange}
                 required
               />
@@ -75,6 +76,7 @@ const Signin = () => {
                 type="password"
                 name="password"
                 placeholder="Password"
+                value={form.password}
                 onChange={handleChange}
                 required
               />
