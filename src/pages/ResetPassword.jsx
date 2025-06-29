@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { resetPassword } from "../utils/api";
+import "../styles/ResetPassword.css";
 
 export default function ResetPassword() {
   const { token } = useParams();
@@ -23,7 +24,6 @@ export default function ResetPassword() {
       setSuccessMsg(res.data.message);
       setLoading(false);
 
-      // Optionally navigate after short delay
       setTimeout(() => {
         navigate("/signin");
       }, 3000);
@@ -36,9 +36,9 @@ export default function ResetPassword() {
   return (
     <div className="reset-password-page">
       <h2>Reset Password</h2>
-      {error && <p style={{ color: "red" }}>{error}</p>}
-      {successMsg && <p style={{ color: "green" }}>{successMsg}</p>}
-      <form onSubmit={handleSubmit}>
+      {error && <p className="error-message">{error}</p>}
+      {successMsg && <p className="success-message">{successMsg}</p>}
+      <form onSubmit={handleSubmit} className="reset-password-form">
         <input
           type="password"
           placeholder="New password"
