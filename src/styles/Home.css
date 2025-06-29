@@ -56,6 +56,31 @@ tr.highlight {
 }
 
 /*Links*/
+.signUpButton {
+  max-width: 200px;
+  display: inline-block;     
+  margin: 1rem;
+  padding: 0.6rem 1.2rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: white;
+  background-color: #007bff; 
+  border: none;
+  border-radius: 8px;
+  text-decoration: none;    
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.signUpButton:hover {
+  background-color: #0056b3;
+}
+
+.signUpButtonWrapper {
+  text-align: center;
+}
+
 .teamLink {
   text-align: left;
   color: #2563eb;

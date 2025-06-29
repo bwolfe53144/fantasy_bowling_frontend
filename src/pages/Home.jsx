@@ -118,6 +118,14 @@ export default function Home() {
       <Navbar />
       <div className="mainPage homepage">
         <h1 className="mainTitle">Fantasy Bowling League</h1>
+        {!user && !loading && (
+          <div className="signUpButtonWrapper">
+            <h2>Not a user already? What are you waiting for... sign up now!</h2>
+            <Link to="/signup" className="signUpButton">
+              Sign Up
+            </Link>
+          </div>
+        )}        
         <div className="standingsContainer">
             <div className="standingsHeader">
               <h2 className="standingsTitle">Standings</h2>
