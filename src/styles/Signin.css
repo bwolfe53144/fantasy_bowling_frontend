@@ -13,31 +13,29 @@
 .signin-container {
   flex: 1;
   width: 100%;
-  min-height: calc(100vh - 300px); /* fill space under bowling alley */
+  min-height: calc(100vh - 300px);
   box-sizing: border-box;
   padding: 2rem;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  align-items: center; /* center child content horizontally */
   color: #f5f5f5;
   backdrop-filter: blur(5px);
 }
 
-/* Styled form */
+/* Signin form itself */
 .signin-form {
   display: grid;
   grid-template-columns: 1fr;
   gap: 12px;
-  max-width: 800px;
-  margin: 0 auto;
+  max-width: 400px;
+  width: 100%;
 }
 
-/* Centered elements */
+/* Center headings and errors in form */
 .signin-form h2,
 .signin-form .error,
-.signin-form button,
-.signin-form .home-link {
-  grid-column: 1 / -1;
+.signin-form .success {
   text-align: center;
 }
 
@@ -56,8 +54,14 @@
   color: #aaa;
 }
 
-/* Sign in button */
-.signin-form button {
+.signin-form input:focus {
+  outline: none;
+  border: 1px solid #f02222;
+  box-shadow: 0 0 0 2px rgba(240, 34, 34, 0.4);
+}
+
+/* Buttons inside form (sign in or reset) */
+.signin-form button[type="submit"] {
   padding: 0.75rem;
   background-color: #f02222;
   color: #1a1a1a;
@@ -69,34 +73,45 @@
   transition: background-color 0.3s;
 }
 
-.signin-form button:hover {
+.signin-form button[type="submit"]:hover {
   background-color: #990000;
 }
 
-.signin-form .error {
-  color: #ff4d4d;
+/* Forgot Password & Cancel buttons */
+.link-button {
+  display: inline-block;
+  margin: 0.5rem auto;
+  background: none;
+  border: none;
+  color: #f02222;
   font-weight: bold;
-  text-align: center;
+  font-size: 1rem;
+  cursor: pointer;
+  text-decoration: underline;
+  transition: color 0.3s;
 }
 
-.signin-form .home-link {
-  color: #ccc;
+.link-button:hover {
+  color: #ff4d4d;
+}
+
+/* Back to home link */
+.home-link {
   display: inline-block;
-  margin-top: 0.5rem;
+  margin: 1rem auto 0;
+  padding-bottom: 2rem;
+  color: #f5f5f5;
   text-decoration: none;
   font-weight: bold;
+  font-size: 1rem;
+  transition: color 0.3s;
 }
 
-.signin-form .home-link:hover {
-  color: #fff;
+.home-link:hover {
+  color: #ff4d4d;
 }
 
-.signin-form input:focus {
-  outline: none;
-  border: 1px solid #f02222; /* red border */
-  box-shadow: 0 0 0 2px rgba(240, 34, 34, 0.4); /* subtle red glow */
-}
-
+/* Bowling alley background section remains the same */
 .bowling-alley {
   position: relative;
   width: 100%;
@@ -105,7 +120,6 @@
   overflow: hidden;
   border-top: 4px solid #000;
   border-bottom: 4px solid #000;
-
   display: flex;
   justify-content: center;
   align-items: center;
