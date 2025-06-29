@@ -273,7 +273,7 @@ const Stats = () => {
                     const lyFppg = lyGames > 0 ? (lyPoints / lyGames).toFixed(2) : "0.00";
 
                     return (
-                      <tr key={index} className={item.team === user?.team?.name ? "highlight" : ""}>
+                      <tr key={index} className={item.team === user?.team?.name ? "highlight-player" : ""}>
                         <td><Link to={`/player/${encodeURIComponent(item.name)}`}>{item.name || "Unknown Player"}</Link></td>
                         <td>{item.league || "N/A"}</td>
                         <td>{item.position || "N/A"}</td>

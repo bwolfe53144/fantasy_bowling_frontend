@@ -1,5 +1,5 @@
 .highlight-player {
-  background-color: #ffff99; /* Light yellow highlight */
+  background-color: #ffff99 !important; /* Light yellow highlight */
   font-weight: bold;
 }
 
