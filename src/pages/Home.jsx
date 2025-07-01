@@ -20,8 +20,8 @@ export default function Home() {
   const { buttonBackground, buttonColor } = getThemeColors(user?.color);
   
   const tableHeaderStyle = {
-    backgroundColor: buttonBackground,
-    color: buttonColor,
+    backgroundColor: buttonColor,
+    color: buttonBackground,
   };
   
   useEffect(() => {
