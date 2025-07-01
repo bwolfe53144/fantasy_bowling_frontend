@@ -7,6 +7,8 @@
 }
 
 .roster-content {
+  display: flex;
+  flex-direction: column;
   max-width: 1000px;      
   margin: 0 auto;        
   padding: 0 1rem;       
@@ -46,8 +48,14 @@
   .drop-button:hover {
     background-color: #d93636;
   }
+
+  .submitLineupButton {
+    margin: 1rem auto 0; 
+    display: block;     
+    width: fit-content; 
+  }
   
-  /* === Responsive Layout: Mobile Devices (max-width: 700px) === */
+  /*Responsive Layout: Mobile Devices */
   @media (max-width: 750px) {
     .pageContainer.regularRosterPage {
       grid-template-columns: 1fr;

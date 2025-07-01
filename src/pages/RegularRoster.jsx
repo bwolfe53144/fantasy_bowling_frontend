@@ -38,8 +38,8 @@ export default function RegularRoster() {
   };
 
   const themeStyle = {
-    backgroundColor: buttonBackground,
-    color: buttonColor,
+    backgroundColor: buttonColor,
+    color: buttonBackground,
   };
 
   useEffect(() => {
