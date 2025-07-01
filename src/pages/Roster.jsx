@@ -34,8 +34,8 @@ export default function Roster() {
   const { backgroundColor, color, buttonBackground, buttonColor } = getThemeColors(user?.color);
 
   const themeStyle = {
-    backgroundColor: buttonBackground,
-    color: buttonColor,
+    backgroundColor: buttonColor,
+    color: buttonBackground,
     border: "none",
     cursor: "pointer",
   };
