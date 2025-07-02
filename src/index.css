@@ -398,16 +398,4 @@ body.menuOpen .navBtn {
   .aboutLink:hover {
     color: #748ffc;
   }
-
-  td, th {
-    border: 1px solid #444;
-  }
-
-  tr:nth-child(even) {
-    background-color: #222;
-  }
-
-  tr:nth-child(odd) {
-    background-color: #1a1a1a;
-  }
 }
