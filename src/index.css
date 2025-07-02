@@ -350,23 +350,28 @@ body.menuOpen .navBtn {
 }
 
 @media (prefers-color-scheme: dark) {
-  body {
-    background-color: #121212;
-    color: #f0f0f0;
-  }
-
-  .pageContainer,
-  .mainPage,
-  .navbar,
-  header,
-  footer {
-    background-color: #121212;
-    color: #f0f0f0;
-  }
-
-  h1, h2, h3, h4, h5, h6,
-  p, span, div, a, li, label {
-    color: #f0f0f0;
+  :root {
+    --text-color: #f0f0f0;
+    --background-color: #121212;
+    --secondary-background: #1e1e1e;
+    --header-footer-bg: #1e1e1e;
+    --link-color: #91a7ff;
+    --link-hover-color: #748ffc;
+    --input-bg: #1e1e1e;
+    --input-text: #f0f0f0;
+    --input-border: #444;
+    --placeholder-color: #aaa;
+    --button-bg: #333;
+    --button-text: #f0f0f0;
+    --button-border: #555;
+    --button-hover-border: #91a7ff;
+    --table-bg: #1e1e1e;
+    --table-text: #f0f0f0;
+    --table-border: #444;
+    --table-even-bg: #222;
+    --table-odd-bg: #1a1a1a;
+    --highlight-row-bg: #444;
+    --highlight-row-text: #ffeb3b;
   }
 
   a {
