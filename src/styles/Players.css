@@ -258,5 +258,18 @@
   }
 }
   
+@media (prefers-color-scheme: dark) {
+  .pageContainer.player-page .playerStatsTable tbody tr:nth-child(odd) {
+    background-color: #1a1a1a;
+  }
 
+  .pageContainer.player-page .playerStatsTable tbody tr:nth-child(even) {
+    background-color: #222;
+  }
+
+  .pageContainer.player-page .playerStatsTable th:first-child,
+  .pageContainer.player-page .playerStatsTable td:first-child {
+    background-color: #222;
+  }
+}
   
