@@ -350,6 +350,19 @@ body.menuOpen .navBtn {
 }
 
 @media (prefers-color-scheme: dark) {
+  body {
+    background-color: #121212;
+    color: #f0f0f0;
+  }
+
+  .pageContainer,
+  .mainPage,
+  header,
+  footer {
+    background-color: #121212;
+    color: #f0f0f0;
+  }
+
   input[type="text"],
   input[type="number"],
   select,
@@ -362,5 +375,11 @@ body.menuOpen .navBtn {
   input::placeholder,
   textarea::placeholder {
     color: #aaa;
+  }
+
+  /* Update buttons if needed */
+  button {
+    background-color: #333;
+    color: #f0f0f0;
   }
 }
