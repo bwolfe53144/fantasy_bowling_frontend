@@ -349,7 +349,7 @@ body.menuOpen .navBtn {
   }
 }
 
-/*@media (prefers-color-scheme: dark) {
+@media (prefers-color-scheme: dark) {
   input[type="text"],
   input[type="number"],
   select,
@@ -363,4 +363,4 @@ body.menuOpen .navBtn {
   textarea::placeholder {
     color: #aaa;
   }
-}*/
+}
