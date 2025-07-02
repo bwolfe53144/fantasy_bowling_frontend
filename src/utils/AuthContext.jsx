@@ -13,10 +13,18 @@ const AuthProvider = ({ children }) => {
   const [loadingPlayers, setLoadingPlayers] = useState(true);
   const [loadingWeekScores, setLoadingWeekScores] = useState(true);
 
+  // 🚨 Central logout function
+  const logout = () => {
+    localStorage.removeItem("token");
+    setUser(null);
+    // Optionally redirect to sign-in page here:
+    window.location.href = "/signin";
+  };
+
   const fetchUser = async () => {
     const token = localStorage.getItem("token");
     if (!token || token === "undefined" || token === "null") {
-      setUser(null);
+      logout();
       setLoadingUser(false);
       return;
     }
@@ -25,7 +33,7 @@ const AuthProvider = ({ children }) => {
       setUser(res.data);
     } catch (error) {
       console.error("Error fetching user", error);
-      setUser(null);
+      logout();
     } finally {
       setLoadingUser(false);
     }
@@ -80,11 +88,6 @@ const AuthProvider = ({ children }) => {
     localStorage.setItem("token", token);
     setLoadingUser(true);
     fetchUser();
-  };
-
-  const logout = () => {
-    localStorage.removeItem("token");
-    setUser(null);
   };
 
   return (
