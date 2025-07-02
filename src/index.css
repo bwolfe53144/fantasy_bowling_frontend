@@ -427,7 +427,6 @@ body.menuOpen .navBtn {
     background-color: #1e1e1e;
   }
 
-  /* Updated table styles */
   table {
     background-color: #1e1e1e;
     color: #f0f0f0;
@@ -447,7 +446,7 @@ body.menuOpen .navBtn {
 
   tr.highlight {
     background-color: #444 !important;
-    color: #ffeb3b !important; /* bright yellow text for contrast */
+    color: #ffeb3b !important;
     font-weight: bold;
   }
 
