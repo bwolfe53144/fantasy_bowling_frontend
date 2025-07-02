@@ -357,10 +357,24 @@ body.menuOpen .navBtn {
 
   .pageContainer,
   .mainPage,
+  .navbar,
   header,
   footer {
     background-color: #121212;
     color: #f0f0f0;
+  }
+
+  h1, h2, h3, h4, h5, h6,
+  p, span, div, a, li, label {
+    color: #f0f0f0;
+  }
+
+  a {
+    color: #91a7ff;
+  }
+
+  a:hover {
+    color: #748ffc;
   }
 
   input[type="text"],
@@ -377,9 +391,86 @@ body.menuOpen .navBtn {
     color: #aaa;
   }
 
-  /* Update buttons if needed */
   button {
     background-color: #333;
+    color: #f0f0f0;
+    border: 1px solid #555;
+  }
+
+  button:hover {
+    border-color: #91a7ff;
+  }
+
+  .footer {
+    background-color: #1e1e1e;
+    color: #f0f0f0;
+  }
+
+  .aboutLink {
+    color: #91a7ff;
+  }
+
+  .aboutLink:hover {
+    color: #748ffc;
+  }
+
+  .navbar {
+    background-color: #1e1e1e;
+  }
+
+  .mainPage {
+    background-color: #1e1e1e;
+  }
+
+  /* Updated table styles */
+  table {
+    background-color: #1e1e1e;
+    color: #f0f0f0;
+  }
+
+  td, th {
+    border: 1px solid #444;
+  }
+
+  tr:nth-child(even) {
+    background-color: #222;
+  }
+
+  tr:nth-child(odd) {
+    background-color: #1a1a1a;
+  }
+
+  tr.highlight {
+    background-color: #444 !important;
+    color: #ffeb3b !important; /* bright yellow text for contrast */
+    font-weight: bold;
+  }
+
+  .claimed-label {
+    background-color: #555;
+    color: #fff;
+  }
+
+  .highlight-player {
+    background-color: #333 !important;
+    color: #ff0 !important;
+  }
+
+  .statsFilterContainer {
+    background-color: #1e1e1e;
+    border: 1px solid #333;
+  }
+
+  .navBtn {
+    background-color: transparent;
+    color: #f0f0f0;
+  }
+
+  .navBtn:hover {
+    background-color: #222;
+  }
+
+  .hamburger {
     color: #f0f0f0;
   }
 }
