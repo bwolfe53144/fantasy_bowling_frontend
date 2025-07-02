@@ -175,15 +175,20 @@ export default function Roster() {
     window.location.reload();
   };
 
-  if (checkingRegularRoster) return null;
-
   if (loading || (players === null && user?.team)) {
     return <LoadingScreen />;
   }
 
-  if (!user || !["ADMIN", "MANAGER", "SUPERADMIN"].includes(user.role)) {
-    return <Navigate to="/" replace />;
+  if (!user) {
+    console.log("🚨 Redirecting because no user or bad role", user);
+    return <Navigate to="/signin" replace />;
   }
+  
+  if (!["ADMIN", "MANAGER", "SUPERADMIN"].includes(user.role)) {
+    return <Navigate to="/signin" replace />;
+  }
+
+  if (checkingRegularRoster) return null;
 
   return (
     <div className="pageContainer rosterpage">

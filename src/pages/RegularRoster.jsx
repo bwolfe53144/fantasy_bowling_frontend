@@ -170,12 +170,17 @@ export default function RegularRoster() {
     }
   };
 
-  if (loading || !teamWithScores || players.length === 0) {
+  if (loading) {
     return <LoadingScreen />;
   }
-
-  if (!user || !["ADMIN", "MANAGER", "SUPERADMIN"].includes(user.role)) {
-    return <Navigate to="/" replace />;
+  
+  if (!user) {
+    console.log("🚨 Redirecting because no user or bad role", user);
+    return <Navigate to="/signin" replace />;
+  }
+  
+  if (players === null && user.team) {
+    return <LoadingScreen />;
   }
 
   return (
