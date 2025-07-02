@@ -160,7 +160,7 @@ const Forum = () => {
     starredMessages.some((msg) => msg.id === messageId);
 
   if (loading) return <LoadingScreen />;
-  if (!user) return <Navigate to="/" replace />;
+  if (!user) return <Navigate to="/signin" replace />;
 
   return (
     <div className="pageContainer forumPage">

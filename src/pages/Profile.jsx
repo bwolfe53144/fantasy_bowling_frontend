@@ -16,10 +16,7 @@ import { calculateFantasyPoints } from "../utils/FantasyPoints.js";
 import "../styles/Profile.css";
 
 const Profile = () => {
-  // Context
   const { user, loading, team } = useContext(AuthContext);
-
-  // State
   const [myClaims, setMyClaims] = useState([]);
   const [allClaims, setAllClaims] = useState([]);
   const [recentMatches, setRecentMatches] = useState([]);
@@ -170,7 +167,7 @@ const Profile = () => {
   }, [recentMatches, completedWeeks]);
 
   if (loading) return <LoadingScreen />;
-  if (!user) return <Navigate to="/" replace />;
+  if (!user) return <Navigate to="/signin" replace />;
 
   return (
     <div className="pageContainer profile">
