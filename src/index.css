@@ -349,7 +349,7 @@ body.menuOpen .navBtn {
   }
 }
 
-/*@media (prefers-color-scheme: dark) {
+@media (prefers-color-scheme: dark) {
   :root {
     --text-color: #f0f0f0;
     --background-color: #121212;
@@ -477,4 +477,4 @@ body.menuOpen .navBtn {
   .hamburger {
     color: #f0f0f0;
   }
-}*/
+}
