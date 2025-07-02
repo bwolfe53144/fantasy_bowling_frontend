@@ -350,7 +350,7 @@ body.menuOpen .navBtn {
 }
 
 @media (prefers-color-scheme: dark) {
-  :root {
+  body, html {
     color: white;
     background-color: black;
   }
