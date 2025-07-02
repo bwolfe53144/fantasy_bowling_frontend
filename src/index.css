@@ -389,7 +389,6 @@ body.menuOpen .navBtn {
 
   .footer {
     background-color: #1e1e1e;
-    color: #f0f0f0;
   }
 
   .aboutLink {
@@ -398,19 +397,6 @@ body.menuOpen .navBtn {
 
   .aboutLink:hover {
     color: #748ffc;
-  }
-
-  .navbar {
-    background-color: #1e1e1e;
-  }
-
-  .mainPage {
-    background-color: #1e1e1e;
-  }
-
-  table {
-    background-color: #1e1e1e;
-    color: #f0f0f0;
   }
 
   td, th {
@@ -423,39 +409,5 @@ body.menuOpen .navBtn {
 
   tr:nth-child(odd) {
     background-color: #1a1a1a;
-  }
-
-  tr.highlight {
-    background-color: #444 !important;
-    color: #ffeb3b !important;
-    font-weight: bold;
-  }
-
-  .claimed-label {
-    background-color: #555;
-    color: #fff;
-  }
-
-  .highlight-player {
-    background-color: #333 !important;
-    color: #ff0 !important;
-  }
-
-  .statsFilterContainer {
-    background-color: #1e1e1e;
-    border: 1px solid #333;
-  }
-
-  .navBtn {
-    background-color: transparent;
-    color: #f0f0f0;
-  }
-
-  .navBtn:hover {
-    background-color: #222;
-  }
-
-  .hamburger {
-    color: #f0f0f0;
   }
 }
