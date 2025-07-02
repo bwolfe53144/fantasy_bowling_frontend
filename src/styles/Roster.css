@@ -22,6 +22,7 @@
 .arrowButton {
   border: 0.5px solid #ccc;
   background: white;
+  color: black;
   height: 36px;
   width: 36px;
   cursor: pointer;
