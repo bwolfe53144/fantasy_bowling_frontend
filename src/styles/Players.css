@@ -118,7 +118,7 @@
 }
 
 .horizontalScrollArea {
-  max-height: 80vh;
+  max-height: 70vh;
   overflow-y: auto;
   overflow-x: auto;
 }
