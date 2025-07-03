@@ -180,8 +180,8 @@ tr.highlight {
     color: black;
   }
 
-  .standingsContainer tr.highlight .teamLink {
-    color: #004D40; 
+  .teamLink {
+    color: #003366; 
     cursor: pointer; 
   }
 }
