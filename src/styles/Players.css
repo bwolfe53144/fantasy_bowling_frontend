@@ -166,8 +166,6 @@
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
 }
 
-
-
 /* Responsive */
 @media (max-width: 975px) {
   .pageContainer.player-page {
@@ -258,4 +256,12 @@
   }
 }
   
-  
+@media (prefers-color-scheme: dark) {
+  .playerStatsTable tbody tr {
+    background-color: black; 
+  }
+
+  .playerStatsTable tbody tr:nth-child(even) {
+    background-color: #383535;
+  }
+}
