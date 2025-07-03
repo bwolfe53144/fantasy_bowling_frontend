@@ -162,3 +162,9 @@ tr.highlight {
   }
 }
 
+@media (prefers-color-scheme: dark) {
+  .standingsContainer {
+    background-color: #1e1e1e;
+  }
+}
+
