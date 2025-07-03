@@ -181,8 +181,7 @@ tr.highlight {
   }
 
   .standingsContainer tr.highlight .teamLink {
-    color: #003366; 
-    text-decoration: underline; 
+    color: #001F4D; 
     cursor: pointer; 
   }
 }
