@@ -180,9 +180,10 @@ tr.highlight {
     color: black;
   }
 
-  .teamLink {
-    color: black !important; 
-    cursor: pointer; 
+  .standingsContainer tr.highlight .teamLink a {
+    color: black !important;
+    cursor: pointer;
+    text-decoration: underline;
   }
 }
 
