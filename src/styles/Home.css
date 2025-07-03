@@ -168,7 +168,7 @@ tr.highlight {
   }
   
   .standingsContainer tr:nth-child(even) {
-    background-color: #1a1a1a;
+    background-color: #383535;
   }
 
   .standingsContainer tr.highlight {
