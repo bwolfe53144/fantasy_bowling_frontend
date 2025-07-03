@@ -179,11 +179,17 @@ tr.highlight {
     background-color: #bfae30;
     color: black;
   }
-
+  
+  /* Specifically style the link inside the highlighted row */
   .standingsContainer tr.highlight .teamLink a {
-    color: black !important;
+    color: #3a2e00; /* darker, readable color on gold */
+    text-decoration: underline; /* so it looks clickable */
     cursor: pointer;
-    text-decoration: underline;
+  }
+  
+  /* Optional: hover effect for the link */
+  .standingsContainer tr.highlight .teamLink a:hover {
+    color: #5c4700; /* a bit lighter on hover */
   }
 }
 
