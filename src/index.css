@@ -398,4 +398,8 @@ body.menuOpen .navBtn {
   .aboutLink:hover {
     color: #748ffc;
   }
+
+  .mainPage {
+    background-color: black;
+  }
 }
