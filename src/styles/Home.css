@@ -167,7 +167,7 @@ tr.highlight {
     background-color: #1e1e1e;
   }
   
-  .standingsContainer tr:nth-child(odd) {
+  .standingsContainer tr:nth-child(even) {
     background-color: #1a1a1a;
   }
 
