@@ -179,5 +179,11 @@ tr.highlight {
     background-color: #bfae30;
     color: black;
   }
+
+  .standingsContainer tr.highlight .teamLink {
+    color: #003366; 
+    text-decoration: underline; 
+    cursor: pointer; 
+  }
 }
 
