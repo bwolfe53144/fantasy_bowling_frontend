@@ -174,5 +174,10 @@ tr.highlight {
   .standingsContainer tr:nth-child(odd) {
     background-color: #000;
   }
+
+  tr.highlight {
+    background-color: #bfae30; /* muted gold */
+    color: black;
+  }
 }
 
