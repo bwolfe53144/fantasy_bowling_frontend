@@ -101,3 +101,37 @@
     color: #555;
     text-align: center;
   }
+
+  @media (prefers-color-scheme: dark) {
+    .matchListContainer {
+      background-color: #121212;
+      color: #ddd;
+    }
+    
+    .matchupCard {
+      background-color: #1e1e1e;
+      border: 1px solid #444;
+      color: #eee;
+    }
+    
+    .matchupLink {
+      color: inherit; /* keep text color from .matchupCard */
+    }
+    
+    .vs {
+      color: #bbb;
+    }
+    
+    .matchListContainer .teamScore,
+    .matchListContainer .matchLabel {
+      color: #aaa;
+    }
+    
+    .matchListContainer .teamRecord {
+      color: #ccc;
+    }
+    
+    .matchListContainer .avatar {
+      border: 1px solid #555;
+    }
+  }
