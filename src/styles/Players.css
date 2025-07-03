@@ -264,4 +264,14 @@
   .playerStatsTable tbody tr:nth-child(even) {
     background-color: #383535 !important;
   }
+
+  .highlight-player {
+    background-color: #bfae30 !important; /* Yellowish but darker contrast */
+    color: black !important;
+  }
+
+  .claimed-by-other {
+    background-color: #a3872c !important; /* Slightly darker yellow tone */
+    color: black !important;
+  }
 }
