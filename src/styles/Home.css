@@ -175,8 +175,8 @@ tr.highlight {
     background-color: #000;
   }
 
-  tr.highlight {
-    background-color: #bfae30; /* muted gold */
+  .standingsContainer tr.highlight {
+    background-color: #bfae30;
     color: black;
   }
 }
