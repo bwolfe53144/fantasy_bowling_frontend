@@ -163,13 +163,11 @@ tr.highlight {
 }
 
 @media (prefers-color-scheme: dark) {
-  .standingsContainer tr:nth-child(even) {
-    background-color: #1a1a1a;
+  .standingsContainer {
+    background-color: #1e1e1e;
   }
+  
 
-  .standingsContainer tr:nth-child(odd) {
-    background-color: #000;
-  }
 
   .standingsContainer tr.highlight {
     background-color: #bfae30;
