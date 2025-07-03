@@ -257,11 +257,11 @@
 }
   
 @media (prefers-color-scheme: dark) {
-  .playerStatsTable tbody tr {
-    background-color: black; 
+  .playerStatsTable tbody tr:nth-child(odd) {
+    background-color: black !important;
   }
 
   .playerStatsTable tbody tr:nth-child(even) {
-    background-color: #383535;
+    background-color: #383535 !important;
   }
 }
