@@ -193,3 +193,13 @@
     font-size: 2rem;
   }
 }
+
+@media (prefers-color-scheme: dark) {
+  .bowlerTable tr:nth-child(even) {
+    background-color: #383535;
+  }
+
+  .bowlerTable td {
+    color: white;
+  }
+}
