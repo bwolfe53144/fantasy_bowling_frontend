@@ -270,4 +270,9 @@
     background-color: #bfae30 !important;
     color: black !important;
   }
+
+  .playerStatsTable tr.highlight-player td a {
+    color: #26418f !important; 
+    cursor: pointer;
+  }
 }
