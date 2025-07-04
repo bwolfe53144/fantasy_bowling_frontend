@@ -355,6 +355,10 @@ body.menuOpen .navBtn {
     background-color: black;
   }
 
+  label {
+    color: white;
+  }
+
   a {
     color: #91a7ff;
   }
