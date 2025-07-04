@@ -79,7 +79,7 @@
   background-color: white;
   text-align: center;
   cursor: pointer;
-  flex: 1;         
+  flex: 1 1 auto;   
   min-width: 120px; 
 }
 
