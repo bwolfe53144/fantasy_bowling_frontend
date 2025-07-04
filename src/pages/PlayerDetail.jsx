@@ -152,7 +152,7 @@ const PlayerDetail = () => {
         {/* League Filter */}
         {availableLeagues.length > 1 && (
           <div>
-            <label>Filter by League:</label>
+            <label>Filter by League </label>
             <select
               value={selectedLeague}
               onChange={(e) => setSelectedLeague(e.target.value)}
