@@ -30,6 +30,7 @@ export default function EditInfo() {
   const buttonStyle = {
     backgroundColor: buttonBackground,
     color: buttonColor,
+    marginTop: "1rem",
     maxWidth: "200px",
     minHeight: "50px",
     textAllign: "center",
