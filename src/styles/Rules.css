@@ -54,7 +54,7 @@ body.rules-bg {
   align-items: center;
   gap: 1rem;
   padding: 1rem;
-  background-color: transparent !important; 
+  background-color: rgba(0, 0, 0, 0.5) !important; 
   color: white;
   z-index: 2; /* above the background */
 }
@@ -93,6 +93,7 @@ html.rules-bg::before {
   .footer.rules {
     display: flex !important;
     position: relative !important;
+    background-color: transparent !important; 
     width: 100%;
     height: auto;
     min-height: 60px;
