@@ -1,11 +1,21 @@
-import React from "react";
+import React, { useContext } from "react";
+import { AuthContext } from "../src/utils/AuthContext";
+import { getThemeColors } from "../src/utils/themeColors";
 
 const StatsTable = ({ stats, avgWithHandicap, isSinglePlayer }) => {
+  const { user } = useContext(AuthContext);
+  const { buttonBackground, buttonColor } = getThemeColors(user?.color);
+
   if (!stats) return null;
+
+  const tableHeaderStyle = {
+    backgroundColor: buttonColor,
+    color: buttonBackground,
+  };
 
   return (
     <table>
-      <thead>
+      <thead style={tableHeaderStyle}>
         <tr>
           <th>Stat</th>
           <th>Value</th>
