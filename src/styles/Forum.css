@@ -184,4 +184,63 @@ button:disabled {
   }
 }
 
+@media (prefers-color-scheme: dark) {
+  .forumPage .mainPage {
+    background-color: #000;
+  }
 
+  .forumPage .messageContainer,
+  .forumPage .starredMessages {
+    background-color: #1e1e1e;
+    border: 1px solid #333;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.6);
+  }
+
+  .forumPage .messageItem,
+  .forumPage .starredMessages li {
+    background-color: #2a2a2a;
+    border-color: #444;
+    color: #f0f0f0;
+  }
+
+  .forumPage .messageItem h3,
+  .forumPage .starredMessages h3,
+  .forumPage .messageItem p,
+  .forumPage .starredMessages p {
+    color: #ddd;
+  }
+
+  .forumPage .authorName {
+    color: #bbb;
+  }
+
+  .forumPage .starredMessages {
+    background-color: #2a2a2a;
+  }
+
+  .star-button {
+    color: #bbb;
+  }
+
+  .star-button:hover,
+  .star-button.starred {
+    color: gold;
+  }
+
+  .postButton,
+  .messageButton {
+    background-color: #333;
+    color: #f0f0f0;
+    border: 1px solid #555;
+  }
+
+  .postButton:hover,
+  .messageButton:hover {
+    border-color: gold;
+  }
+
+  button:disabled {
+    background-color: #555;
+    color: #999;
+  }
+}
