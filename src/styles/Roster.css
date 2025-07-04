@@ -1,10 +1,10 @@
 .pageContainer.rosterpage h1 {
-  font-size: 1.5rem; /* Smaller title for roster page */
+  font-size: 1.5rem;
   margin-bottom: 1rem;
 }
 
 .pageContainer.rosterpage .mainPage {
-  padding-left: 1rem; /* Less padding on smaller screens */
+  padding-left: 1rem;
 }
 
 .rosterTableWrapper {
@@ -19,6 +19,7 @@
   border-collapse: collapse;
 }
 
+/*Arrow Buttons*/
 .arrowButton {
   border: 0.5px solid #ccc;
   background: white;
@@ -34,6 +35,7 @@
   padding: 0;
   margin: 0;
   transition: background-color 0.2s ease;
+  flex: 0 0 36px; /* fixed width so containers are equal */
 }
 
 .arrowButton:first-child {
@@ -52,6 +54,7 @@
   background-color: #f9f9f9;
 }
 
+/*Week Selector*/
 .weekSelectorContainer {
   display: flex;
   align-items: center;
@@ -63,6 +66,7 @@
   border-radius: 4px;
   overflow: hidden;
   height: 36px;
+  width: 100%;
 }
 
 .weekSelectorContainer select {
@@ -73,11 +77,13 @@
   font-size: 1rem;
   appearance: none;
   background-color: white;
-  min-width: 120px;
   text-align: center;
   cursor: pointer;
+  flex: 1;         
+  min-width: 120px; 
 }
 
+/*Buttons*/
 .rosterButton {
   margin-left: 2rem;
   max-width: 200px;
@@ -90,8 +96,8 @@
 .createTeamForm {
   display: flex;
   flex-direction: column;
-  align-items: center; 
-  gap: 1rem; 
+  align-items: center;
+  gap: 1rem;
   margin-top: 1.5rem;
 }
 
@@ -102,11 +108,10 @@
   border: none;
   border-radius: 10px;
   cursor: pointer;
-  display: inline-block;    
+  display: block;
   margin-top: 1.5rem;
   margin-left: auto;
   margin-right: auto;
-  display: block;
 }
 
 .teamNameInput {
@@ -126,6 +131,7 @@
   color: #777;
 }
 
+/* Media Queries*/
 @media (max-width: 940px) {
   .pageContainer.rosterpage {
     grid-template-columns: 1fr;
