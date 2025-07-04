@@ -250,4 +250,13 @@ label {
   .EmailSubscription button:hover {
     background-color: #555;
   }
+
+  .cancelButton {
+    background-color: #444;
+    color: #f0f0f0;
+  }
+
+  .cancelButton:hover {
+    background-color: #666;
+  }
 }
