@@ -1,12 +1,24 @@
 import { Link } from "react-router-dom";
+import { useContext } from "react";
+import { AuthContext } from "../src/utils/AuthContext.jsx";
+import { getThemeColors } from "../src/utils/themeColors.js";
 
 export const MatchupTable = ({ matches, teamName, completedWeeks, currentWeek }) => {
+  const { user } = useContext(AuthContext);
+
+  const { backgroundColor, color } = getThemeColors(user?.color);
+
   return (
     <div>
       <h2>Recent Matchups</h2>
       <div className="horizontalScrollArea">
         <table className="matchupTable">
-          <thead>
+          <thead
+            style={{
+              backgroundColor,
+              color,
+            }}
+          >
             <tr>
               <th>Week</th>
               <th>Opponent</th>
