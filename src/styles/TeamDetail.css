@@ -172,5 +172,9 @@
     background-color: #FFD700 !important; /* gold highlight */
     color: #000;
   }
+
+  .match-row.current-week a {
+    color: #26418f !important;
+  }
 }
   
