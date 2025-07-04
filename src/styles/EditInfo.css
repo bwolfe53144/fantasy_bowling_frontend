@@ -5,6 +5,7 @@
   border-radius: 8px;
   box-shadow: 0 6px 15px rgba(0,0,0,0.1);
   gap: 0.5rem;
+  padding: 2rem;
 }
 
 .mainPage.editInfo h2 {
@@ -81,6 +82,11 @@ label {
 
 .AvatarUploader button:hover:not(:disabled) {
   background-color: #1e5bb8;
+}
+
+/* Fix margin between file input and button */
+.AvatarUploader input[type="file"] {
+  margin-bottom: 1rem;
 }
 
 /* ===== Email Subscription ===== */
@@ -193,5 +199,55 @@ label {
 
   label {
     font-size: 0.95rem;
+  }
+}
+
+/*  Dark theme styles */
+@media (prefers-color-scheme: dark) {
+  .mainPage.editInfo {
+    background: #1e1e1e;
+    color: #f0f0f0;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+  }
+
+  .mainPage.editInfo h2 {
+    color: #f0f0f0;
+  }
+
+  label {
+    color: #ddd;
+  }
+
+  .AvatarUploader img {
+    border: 2px solid #555;
+  }
+
+  .AvatarUploader button {
+    background-color: #333;
+    color: #f0f0f0;
+  }
+
+  .AvatarUploader button:hover:not(:disabled) {
+    background-color: #555;
+  }
+
+  .EmailSubscription input[type="email"] {
+    background-color: #2a2a2a;
+    color: #f0f0f0;
+    border: 1px solid #555;
+  }
+
+  .EmailSubscription input[type="email"]:focus {
+    border-color: #91a7ff;
+    box-shadow: 0 0 4px #91a7ffaa;
+  }
+
+  .EmailSubscription button {
+    background-color: #333;
+    color: #f0f0f0;
+  }
+
+  .EmailSubscription button:hover {
+    background-color: #555;
   }
 }
