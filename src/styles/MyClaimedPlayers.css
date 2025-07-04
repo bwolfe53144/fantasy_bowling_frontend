@@ -27,9 +27,7 @@
   top: 0.8rem;
 }
 
-/* ============================= */
-/* Buttons                       */
-/* ============================= */
+/* Buttons*/
 .remove-claim-button {
   background-color: #c44540;
   border: none;
@@ -75,9 +73,7 @@
   text-align: center;
 }
 
-/* ============================= */
-/* Main content container        */
-/* ============================= */
+/* Main content container*/
 .mainPage.my-claimed-players {
   position: relative;
   z-index: 1;
@@ -90,9 +86,7 @@
   color: white;
 }
 
-/* ============================= */
-/* Fixed background              */
-/* ============================= */
+/* Fixed background*/
 html.claimed-bg {
   position: relative;
   min-height: 100%;
@@ -135,9 +129,7 @@ body.claimed-bg .footer {
   z-index: 2;
 }
 
-/* ============================= */
-/* Mobile adjustments            */
-/* ============================= */
+/* Mobile adjustments */
 @media (max-width: 500px) {
   body.claimed-bg .footer {
     display: flex !important;
