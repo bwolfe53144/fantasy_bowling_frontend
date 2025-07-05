@@ -195,10 +195,20 @@ export default function Roster() {
       <Header onToggleMenu={setIsMenuOpen} isMenuOpen={isMenuOpen} />
       <Navbar />
       <div className="mainPage">
-        <h1 className="pageTitle">
-          Roster{user.team ? ` - Week ${currentWeek}` : ""}
-        </h1>
-
+        <div className="rosterTop">
+          <h1 className="pageTitle">
+            Roster{user.team ? ` - Week ${currentWeek}` : ""}
+          </h1>
+          {players.length > 0 && (
+                <button
+                  style={buttonStyle}
+                  className="rosterButton"
+                  onClick={() => navigate("/regular-roster")}
+                >
+                  Regular Roster
+                </button>
+              )}
+        </div>
         {!user.team && (
           <>
             {!showCreateTeamForm ? (
@@ -226,7 +236,7 @@ export default function Roster() {
 
         {user.team && (
           <>
-              <div className="weekSelectorContainer">
+            <div className="weekSelectorContainer">
             <WeekSelector
               weekNumber={currentWeek?.toString()}
               totalWeeks={totalWeeks}
@@ -236,16 +246,6 @@ export default function Roster() {
               onNextWeek={goToNextWeek}
               buttonStyle={buttonStyle}
             />
-
-            {players.length > 0 && (
-              <button
-                style={buttonStyle}
-                className="rosterButton"
-                onClick={() => navigate("/regular-roster")}
-              >
-                Regular Roster
-              </button>
-            )}
             </div>
             <PlayerRosterGrid
               players={players}

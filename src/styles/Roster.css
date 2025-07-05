@@ -1,6 +1,5 @@
 .pageContainer.rosterpage h1 {
   font-size: 1.5rem;
-  margin-bottom: 1rem;
 }
 
 .pageContainer.rosterpage .mainPage {
@@ -66,7 +65,7 @@
   border-radius: 4px;
   overflow: hidden;
   height: 36px;
-  width: 100%;
+  width: 240px;
 }
 
 .weekSelectorContainer select {
@@ -85,7 +84,6 @@
 
 /*Buttons*/
 .rosterButton {
-  margin-left: 2rem;
   max-width: 200px;
   padding: 0.7rem 1rem;
   border-radius: 10px;
@@ -129,6 +127,19 @@
   text-align: center;
   font-size: 1.2rem;
   color: #777;
+}
+
+.rosterTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; 
+  flex-wrap: wrap; 
+  gap: 1rem; 
+  margin-bottom: 1rem; 
+}
+
+.rosterTop .pageTitle {
+  margin: 0; 
 }
 
 /* Media Queries*/
@@ -182,6 +193,10 @@
     padding: 0.7rem 0.7rem;
     font-size: 0.8rem;
   }
+
+  .rosterTop {
+    justify-content: center;
+  }
 }
 
 @media (max-width: 400px) {
@@ -192,7 +207,7 @@
   }
 }
 
-@media (prefers-color-scheme: dark) {
+ @media (prefers-color-scheme: dark) {
   .selectWeekWrapper select {
     color: black;
   }
