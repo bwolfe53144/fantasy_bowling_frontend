@@ -8,8 +8,8 @@ const themeColors = {
       extraBackground: "#fff9c4"
     },
     dark: {
-      backgroundColor: "#203731",
-      color: "#ffb612",
+      backgroundColor: "#ffb612",
+      color: "#203731",
       buttonBackground: "#ffb612",
       buttonColor: "#203731",
       extraBackground: "#000000"
