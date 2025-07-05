@@ -41,8 +41,8 @@ export default function Roster() {
   };
 
   const buttonStyle = {
-    buttonBackground,
-    buttonColor,
+    backgroundColor: buttonBackground,
+    color: buttonColor,
   };
 
   useEffect(() => {
