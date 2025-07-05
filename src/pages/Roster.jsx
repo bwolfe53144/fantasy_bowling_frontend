@@ -34,15 +34,15 @@ export default function Roster() {
   const { backgroundColor, color, buttonBackground, buttonColor } = getThemeColors(user?.color);
 
   const themeStyle = {
-    backgroundColor: buttonColor,
-    color: buttonBackground,
+    backgroundColor,
+    color,
     border: "none",
     cursor: "pointer",
   };
 
   const buttonStyle = {
-    backgroundColor,
-    color,
+    buttonBackground,
+    buttonColor,
   };
 
   useEffect(() => {
