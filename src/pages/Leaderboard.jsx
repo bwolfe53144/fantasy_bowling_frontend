@@ -1,4 +1,4 @@
-import { useContext, useEffect, useMemo, useState } from "react";
+import { useContext, useEffect, useMemo, useState, useRef } from "react";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../utils/AuthContext";
 import { calculateFantasyPoints } from "../utils/FantasyPoints";
@@ -8,28 +8,38 @@ import Header from "../../components/Header";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 import LoadingScreen from "../../components/LoadingScreen";
-import '../styles/Leaderboard.css';
+import "../styles/Leaderboard.css";
 
 const Leaderboard = () => {
   const { user, players, loading } = useContext(AuthContext);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [startWeek, setStartWeek] = useState(1);
+  const [selectedLeagues, setSelectedLeagues] = useState([]);
+  const [leagueDropdownOpen, setLeagueDropdownOpen] = useState(false);
+  const leagueDropdownRef = useRef(null);
 
-  const { backgroundColor, color } = getThemeColors(user?.color);
+  const { backgroundColor, color, buttonBackground, buttonColor } = getThemeColors(user?.color);
   const tableHeaderStyle = { backgroundColor, color };
+  const buttonStyle = { backgroundColor: buttonBackground, color: buttonColor };
 
   useEffect(() => {
     document.body.classList.toggle("menuOpen", isMenuOpen);
     return () => document.body.classList.remove("menuOpen");
   }, [isMenuOpen]);
 
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (leagueDropdownRef.current && !leagueDropdownRef.current.contains(event.target)) {
+        setLeagueDropdownOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
   const maxAvailableWeek = useMemo(() => {
     if (!players) return 1;
-    return Math.max(
-      ...players.flatMap(p =>
-        (p.weekScores ?? []).map(ws => ws.week)
-      )
-    );
+    return Math.max(...players.flatMap(p => (p.weekScores ?? []).map(ws => ws.week)));
   }, [players]);
 
   const [endWeek, setEndWeek] = useState(() => maxAvailableWeek || 1);
@@ -54,10 +64,27 @@ const Leaderboard = () => {
     }
   }, [startWeek]);
 
-  const allPlayers = useMemo(() => {
-    if (!players) return [];
+  const allLeagues = useMemo(() => {
+    const leagues = players ? Array.from(new Set(players.map((p) => p.league).filter(Boolean))) : [];
+    return leagues.sort();
+  }, [players]);
 
-    return players.map((player) => {
+  const toggleLeague = (league) => {
+    setSelectedLeagues((prev) =>
+      prev.includes(league) ? prev.filter((l) => l !== league) : [...prev, league]
+    );
+  };
+
+  const filteredPlayers = useMemo(() => {
+    if (!players) return [];
+    if (selectedLeagues.length === 0) return players;
+    return players.filter((p) => selectedLeagues.includes(p.league));
+  }, [players, selectedLeagues]);
+
+  const allPlayers = useMemo(() => {
+    if (!filteredPlayers) return [];
+
+    return filteredPlayers.map((player) => {
       const weekScores = (player.weekScores ?? []).filter(
         (ws) => ws.week >= startWeek && ws.week <= endWeek
       );
@@ -103,7 +130,7 @@ const Leaderboard = () => {
         league: player.league ?? "",
       };
     });
-  }, [players, startWeek, endWeek]);
+  }, [filteredPlayers, startWeek, endWeek]);
 
   const topBy = (key, label, filterFn = () => true, valueLabel = "Value") => {
     const filtered = allPlayers.filter(filterFn);
@@ -155,6 +182,43 @@ const Leaderboard = () => {
       <Navbar />
       <div className="mainPage">
         <h1>Leaderboard</h1>
+
+        <div className="filterItem leagueItem" ref={leagueDropdownRef}>
+          <label>Leagues:</label>
+          <div
+            className="customDropdown"
+            onClick={() => setLeagueDropdownOpen(!leagueDropdownOpen)}
+          >
+            <span title={selectedLeagues.length > 0 ? selectedLeagues.join(", ") : "All"}>
+              {selectedLeagues.length === 0
+                ? "All"
+                : (() => {
+                    const preview = selectedLeagues.slice(0, 2).map(name =>
+                      name.length > 10 ? name.slice(0, 7) + "..." : name
+                    );
+                    const moreCount = selectedLeagues.length - preview.length;
+                    return preview.join(", ") + (moreCount > 0 ? ` +${moreCount} more` : "");
+                  })()}
+            </span>
+            <div className={`dropdownMenu ${leagueDropdownOpen ? "open" : ""}`}>
+              {allLeagues.map((league, idx) => {
+                const isSelected = selectedLeagues.includes(league);
+                return (
+                  <div
+                    key={idx}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleLeague(league);
+                    }}
+                    className={`dropdownItem ${isSelected ? "selected" : ""}`}
+                  >
+                    {league}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
 
         <div className="weekRangeContainer">
           <label htmlFor="startWeek">
