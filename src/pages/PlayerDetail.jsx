@@ -167,23 +167,27 @@ const PlayerDetail = () => {
         )}
         {/* Week Filters */}
         <div className="week-filters">
-          <label>Start Week:</label>
-          <input
-            type="number"
-            min="1"
-            max={maxWeek}
-            value={startWeek}
-            onChange={handleStartWeekChange}
-          />
-          <label>End Week:</label>
-          <input
-            type="number"
-            min="1"
-            max={maxWeek}
-            value={endWeek}
-            onChange={handleEndWeekChange}
-          />
-        </div>
+  <label>
+    Start Week:
+    <input
+      type="number"
+      min="1"
+      max={maxWeek}
+      value={startWeek}
+      onChange={handleStartWeekChange}
+    />
+  </label>
+  <label>
+    End Week:
+    <input
+      type="number"
+      min="1"
+      max={maxWeek}
+      value={endWeek}
+      onChange={handleEndWeekChange}
+    />
+  </label>
+</div>
         {/* Lane Average Chart */}
         <div>
           <button style={buttonStyle} onClick={() => setShowLaneChart(!showLaneChart)}>
