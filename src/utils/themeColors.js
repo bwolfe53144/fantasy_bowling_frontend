@@ -36,8 +36,8 @@ const themeColors = {
       extraBackground: "#fff9c4"
     },
     dark: {
-      backgroundColor: "#0a2351",
-      color: "#ffc52f",
+      backgroundColor: "#ffc52f",
+      color: "#0a2351",
       extraBackground: "#000000"
     }
   },
