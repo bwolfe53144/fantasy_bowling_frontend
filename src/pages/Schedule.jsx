@@ -25,11 +25,6 @@ export default function Schedule() {
   const buttonStyle = {
     backgroundColor: buttonBackground,
     color: buttonColor,
-    width: "170px",
-    minHeight: "50px",
-    textAllign: "center",
-    borderRadius: "12px",
-    margin: "1rem 1.1rem",
   };
 
   useEffect(() => {
@@ -139,13 +134,13 @@ export default function Schedule() {
         </div>
 
         <div>
-          <button style={buttonStyle}
+          <button className="scheduleButton" style={buttonStyle}
             onClick={() => navigate(`/schedule/${allWeeks[currentIndex - 1]}`)}
             disabled={currentIndex === 0}
           >
             ← Previous Week
           </button>
-          <button style={buttonStyle}
+          <button className="scheduleButton" style={buttonStyle}
             onClick={() => navigate(`/schedule/${allWeeks[currentIndex + 1]}`)}
             disabled={currentIndex === allWeeks.length - 1}
           >

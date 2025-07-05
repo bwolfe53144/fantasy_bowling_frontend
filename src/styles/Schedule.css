@@ -7,6 +7,13 @@
     padding-bottom: 0.5rem;
   }
 
+  .scheduleButton {
+    min-height: 50px;
+    text-align: center;
+    border-radius: 12px;
+    margin: 1rem 1.1rem;
+  }
+
   @media (max-width: 850px) {
     .pageContainer.schedule {
       grid-template-columns: 1fr;
@@ -62,6 +69,11 @@
   @media (max-width: 500px) {
     .matchupLink {
       gap: 0.25rem; 
+    }
+
+    .scheduleButton {
+      font-size: .8rem;
+      padding: .5rem .6rem;
     }
 
     .vs {
