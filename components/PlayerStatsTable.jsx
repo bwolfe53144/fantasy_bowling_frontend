@@ -11,11 +11,6 @@ export default function PlayerStatsTable({ players, isSinglePlayerPage = false }
   const [selectedWeek, setSelectedWeek] = useState(null);
   const { buttonBackground, buttonColor } = getThemeColors(user?.color);
   
-  const tableHeaderStyle = {
-    backgroundColor: buttonColor,
-    color: buttonBackground,
-  };
-
   const getBaseName = (name) => name.split(" (")[0];
   const allSameName = players.every(
     (p) => getBaseName(p.name) === getBaseName(players[0].name)
@@ -37,7 +32,13 @@ export default function PlayerStatsTable({ players, isSinglePlayerPage = false }
   }
 
   return (
-    <div className="playerStatsTable">
+    <div
+      className="playerStatsTable"
+      style={{
+        "--header-bg": buttonColor,
+        "--header-color": buttonBackground,
+      }}
+    >
       <label htmlFor="weekSelect">Select Week:</label>
       <select
         className="weekSelect"
@@ -52,7 +53,7 @@ export default function PlayerStatsTable({ players, isSinglePlayerPage = false }
       {selectedWeek !== null && (
         <div className="horizontalScrollArea">
           <table>
-            <thead style={tableHeaderStyle}>
+            <thead>
               <tr>
                 <th className="sticky-col">{isSinglePlayerPage ? "League" : "Player Name"}</th>
                 {showPosition && <th>Team Pos</th>}

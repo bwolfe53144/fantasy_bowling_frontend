@@ -84,6 +84,24 @@
   border-collapse: collapse;
 }
 
+.playerStatsTable thead th {
+  position: sticky;
+  top: 0;
+  background-color: var(--header-bg);
+  color: var(--header-color);
+  z-index: 5;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.playerStatsTable thead th.sticky-col {
+  position: sticky;
+  left: 0;
+  background-color: var(--header-bg);
+  color: var(--header-color);
+  z-index: 6;
+  box-shadow: 2px 0 5px -2px rgba(0, 0, 0, 0.2);
+}
+
 /*Responsiveness*/
 @media (max-width: 800px) {
   .pageContainer.graphPageStats {
