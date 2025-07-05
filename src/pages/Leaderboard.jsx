@@ -157,26 +157,30 @@ const Leaderboard = () => {
         <h1>Leaderboard</h1>
 
         <div className="weekRangeContainer">
-          <label htmlFor="startWeek">Start Week:</label>
-          <input
-            type="number"
-            id="startWeek"
-            className="weekInput"
-            min="1"
-            max={endWeek}
-            value={startWeek}
-            onChange={(e) => setStartWeek(Number(e.target.value))}
-          />
-          <label htmlFor="endWeek">End Week:</label>
-          <input
-            type="number"
-            id="endWeek"
-            className="weekInput"
-            min={startWeek}
-            max={maxAvailableWeek}
-            value={endWeek}
-            onChange={(e) => setEndWeek(Number(e.target.value))}
-          />
+          <label htmlFor="startWeek">
+            Start Week:
+            <input
+              type="number"
+              id="startWeek"
+              className="weekInput"
+              min="1"
+              max={endWeek}
+              value={startWeek}
+              onChange={(e) => setStartWeek(Number(e.target.value))}
+            />
+          </label>
+          <label htmlFor="endWeek">
+            End Week:
+            <input
+              type="number"
+              id="endWeek"
+              className="weekInput"
+              min={startWeek}
+              max={maxAvailableWeek}
+              value={endWeek}
+              onChange={(e) => setEndWeek(Number(e.target.value))}
+            />
+          </label>
         </div>
 
         {leaderboards.map((board) => (
