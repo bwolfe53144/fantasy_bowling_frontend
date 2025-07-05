@@ -243,7 +243,7 @@ export default function Roster() {
                 className="rosterButton"
                 onClick={() => navigate("/regular-roster")}
               >
-                View Regular Roster
+                Regular Roster
               </button>
             )}
             </div>
