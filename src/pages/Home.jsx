@@ -17,11 +17,11 @@ export default function Home() {
   const [myTeam, setMyTeam] = useState(null);
   const [weeksLeft, setWeeksLeft] = useState(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { buttonBackground, buttonColor } = getThemeColors(user?.color);
+  const { backgroundColor, color } = getThemeColors(user?.color);
   
   const tableHeaderStyle = {
-    backgroundColor: buttonColor,
-    color: buttonBackground,
+    backgroundColor,
+    color,
   };
   
   useEffect(() => {
