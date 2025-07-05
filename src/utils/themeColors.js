@@ -24,8 +24,8 @@ const themeColors = {
       extraBackground: "#ffe4b5"
     },
     dark: {
-      backgroundColor: "#0B162A",
-      color: "#e64100",
+      backgroundColor: "#e64100",
+      color: "#0B162A",
       buttonBackground: "#e64100",
       buttonColor: "#ffffff",
       extraBackground: "#000000"
