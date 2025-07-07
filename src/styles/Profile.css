@@ -59,30 +59,28 @@
   }
 }
 
-@media (prefers-color-scheme: dark) {
-  .pageContainer.profile .mainPage {
-    background-color: #1e1e1e;
-    color: #f0f0f0;
-  }
+.dark .pageContainer.profile .mainPage {
+  background-color: #1e1e1e;
+  color: #f0f0f0;
+}
 
-  .pageContainer.profile table {
-    background-color: #2a2a2a;
-    color: #f0f0f0;
-  }
+.dark .pageContainer.profile table {
+  background-color: #2a2a2a;
+  color: #f0f0f0;
+}
 
-  .pageContainer.profile th,
-  .pageContainer.profile td {
-    border-color: #444;
-  }
+.dark .pageContainer.profile th,
+.dark .pageContainer.profile td {
+  border-color: #444;
+}
 
-  .edit-team-button {
-    background-color: #333;
-    color: #f0f0f0;
-  }
+.dark .edit-team-button {
+  background-color: #333;
+  color: #f0f0f0;
+}
 
-  .edit-team-button:hover {
-    background-color: #555;
-  }
+.dark .edit-team-button:hover {
+  background-color: #555;
 }
 
 
