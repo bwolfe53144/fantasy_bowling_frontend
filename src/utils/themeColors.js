@@ -171,7 +171,7 @@ const themeColors = {
 
 export function getThemeColors(colorKey) {
   const defaultTheme = {
-    buttonBackground: "#444",
+    buttonBackground: "#222",
     buttonColor: "#fff",
     light: {
       backgroundColor: "#000000",
@@ -179,8 +179,8 @@ export function getThemeColors(colorKey) {
       extraBackground: "#e0e0e0"
     },
     dark: {
-      backgroundColor: "#000000",
-      color: "#fff",
+      backgroundColor: "#121212",
+      color: "#e0e0e0",
       extraBackground: "#000000"
     }
   };
