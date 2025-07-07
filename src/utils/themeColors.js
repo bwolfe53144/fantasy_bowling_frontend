@@ -171,19 +171,20 @@ const themeColors = {
 
 export function getThemeColors(colorKey) {
   const defaultTheme = {
-    buttonBackground: "#222",
-    buttonColor: "#fff",
+    buttonBackground: "#4f46e5", 
+    buttonColor: "#ffffff",      
     light: {
-      backgroundColor: "#000000",
-      color: "#fff",
-      extraBackground: "#e0e0e0"
+      backgroundColor: "black", 
+      color: "white",           
+      extraBackground: "#f3f4f6"  
     },
     dark: {
-      backgroundColor: "#121212",
-      color: "#e0e0e0",
-      extraBackground: "#000000"
+      backgroundColor: "#3743a1", 
+      color: "#e0e0ff",           
+      extraBackground: "#000000"  
     }
   };
+  
 
   const theme = themeColors[colorKey] || defaultTheme;
   const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
