@@ -349,67 +349,59 @@ body.menuOpen .navBtn {
   }
 }
 
-@media (prefers-color-scheme: dark) {
-  body, html {
-    color: white;
-    background-color: black;
-  }
+body.dark, html.dark {
+  color: white;
+  background-color: black;
+}
 
-  label {
-    color: white;
-  }
+body.dark label {
+  color: white;
+}
 
-  a {
-    color: #91a7ff;
-  }
+body.dark a {
+  color: #91a7ff;
+}
 
-  a:hover {
-    color: #748ffc;
-  }
+body.dark a:hover {
+  color: #748ffc;
+}
 
-  input[type="text"],
-  input[type="number"],
-  select,
-  textarea {
-    background-color: #1e1e1e;
-    color: #f0f0f0;
-    border: 1px solid #444;
-  }
+body.dark input[type="text"],
+body.dark input[type="number"],
+body.dark select,
+body.dark textarea {
+  background-color: #1e1e1e;
+  color: #f0f0f0;
+  border: 1px solid #444;
+}
 
-  input::placeholder,
-  textarea::placeholder {
-    color: #aaa;
-  }
+body.dark input::placeholder,
+body.dark textarea::placeholder {
+  color: #aaa;
+}
 
-  button {
-    background-color: #333;
-    color: #f0f0f0;
-    border: 1px solid #555;
-  }
+body.dark button:hover {
+  border-color: #91a7ff;
+}
 
-  button:hover {
-    border-color: #91a7ff;
-  }
+body.dark .footer {
+  background-color: black;
+}
 
-  .footer {
-    background-color: black;
-  }
+body.dark .aboutLink {
+  color: #91a7ff;
+}
 
-  .aboutLink {
-    color: #91a7ff;
-  }
+body.dark .aboutLink:hover {
+  color: #748ffc;
+}
 
-  .aboutLink:hover {
-    color: #748ffc;
-  }
+body.dark .standingsContainer table,
+body.dark .standingsContainer th,
+body.dark .standingsContainer td {
+  border-color: white;
+}
 
-  .standingsContainer table,
-  .standingsContainer th,
-  .standingsContainer td {
-    border-color: white;
-  }
-
-  .mainPage {
-    background-color: black;
-  }
+body.dark .mainPage {
+  background-color: black;
 }
