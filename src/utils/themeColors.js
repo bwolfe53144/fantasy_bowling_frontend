@@ -56,7 +56,7 @@ const themeColors = {
     }
   },
   "tampabay-bucs": {
-    buttonBackground: "#A5ACAF",
+    buttonBackground: "#ff7900",
     buttonColor: "#ffffff",
     light: {
       backgroundColor: "#d50a0a",
@@ -120,7 +120,7 @@ const themeColors = {
       extraBackground: "#3399ff"
     },
     dark: {
-      backgroundColor: "#001d5c",
+      backgroundColor: "#0033a0",
       color: "#fff",
       extraBackground: "#000000"
     }
@@ -162,7 +162,7 @@ const themeColors = {
       extraBackground: "#ba55d3"
     },
     dark: {
-      backgroundColor: "#5a005a",
+      backgroundColor: "#800080",
       color: "#fff",
       extraBackground: "#000000"
     }
