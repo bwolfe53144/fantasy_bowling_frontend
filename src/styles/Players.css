@@ -264,7 +264,7 @@
 
   .playerStatsTable tr.highlight-player,
   .playerStatsTable tr.highlight-player td {
-    background-color: #bfae30 !important;
+    background-color: gold !important;
     color: black !important;
   }
 
