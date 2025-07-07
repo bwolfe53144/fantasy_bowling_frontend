@@ -6,7 +6,8 @@ import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 import LoadingScreen from "../../components/LoadingScreen";
 import { FaStar, FaRegStar } from "react-icons/fa";
-import { getMessages, getStarredMessages, starMessage, deleteMessage } from "../utils/api";
+import { getMessages, getStarredMessages, globalStarMessage, 
+  starMessage, deleteMessage } from "../utils/api";
 import { getThemeColors } from "../utils/themeColors";
 import '../styles/Forum.css';
 
@@ -149,6 +150,16 @@ const Forum = () => {
     );
   };
 
+  const handleGlobalStar = async (messageId) => {
+    try {
+      await globalStarMessage(messageId);
+      fetchMessages();
+      fetchStarredMessages();
+    } catch (error) {
+      console.error("Error globally starring message", error);
+    }
+  };
+
   const getAuthorName = (message) => {
     if (message.author) {
       return `${message.author.firstname} ${message.author.lastname}`;
@@ -185,6 +196,14 @@ const Forum = () => {
                       >
                         {isMessageStarred(message.id) ? <FaStar /> : <FaRegStar />}
                       </button>
+                      {user.role === "SUPERADMIN" && (
+                        <button
+                          style={buttonStyle}
+                          onClick={() => handleGlobalStar(message.id)}
+                        >
+                          ⭐ Star for All
+                        </button>
+                      )}
                     </div>
                     <p className="authorName">By: {getAuthorName(message)}</p>
                     <p className="messageDate">Posted: {formatDate(message.createdAt)}</p>

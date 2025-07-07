@@ -53,6 +53,7 @@ export const forgotPassword = (data) => API.post("/auth/forgot-password", data);
 export const generatePlayoffs = (data) => API.post('/api/playoffs/generate', data);
 export const generateRoster = (teamId, week) => API.post('/generate-roster', { teamId, week });
 export const generateTheSchedule = (data) => API.post('/generate-schedule', data);
+export const globalStarMessage = (messageId) => API.post(`/api/messages/${messageId}/global-star`);
 export const postMessage = ({ title, content, authorId }) => API.post(`/messages`, { title, content, authorId });
 export const postRoster = (teamId, week, players) => API.post(`/roster`, { teamId, week, players });
 export const processClaim = (payload) => API.post('/api/admin-process-claim', payload);
