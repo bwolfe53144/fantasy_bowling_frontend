@@ -112,7 +112,6 @@ export default function Home() {
     style={{
       "--table-bg": backgroundColor,
       "--table-color": color,
-      "--highlight-bg": "#fff8dc"
     }}>
       <Header onToggleMenu={setIsMenuOpen} isMenuOpen={isMenuOpen} />
       <Navbar />

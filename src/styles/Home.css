@@ -113,6 +113,7 @@ tr.highlight {
   color: #555;
 }
 
+/*Table styles*/
 .homepage .standingsContainer table {
   border-collapse: separate;
   border-spacing: 0;
@@ -154,7 +155,7 @@ tr.highlight {
 
 /* Adjust highlight row color for your team */
 .homepage .standingsContainer .highlight {
-  background-color: var(--highlight-bg, #ffffe0); /* fallback light yellow */
+  background-color: #ffffe0; /* fallback light yellow */
 }
 
 /*Responsive Layout*/
@@ -211,6 +212,10 @@ tr.highlight {
 }
 
 @media (prefers-color-scheme: dark) {
+  .standingsContainer {
+    background-color: #1e1e1e;
+  }
+  
   .homepage .standingsContainer tbody tr:nth-child(odd) {
     background-color: #1e1e1e; /* dark row background */
   }
