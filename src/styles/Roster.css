@@ -207,8 +207,7 @@
   }
 }
 
- @media (prefers-color-scheme: dark) {
-  .selectWeekWrapper select {
-    color: black;
-  }
-} 
+body.dark .selectWeekWrapper select {
+  background-color: white;
+  color: black;
+}

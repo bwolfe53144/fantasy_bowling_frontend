@@ -249,27 +249,25 @@
   }
 }
   
-@media (prefers-color-scheme: dark) {
-  .graphPageStats label {
-    color: white;
-  }
-  
-  .playerStatsTable tbody tr:nth-child(odd) {
-    background-color: black !important;
-  }
+.dark .graphPageStats label {
+  color: white;
+}
 
-  .playerStatsTable tbody tr:nth-child(even) {
-    background-color: #383535 !important;
-  }
+.dark .playerStatsTable tbody tr:nth-child(odd) {
+  background-color: black !important;
+}
 
-  .playerStatsTable tr.highlight-player,
-  .playerStatsTable tr.highlight-player td {
-    background-color: gold !important;
-    color: black !important;
-  }
+.dark .playerStatsTable tbody tr:nth-child(even) {
+  background-color: #383535 !important;
+}
 
-  .playerStatsTable tr.highlight-player td a {
-    color: #26418f !important; 
-    cursor: pointer;
-  }
+.dark .playerStatsTable tr.highlight-player,
+.dark .playerStatsTable tr.highlight-player td {
+  background-color: gold !important;
+  color: black !important;
+}
+
+.dark .playerStatsTable tr.highlight-player td a {
+  color: #26418f !important;
+  cursor: pointer;
 }

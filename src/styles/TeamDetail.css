@@ -120,61 +120,59 @@
   border: 1px solid black;
 }
 
-@media (prefers-color-scheme: dark) {
-  .teamDetailPage .mainPage {
-    background-color: #1e1e1e;
-    color: #f0f0f0;
-  }
+body.dark .teamDetailPage .mainPage {
+  background-color: #1e1e1e;
+  color: #f0f0f0;
+}
 
-  .teamDetailPage .teamInfoWrapper,
-  .teamDetailPage .matchupTableWrapper,
-  .teamDetailPage .bottomHalf {
-    background-color: #2a2a2a;
-    color: #f0f0f0;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
-  }
+body.dark .teamDetailPage .teamInfoWrapper,
+body.dark .teamDetailPage .matchupTableWrapper,
+body.dark .teamDetailPage .bottomHalf {
+  background-color: #2a2a2a;
+  color: #f0f0f0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+}
 
-  .matchupTable thead {
-    background-color: #333;
-    color: #f0f0f0;
-  }
+body.dark .matchupTable thead {
+  background-color: #333;
+  color: #f0f0f0;
+}
 
-  .matchupTable th,
-  .matchupTable td {
-    border: 1px solid #555;
-  }
+body.dark .matchupTable th,
+body.dark .matchupTable td {
+  border: 1px solid #555;
+}
 
-  .matchupTable a {
-    color: #91a7ff; /* accent link color in dark mode */
-  }
+body.dark .matchupTable a {
+  color: #91a7ff; /* accent link color in dark mode */
+}
 
-  .matchupTable a:hover {
-    color: #c3d3ff;
-  }
+body.dark .matchupTable a:hover {
+  color: #c3d3ff;
+}
 
-  /* Adjust win/loss/tie row backgrounds to stay readable in dark mode */
-  .match-row.win {
-    background-color: #4caf50 !important; /* brighter green */
-    color: #fff;
-  }
+/* Adjust win/loss/tie row backgrounds to stay readable in dark mode */
+body.dark .match-row.win {
+  background-color: #4caf50 !important; /* brighter green */
+  color: #fff;
+}
 
-  .match-row.loss {
-    background-color: #e57373 !important; /* brighter red */
-    color: #fff;
-  }
+body.dark .match-row.loss {
+  background-color: #e57373 !important; /* brighter red */
+  color: #fff;
+}
 
-  .match-row.tie {
-    background-color: #90caf9 !important; /* light blue */
-    color: #000;
-  }
+body.dark .match-row.tie {
+  background-color: #90caf9 !important; /* light blue */
+  color: #000;
+}
 
-  .match-row.current-week {
-    background-color: #FFD700 !important; /* gold highlight */
-    color: #000;
-  }
+body.dark .match-row.current-week {
+  background-color: #FFD700 !important; /* gold highlight */
+  color: #000;
+}
 
-  .match-row.current-week a {
-    color: #26418f !important;
-  }
+body.dark .match-row.current-week a {
+  color: #26418f !important;
 }
   

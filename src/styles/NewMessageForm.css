@@ -66,40 +66,38 @@
     }
   }
   
-  @media (prefers-color-scheme: dark) {
-    .newMessagePage .mainPage {
-      background: #1e1e1e;
-      color: #f0f0f0;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
-    }
+  .dark .newMessagePage .mainPage {
+    background: #1e1e1e;
+    color: #f0f0f0;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+  }
   
-    .newMessagePage .mainPage h2 {
-      color: #f0f0f0;
-    }
+  .dark .newMessagePage .mainPage h2 {
+    color: #f0f0f0;
+  }
   
-    .newMessagePage input[type="text"],
-    .newMessagePage textarea {
-      background-color: #2a2a2a;
-      border: 1px solid #555;
-      color: #f0f0f0;
-    }
+  .dark .newMessagePage input[type="text"],
+  .dark .newMessagePage textarea {
+    background-color: #2a2a2a;
+    border: 1px solid #555;
+    color: #f0f0f0;
+  }
   
-    .newMessagePage input[type="text"]::placeholder,
-    .newMessagePage textarea::placeholder {
-      color: #aaa;
-    }
+  .dark .newMessagePage input[type="text"]::placeholder,
+  .dark .newMessagePage textarea::placeholder {
+    color: #aaa;
+  }
   
-    .newMessagePage input[type="text"]:focus,
-    .newMessagePage textarea:focus {
-      border-color: #91a7ff;
-    }
+  .dark .newMessagePage input[type="text"]:focus,
+  .dark .newMessagePage textarea:focus {
+    border-color: #91a7ff;
+  }
   
-    .newMessagePage button[type="submit"] {
-      background-color: #333;
-      color: #f0f0f0;
-    }
+  .dark .newMessagePage button[type="submit"] {
+    background-color: #333;
+    color: #f0f0f0;
+  }
   
-    .newMessagePage button[type="submit"]:hover {
-      background-color: #444;
-    }
+  .dark .newMessagePage button[type="submit"]:hover {
+    background-color: #444;
   }

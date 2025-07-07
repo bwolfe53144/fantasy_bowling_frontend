@@ -194,12 +194,10 @@
   }
 }
 
-@media (prefers-color-scheme: dark) {
-  .bowlerTable tr:nth-child(even) {
-    background-color: #383535;
-  }
+.dark .bowlerTable tr:nth-child(even) {
+  background-color: #383535;
+}
 
-  .teamInfo .ownerName {
-    color: white;
-  }
+.dark .teamInfo .ownerName {
+  color: white;
 }

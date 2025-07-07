@@ -28,12 +28,10 @@
     background-color: #fff;
   }
 
-  @media (prefers-color-scheme: dark) {
-    .weekRangeContainer label {
-      color: white;
-    }
+  .dark .weekRangeContainer label {
+    color: white;
+  }
   
-    table tr:nth-child(even) {
-      background-color: #383535;
-    }
+  .dark table tr:nth-child(even) {
+    background-color: #383535;
   }

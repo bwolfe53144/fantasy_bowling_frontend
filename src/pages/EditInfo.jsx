@@ -11,7 +11,7 @@ import EmailSubscription from "../../components/EmailSubscription";
 import { validateEmail, submitAvatar, saveEmailSubscription } from "../utils/profileHelpers";
 import { updateColor, changeTeamName } from "../utils/api";
 import { getThemeColors } from "../utils/themeColors";
-import "../styles/EditInfo.css"
+import "../styles/EditInfo.css";
 
 export default function EditInfo() {
   const { user, loading } = useContext(AuthContext);
@@ -25,6 +25,11 @@ export default function EditInfo() {
   const [emailSubscribed, setEmailSubscribed] = useState(false);
   const [emailInput, setEmailInput] = useState("");
   const [emailError, setEmailError] = useState("");
+
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    return localStorage.getItem("theme") === "dark";
+  });
+
   const { buttonBackground, buttonColor } = getThemeColors(user?.color);
 
   const buttonStyle = {
@@ -33,7 +38,7 @@ export default function EditInfo() {
     marginTop: "1rem",
     maxWidth: "200px",
     minHeight: "50px",
-    textAllign: "center",
+    textAlign: "center",
     borderRadius: "12px",
   };
 
@@ -49,6 +54,11 @@ export default function EditInfo() {
     if (user?.emailSubscribed !== undefined)
       setEmailSubscribed(user.emailSubscribed);
   }, [user]);
+
+  useEffect(() => {
+    document.body.classList.toggle("dark", isDarkMode);
+    localStorage.setItem("theme", isDarkMode ? "dark" : "light");
+  }, [isDarkMode]);
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -142,7 +152,7 @@ export default function EditInfo() {
   };
 
   if (loading) {
-    return  <LoadingScreen />
+    return <LoadingScreen />;
   }
 
   return (
@@ -151,7 +161,7 @@ export default function EditInfo() {
       <Navbar />
       <div className="mainPage editInfo">
         <h1>Edit Team Info</h1>
-        {/* Team Name Editor */}
+
         <EditTeamName
           visible={teamNameEditVisible}
           name={newTeamName}
@@ -161,10 +171,17 @@ export default function EditInfo() {
           onShowInput={() => setTeamNameEditVisible(true)}
           buttonStyle={buttonStyle}
         />
-        {/* Color Picker */}
+
         <h2>Pick A Color Scheme</h2>
         <ColorSelector value={favoriteColor} onChange={handleColorChange} />
-        {/* Type Selector */}
+
+        <button
+          style={buttonStyle}
+          onClick={() => setIsDarkMode(!isDarkMode)}
+        >
+          {isDarkMode ? "Switch to Light Theme" : "Switch to Dark Theme"}
+        </button>
+
         <h2>Upload Team Avatar</h2>
         <div className="radioGroup">
           <label style={{ marginRight: 10 }}>
@@ -188,7 +205,7 @@ export default function EditInfo() {
             Object
           </label>
         </div>
-        {/* Avatar Uploader */}
+
         <AvatarUploader
           previewUrl={previewUrl}
           onFileChange={handleFileChange}
@@ -196,7 +213,7 @@ export default function EditInfo() {
           disabled={loading || !avatarFile}
           buttonStyle={buttonStyle}
         />
-        {/* Email Subscription */}
+
         <EmailSubscription
           email={emailInput}
           subscribed={emailSubscribed}

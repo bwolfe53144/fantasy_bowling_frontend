@@ -145,8 +145,6 @@
   }
 }
 
-@media (prefers-color-scheme: dark) {
-  .admin-page label {
-    color: white;
-  }
+.dark .admin-page label {
+  color: white;
 }
