@@ -4,13 +4,13 @@ import { getThemeColors } from "../src/utils/themeColors";
 
 const StatsTable = ({ stats, avgWithHandicap, isSinglePlayer }) => {
   const { user } = useContext(AuthContext);
-  const { buttonBackground, buttonColor } = getThemeColors(user?.color);
+  const { backgroundColor, color } = getThemeColors(user?.color);
 
   if (!stats) return null;
 
   const tableHeaderStyle = {
-    backgroundColor: buttonColor,
-    color: buttonBackground,
+    backgroundColor,
+    color,
   };
 
   return (

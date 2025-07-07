@@ -9,7 +9,7 @@ export default function PlayerStatsTable({ players, isSinglePlayerPage = false }
   const { user } = useContext(AuthContext); 
   const [availableWeeks, setAvailableWeeks] = useState([]);
   const [selectedWeek, setSelectedWeek] = useState(null);
-  const { buttonBackground, buttonColor } = getThemeColors(user?.color);
+  const { backgroundColor, color } = getThemeColors(user?.color);
   
   const getBaseName = (name) => name.split(" (")[0];
   const allSameName = players.every(
@@ -35,8 +35,8 @@ export default function PlayerStatsTable({ players, isSinglePlayerPage = false }
     <div
       className="playerStatsTable"
       style={{
-        "--header-bg": buttonColor,
-        "--header-color": buttonBackground,
+        "--header-bg": backgroundColor,
+        "--header-color": color,
       }}
     >
       <label htmlFor="weekSelect">Select Week:</label>

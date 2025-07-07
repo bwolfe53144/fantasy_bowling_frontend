@@ -42,7 +42,7 @@ const BowlingTeamPage = () => {
     handleEndWeekChange,
   } = useWeekRange(maxWeek);
 
-  const { buttonBackground, buttonColor } = getThemeColors(user?.color);
+  const {  buttonColor, buttonBackground } = getThemeColors(user?.color);
 
   const buttonStyle = {
     backgroundColor: buttonBackground,
