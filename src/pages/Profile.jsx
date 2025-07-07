@@ -9,14 +9,16 @@ import Claims from "../../components/Claims.jsx";
 import { MatchupTable } from "../../components/MatchupTable.jsx";
 import { fetchAllClaims, getCurrentWeek, getRostersForWeek, 
   getWeekScoreForWeek, getStarredMessages,
-  getRecentMatches, } from "../utils/api.js";
+  getRecentMatches, getPlayerByName } from "../utils/api.js";
 import { fetchCompletedWeeks } from "../utils/weekHelpers.js";
 import { getThemeColors } from "../utils/themeColors.js";
 import { calculateFantasyPoints } from "../utils/FantasyPoints.js";
+import PlayerStatsTable from "../../components/PlayerStatsTable.jsx"; // ✅ Make sure path matches
+
 import "../styles/Profile.css";
 
 const Profile = () => {
-  const { user, loading, team } = useContext(AuthContext);
+  const { user, loading } = useContext(AuthContext);
   const [myClaims, setMyClaims] = useState([]);
   const [allClaims, setAllClaims] = useState([]);
   const [recentMatches, setRecentMatches] = useState([]);
@@ -24,6 +26,7 @@ const Profile = () => {
   const [currentWeek, setCurrentWeek] = useState(null);
   const [completedWeeks, setCompletedWeeks] = useState([]);
   const [starredMessages, setStarredMessages] = useState([]);
+  const [myPlayerStats, setMyPlayerStats] = useState(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const { buttonBackground, buttonColor } = getThemeColors(user?.color);
@@ -166,6 +169,21 @@ const Profile = () => {
     })();
   }, [recentMatches, completedWeeks]);
 
+  // ✅ Fetch bowling stats for user
+  useEffect(() => {
+    if (!user) return;
+
+    const fullName = `${user.firstname} ${user.lastname}`;
+    (async () => {
+      try {
+        const res = await getPlayerByName(fullName);
+        setMyPlayerStats(res.data.players || []);
+      } catch (err) {
+        console.error("Error fetching player stats:", err);
+      }
+    })();
+  }, [user]);
+
   if (loading) return <LoadingScreen />;
   if (!user) return <Navigate to="/signin" replace />;
 
@@ -176,11 +194,17 @@ const Profile = () => {
       <div className="mainPage">
         <div>
           <h1>Profile</h1>
-  
-          {/* Claims Section */}
+
           <Claims myClaims={myClaims} />
-  
-          {/* Team's Recent Schedule (only if user has a team) */}
+
+          {/* ✅ Bowling stats using PlayerStatsTable */}
+          {myPlayerStats && myPlayerStats.length > 0 && (
+            <div>
+              <h2>🎳 My Bowling Stats</h2>
+              <PlayerStatsTable players={myPlayerStats} isSinglePlayerPage={true} />
+            </div>
+          )}
+
           {user.team && enrichedMatches.length > 0 && (
             <MatchupTable
               matches={enrichedMatches}
@@ -189,13 +213,11 @@ const Profile = () => {
               currentWeek={currentWeek}
             />
           )}
-  
-          {/* Edit Team Info Button */}
+
           <Link to="/edit-team" style={buttonStyle} className="edit-team-button">
             Customize My Profile
           </Link>
-  
-          {/* Starred Messages */}
+
           {starredMessages.length > 0 && (
             <div>
               <h2>⭐ Starred Messages</h2>
