@@ -140,6 +140,7 @@ label {
 
 /* ===== Color input box ===== */
 .color-select {
+  margin-top: .5rem;
   width: 250px;      
   padding: 10px;     
   font-size: 1.1rem; 
