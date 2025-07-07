@@ -1,66 +1,82 @@
-import { BrowserRouter, Routes, Route, useParams } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import ScrollToTop from "../components/ScrollToTop";
 import Home from "./pages/Home";
 import Signup from "./pages/SignUp";
 import SignIn from "./pages/SignIn";
+import ResetPassword from "./pages/ResetPassword";
 import Profile from "./pages/Profile";
+import EditInfo from "./pages/EditInfo";
 import Roster from "./pages/Roster";
 import RegularRoster from "./pages/RegularRoster";
-import Rules from "./pages/Rules";
 import Schedule from "./pages/Schedule";
-import Leaderboard from "./pages/Leaderboard";
-import Forum from "./pages/Forum";
-import Other from "./Other";
-import PlayerDetail from "./pages/PlayerDetail";
-import AdminPage from "./pages/AdminPage";
-import TeamDetail from "./pages/TeamDetail";
 import MatchupPage from "./pages/MatchupPage";
-import MyClaimedPlayers from "./pages/MyClaimedPlayers";
-import DropClaimPlayer from "./pages/DropClaimPlayer";
-import EditInfo from "./pages/EditInfo";
-import ViewMessage from "./pages/ViewMessage";
-import NewMessageForm from "./pages/NewMessageForm";
+import TeamDetail from "./pages/TeamDetail";
+import PlayerDetail from "./pages/PlayerDetail";
+import Players from "./pages/Players";
 import BowlingTeamPage from "./pages/BowlingTeamPage";
 import TeamFantasyStats from "./pages/TeamFantasyStats";
-import ErrorPage from "./pages/ErrorPage";
-import ScrollToTop from "../components/ScrollToTop";
 import Stats from "./pages/Stats";
-import Players from "./pages/Players";
+import Leaderboard from "./pages/Leaderboard";
+import Forum from "./pages/Forum";
+import NewMessageForm from "./pages/NewMessageForm";
+import ViewMessage from "./pages/ViewMessage";
 import ClaimedPlayers from "./pages/ClaimedPlayers";
+import MyClaimedPlayers from "./pages/MyClaimedPlayers";
+import DropClaimPlayer from "./pages/DropClaimPlayer";
+import AdminPage from "./pages/AdminPage";
+import Rules from "./pages/Rules";
 import About from "./pages/About";
-import ResetPassword from "./pages/ResetPassword";
+import Other from "./Other";
+import ErrorPage from "./pages/ErrorPage";
+import "./index.css";
 
 function App() {
+  const [darkMode, setDarkMode] = useState(false);
+
+  // Respect system preference initially
+  useEffect(() => {
+    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    setDarkMode(prefersDark);
+  }, []);
+
+  useEffect(() => {
+    document.body.classList.toggle("dark", darkMode);
+    document.documentElement.classList.toggle("dark", darkMode); // <-- Add this line
+  }, [darkMode]);
+
   return (
     <BrowserRouter>
       <ScrollToTop />
+
       <Routes>
-        <Route path="/" element={<Home />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/signin" element={<SignIn />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/schedule/:week" element={<Schedule />} />       
+        <Route path="/reset-password/:token" element={<ResetPassword />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/edit-team" element={<EditInfo />} />
+        <Route path="/team/:teamName" element={<TeamDetail />} />
+        <Route path="/player/:playerName" element={<PlayerDetail />} />
+        <Route path="/players" element={<Players />} />
+        <Route path="/bowling-team/:teamName/:league" element={<BowlingTeamPage />} />
+        <Route path="/fantasy-stats/:teamName" element={<TeamFantasyStats />} />
+        <Route path="/schedule/:week" element={<Schedule />} />
         <Route path="/matchup/:id" element={<MatchupPage />} />
         <Route path="/roster/week/:weekNumber" element={<Roster />} />
         <Route path="/regular-roster" element={<RegularRoster />} />
         <Route path="/stats" element={<Stats />} />
-        <Route path="/players" element={<Players />} />
-        <Route path="/player/:playerName" element={<PlayerDetail />} />
-        <Route path="/team/:teamName" element={<TeamDetail />} />
-        <Route path="/forum" element={<Forum />} />
         <Route path="/leaderboard" element={<Leaderboard />} />
-        <Route path="/other" element={<Other />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/rules" element={<Rules />} />
-        <Route path="/admin" element={<AdminPage />} />
-        <Route path="/edit-team" element={<EditInfo />} />
         <Route path="/all-claims" element={<ClaimedPlayers />} />
         <Route path="/my-claims" element={<MyClaimedPlayers />} />
+        <Route path="/drop-player/:playerId/:playerName/:playerLeague/:playerPosition" element={<DropClaimPlayer />} />
+        <Route path="/forum" element={<Forum />} />
         <Route path="/new-message" element={<NewMessageForm />} />
         <Route path="/message/:id" element={<ViewMessage />} />
-        <Route path="/drop-player/:playerId/:playerName/:playerLeague/:playerPosition" element={<DropClaimPlayer />} />
-        <Route path="/bowling-team/:teamName/:league" element={<BowlingTeamPage />} />
-        <Route path="/fantasy-stats/:teamName" element={<TeamFantasyStats />} />
-        <Route path="/reset-password/:token" element={<ResetPassword />} />
+        <Route path="/admin" element={<AdminPage />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/rules" element={<Rules />} />
+        <Route path="/other" element={<Other />} />
+        <Route path="/" element={<Home />} />
         <Route path="*" element={<ErrorPage />} />
       </Routes>
     </BrowserRouter>
