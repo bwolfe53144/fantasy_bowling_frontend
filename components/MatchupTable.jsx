@@ -7,18 +7,17 @@ export const MatchupTable = ({ matches, teamName, completedWeeks, currentWeek })
   const { user } = useContext(AuthContext);
 
   const { backgroundColor, color } = getThemeColors(user?.color);
+  const tableHeaderStyle = {
+    backgroundColor,
+    color,
+  };
 
   return (
     <div>
       <h2>Recent Matchups</h2>
       <div className="horizontalScrollArea">
         <table className="matchupTable">
-          <thead
-            style={{
-              backgroundColor,
-              color,
-            }}
-          >
+          <thead style={tableHeaderStyle}>
             <tr>
               <th>Week</th>
               <th>Opponent</th>
