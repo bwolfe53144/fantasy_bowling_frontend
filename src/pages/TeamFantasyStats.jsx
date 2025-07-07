@@ -15,11 +15,13 @@ import { getPlayersByTeamName } from "../utils/api.js";
 import { getBowlerAverages } from "../utils/getBowlerAverages.js";
 import { calculateTeamAndStarterStats } from "../utils/calculateTeamAndStarterStats.js";
 import { getThemeColors } from "../utils/themeColors.js";
+import { ThemeContext } from "../utils/ThemeContext.jsx";
 import "../styles/GraphPageStats.css";
 
 const TeamFantasyStats = () => {
   const { teamName } = useParams();
   const { user, loading } = useContext(AuthContext);
+  const { isDarkMode } = useContext(ThemeContext);
   const [teamData, setTeamData] = useState(null);
   const [stats, setStats] = useState(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -40,7 +42,7 @@ const TeamFantasyStats = () => {
     handleEndWeekChange,
   } = useWeekRange(maxWeek);
 
-  const { buttonBackground, buttonColor } = getThemeColors(user?.color);
+  const { buttonBackground, buttonColor } = getThemeColors(user?.color, isDarkMode);
 
   const buttonStyle = {
     backgroundColor: buttonBackground,

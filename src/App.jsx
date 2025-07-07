@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { ThemeProvider } from "./utils/ThemeContext";
 import ScrollToTop from "../components/ScrollToTop";
 import Home from "./pages/Home";
 import Signup from "./pages/SignUp";
@@ -32,54 +32,43 @@ import ErrorPage from "./pages/ErrorPage";
 import "./index.css";
 
 function App() {
-  const [darkMode, setDarkMode] = useState(false);
-
-  // Respect system preference initially
-  useEffect(() => {
-    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-    setDarkMode(prefersDark);
-  }, []);
-
-  useEffect(() => {
-    document.body.classList.toggle("dark", darkMode);
-    document.documentElement.classList.toggle("dark", darkMode); // <-- Add this line
-  }, [darkMode]);
-
   return (
-    <BrowserRouter>
-      <ScrollToTop />
+    <ThemeProvider>
+      <BrowserRouter>
+        <ScrollToTop />
 
-      <Routes>
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/signin" element={<SignIn />} />
-        <Route path="/reset-password/:token" element={<ResetPassword />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/edit-team" element={<EditInfo />} />
-        <Route path="/team/:teamName" element={<TeamDetail />} />
-        <Route path="/player/:playerName" element={<PlayerDetail />} />
-        <Route path="/players" element={<Players />} />
-        <Route path="/bowling-team/:teamName/:league" element={<BowlingTeamPage />} />
-        <Route path="/fantasy-stats/:teamName" element={<TeamFantasyStats />} />
-        <Route path="/schedule/:week" element={<Schedule />} />
-        <Route path="/matchup/:id" element={<MatchupPage />} />
-        <Route path="/roster/week/:weekNumber" element={<Roster />} />
-        <Route path="/regular-roster" element={<RegularRoster />} />
-        <Route path="/stats" element={<Stats />} />
-        <Route path="/leaderboard" element={<Leaderboard />} />
-        <Route path="/all-claims" element={<ClaimedPlayers />} />
-        <Route path="/my-claims" element={<MyClaimedPlayers />} />
-        <Route path="/drop-player/:playerId/:playerName/:playerLeague/:playerPosition" element={<DropClaimPlayer />} />
-        <Route path="/forum" element={<Forum />} />
-        <Route path="/new-message" element={<NewMessageForm />} />
-        <Route path="/message/:id" element={<ViewMessage />} />
-        <Route path="/admin" element={<AdminPage />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/rules" element={<Rules />} />
-        <Route path="/other" element={<Other />} />
-        <Route path="/" element={<Home />} />
-        <Route path="*" element={<ErrorPage />} />
-      </Routes>
-    </BrowserRouter>
+        <Routes>
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/signin" element={<SignIn />} />
+          <Route path="/reset-password/:token" element={<ResetPassword />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/edit-team" element={<EditInfo />} />
+          <Route path="/team/:teamName" element={<TeamDetail />} />
+          <Route path="/player/:playerName" element={<PlayerDetail />} />
+          <Route path="/players" element={<Players />} />
+          <Route path="/bowling-team/:teamName/:league" element={<BowlingTeamPage />} />
+          <Route path="/fantasy-stats/:teamName" element={<TeamFantasyStats />} />
+          <Route path="/schedule/:week" element={<Schedule />} />
+          <Route path="/matchup/:id" element={<MatchupPage />} />
+          <Route path="/roster/week/:weekNumber" element={<Roster />} />
+          <Route path="/regular-roster" element={<RegularRoster />} />
+          <Route path="/stats" element={<Stats />} />
+          <Route path="/leaderboard" element={<Leaderboard />} />
+          <Route path="/all-claims" element={<ClaimedPlayers />} />
+          <Route path="/my-claims" element={<MyClaimedPlayers />} />
+          <Route path="/drop-player/:playerId/:playerName/:playerLeague/:playerPosition" element={<DropClaimPlayer />} />
+          <Route path="/forum" element={<Forum />} />
+          <Route path="/new-message" element={<NewMessageForm />} />
+          <Route path="/message/:id" element={<ViewMessage />} />
+          <Route path="/admin" element={<AdminPage />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/rules" element={<Rules />} />
+          <Route path="/other" element={<Other />} />
+          <Route path="/" element={<Home />} />
+          <Route path="*" element={<ErrorPage />} />
+        </Routes>
+      </BrowserRouter>
+    </ThemeProvider>
   );
 }
 

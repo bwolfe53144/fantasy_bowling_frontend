@@ -8,6 +8,7 @@ import LoadingScreen from "../../components/LoadingScreen";
 import { getCurrentWeek, getTeamByName, dropPlayer } from "../utils/api";
 import { handleSaveRegularRoster } from "../utils/handleSaveRegularRoster";
 import { getThemeColors } from "../utils/themeColors";
+import { ThemeContext } from "../utils/ThemeContext";
 import { processPlayerStats } from "../utils/ProcessPlayerStats";
 import "../styles/RegularRoster.css";
 
@@ -18,6 +19,7 @@ function capitalizePosition(pos) {
 
 export default function RegularRoster() {
   const { user, loading } = useContext(AuthContext);
+  const { isDarkMode } = useContext(ThemeContext);
   const [players, setPlayers] = useState([]);
   const [assignedPositions, setAssignedPositions] = useState({});
   const [isSaving, setIsSaving] = useState(false);
@@ -28,7 +30,7 @@ export default function RegularRoster() {
 
   const flexBenchPool = Array.from({ length: 9 }, (_, i) => `Flex Bench ${i + 1}`);
 
-  const { backgroundColor, color, buttonBackground, buttonColor } = getThemeColors(user?.color);
+  const { backgroundColor, color, buttonBackground, buttonColor } = getThemeColors(user?.color, isDarkMode);
 
   const buttonStyle = {
     backgroundColor: buttonBackground,

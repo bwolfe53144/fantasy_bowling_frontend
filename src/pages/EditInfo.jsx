@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import { AuthContext } from "../utils/AuthContext";
+import { ThemeContext } from "../utils/ThemeContext"; // <-- import ThemeContext
 import Header from "../../components/Header";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
@@ -15,6 +16,7 @@ import "../styles/EditInfo.css";
 
 export default function EditInfo() {
   const { user, loading } = useContext(AuthContext);
+  const { isDarkMode, setIsDarkMode } = useContext(ThemeContext); 
   const [avatarFile, setAvatarFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
   const [isPerson, setIsPerson] = useState("true");
@@ -26,11 +28,7 @@ export default function EditInfo() {
   const [emailInput, setEmailInput] = useState("");
   const [emailError, setEmailError] = useState("");
 
-  const [isDarkMode, setIsDarkMode] = useState(() => {
-    return localStorage.getItem("theme") === "dark";
-  });
-
-  const { buttonBackground, buttonColor } = getThemeColors(user?.color);
+  const { buttonBackground, buttonColor } = getThemeColors(user?.color, isDarkMode);
 
   const buttonStyle = {
     backgroundColor: buttonBackground,
@@ -54,11 +52,6 @@ export default function EditInfo() {
     if (user?.emailSubscribed !== undefined)
       setEmailSubscribed(user.emailSubscribed);
   }, [user]);
-
-  useEffect(() => {
-    document.body.classList.toggle("dark", isDarkMode);
-    localStorage.setItem("theme", isDarkMode ? "dark" : "light");
-  }, [isDarkMode]);
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];

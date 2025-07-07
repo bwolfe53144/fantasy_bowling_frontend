@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { AuthContext } from "../utils/AuthContext.jsx";
 import { processPlayerStats } from "../utils/ProcessPlayerStats.js";
 import { getThemeColors } from "../utils/themeColors.js";
+import { ThemeContext } from "../utils/ThemeContext.jsx";
 import Header from "../../components/Header.jsx";
 import Navbar from "../../components/Navbar.jsx";
 import Footer from "../../components/Footer.jsx";
@@ -14,6 +15,7 @@ import '../styles/Stats.css';
 
 const Stats = () => {
   const { user, teams, players, loading } = useContext(AuthContext);
+  const { isDarkMode } = useContext(ThemeContext);
   const [currentPage, setCurrentPage] = useState(0);
   const playersPerPage = 50;
   const [sortField, setSortField] = useState(null);
@@ -73,7 +75,7 @@ const Stats = () => {
     setCurrentPage(0);
   }, [searchQuery, gamesFilter, showLastYear, lyGamesFilter, sortPosition, leagueFilter, teamFilter, allPlayers, loading]);
 
-  const { backgroundColor, color, buttonBackground, buttonColor } = getThemeColors(user?.color);
+  const { backgroundColor, color, buttonBackground, buttonColor } = getThemeColors(user?.color, isDarkMode);
 
   const buttonStyle = {
     backgroundColor: buttonBackground,

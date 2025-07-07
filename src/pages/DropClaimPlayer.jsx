@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { AuthContext } from "../utils/AuthContext";
 import { claimWithDrop } from "../utils/api";
 import { getThemeColors } from "../utils/themeColors";
+import { ThemeContext } from "../utils/ThemeContext";
 import Header from "../../components/Header";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
@@ -11,6 +12,7 @@ import "../styles/DropClaimPlayer.css";
 
 const DropClaimPlayer = () => {
   const { user, loading } = useContext(AuthContext);
+  const { isDarkMode } = useContext(ThemeContext);
   const { playerId, playerName, playerLeague, playerPosition } = useParams();
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -28,7 +30,7 @@ const DropClaimPlayer = () => {
     }
   }, [user]);
 
-  const { buttonBackground, buttonColor } = getThemeColors(user?.color);
+  const { buttonBackground, buttonColor } = getThemeColors(user?.color, isDarkMode);
 
   const buttonStyle = {
     backgroundColor: buttonBackground,

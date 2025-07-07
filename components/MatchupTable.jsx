@@ -1,12 +1,13 @@
 import { Link } from "react-router-dom";
 import { useContext } from "react";
 import { AuthContext } from "../src/utils/AuthContext.jsx";
+import { ThemeContext } from "../src/utils/ThemeContext.jsx";
 import { getThemeColors } from "../src/utils/themeColors.js";
 
 export const MatchupTable = ({ matches, teamName, completedWeeks, currentWeek }) => {
   const { user } = useContext(AuthContext);
-
-  const { backgroundColor, color } = getThemeColors(user?.color);
+  const { isDarkMode } = useContext(ThemeContext);
+  const { backgroundColor, color } = getThemeColors(user?.color, isDarkMode);
   const tableHeaderStyle = {
     backgroundColor,
     color,

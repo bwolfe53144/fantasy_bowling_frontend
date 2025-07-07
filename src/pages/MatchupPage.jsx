@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { AuthContext } from "../utils/AuthContext.jsx";
 import { getMatchById } from "../utils/api.js";
 import { getThemeColors } from "../utils/themeColors.js";
+import { ThemeContext } from "../utils/ThemeContext.jsx";
 import {starterOrder, mapStarters, getPoints, fetchTeamRoster,} from "../utils/matchupHelpers.js";
 import Header from "../../components/Header.jsx";
 import Navbar from "../../components/Navbar.jsx";
@@ -14,11 +15,12 @@ import '../styles/MatchupPage.css';
 export default function MatchupPage() {
   const { id } = useParams();
   const { user, loading } = useContext(AuthContext);
+  const { isDarkMode } = useContext(ThemeContext);
   const [match, setMatch] = useState(null);
   const [team1Roster, setTeam1Roster] = useState([]);
   const [team2Roster, setTeam2Roster] = useState([]);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { backgroundColor, color } = getThemeColors(user?.color);
+  const { backgroundColor, color } = getThemeColors(user?.color, isDarkMode);
   const tableHeaderStyle = { backgroundColor, color };
 
   useEffect(() => {

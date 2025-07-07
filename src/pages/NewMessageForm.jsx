@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../utils/AuthContext";
 import { getThemeColors } from "../utils/themeColors";
+import { ThemeContext } from "../utils/ThemeContext";
 import { postMessage } from "../utils/api";
 import Header from "../../components/Header";
 import Navbar from "../../components/Navbar";
@@ -11,11 +12,12 @@ import "../styles/NewMessageForm.css";
 
 const NewMessageForm = () => {
   const { user, loading } = useContext(AuthContext);
+  const { isDarkMode } = useContext(ThemeContext);
   const [newMessage, setNewMessage] = useState({ title: "", content: "" });
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  const { buttonBackground, buttonColor, extraBackground } = getThemeColors(user?.color);
+  const { buttonBackground, buttonColor, extraBackground } = getThemeColors(user?.color, isDarkMode);
     
   const buttonStyle = {
     backgroundColor: buttonBackground,

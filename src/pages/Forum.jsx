@@ -1,6 +1,7 @@
 import { useState, useEffect, useContext, useCallback } from "react";
 import { useNavigate, Navigate } from "react-router-dom";
 import { AuthContext } from "../utils/AuthContext";
+import { ThemeContext } from "../utils/ThemeContext";
 import Header from "../../components/Header";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
@@ -22,8 +23,8 @@ function formatDate(dateString) {
 
 const Forum = () => {
   const { user, loading } = useContext(AuthContext);
+  const { isDarkMode } = useContext(ThemeContext);
   const navigate = useNavigate();
-
   const [messages, setMessages] = useState([]);
   const [starredMessages, setStarredMessages] = useState([]);
   const [totalMessages, setTotalMessages] = useState(0);
@@ -34,7 +35,7 @@ const Forum = () => {
   const messagesPerPage = 5;
   const starredPerPage = 5;
 
-  const { backgroundColor, color, buttonBackground, buttonColor, extraBackground } = getThemeColors(user?.color);
+  const { backgroundColor, color, buttonBackground, buttonColor, extraBackground } = getThemeColors(user?.color, isDarkMode);
 
   const buttonStyle = {
     backgroundColor: buttonBackground,

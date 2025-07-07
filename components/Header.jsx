@@ -1,10 +1,12 @@
 import { useContext } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { AuthContext } from "../src/utils/AuthContext";
+import { ThemeContext } from "../src/utils/ThemeContext";
 import { getThemeColors } from "../src/utils/themeColors";
 
 const Header = ({ isMenuOpen, onToggleMenu }) => {
   const { user, loading, login, logout } = useContext(AuthContext);
+  const { isDarkMode } = useContext(ThemeContext);
   const navigate = useNavigate();
 
   const clickLogout = async () => {
@@ -23,7 +25,7 @@ const Header = ({ isMenuOpen, onToggleMenu }) => {
 
   if (loading) return null;
 
-  const { backgroundColor, color } = getThemeColors(user?.color);
+  const { backgroundColor, color } = getThemeColors(user?.color, isDarkMode);
 
   const headerStyle = {
     backgroundColor,

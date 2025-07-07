@@ -1,10 +1,12 @@
 import React, { useContext } from "react";
 import { AuthContext } from "../src/utils/AuthContext";
+import { ThemeContext } from "../src/utils/ThemeContext";
 import { getThemeColors } from "../src/utils/themeColors";
 
 const StatsTable = ({ stats, avgWithHandicap, isSinglePlayer }) => {
   const { user } = useContext(AuthContext);
-  const { backgroundColor, color } = getThemeColors(user?.color);
+  const { isDarkMode } = useContext(ThemeContext);
+  const { backgroundColor, color } = getThemeColors(user?.color, isDarkMode);
 
   if (!stats) return null;
 

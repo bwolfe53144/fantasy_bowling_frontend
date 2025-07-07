@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { AuthContext } from "../utils/AuthContext";
 import { getMessageById, addComment } from "../utils/api";
 import { getThemeColors } from "../utils/themeColors";
+import { ThemeContext } from "../utils/ThemeContext";
 import Header from "../../components/Header";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
@@ -11,6 +12,7 @@ import "../styles/ViewMessage.css";
 
 const ViewMessage = () => {
   const { user, loading } = useContext(AuthContext);
+  const { isDarkMode } = useContext(ThemeContext);
   const { id } = useParams();
   const [message, setMessage] = useState(null);
   const [comment, setComment] = useState("");
@@ -19,7 +21,7 @@ const ViewMessage = () => {
 
   const inputRef = useRef();
 
-  const { buttonBackground, buttonColor, extraBackground } = getThemeColors(user?.color);
+  const { buttonBackground, buttonColor, extraBackground } = getThemeColors(user?.color, isDarkMode);
 
   const buttonStyle = {
     backgroundColor: buttonBackground,

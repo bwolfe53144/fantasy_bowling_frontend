@@ -9,10 +9,12 @@ import MatchList from "../../components/MatchList.jsx";
 import { getSchedule } from "../utils/api.js";
 import { enrichRecentMatchesWithScores } from "../utils/enrichMatches.js";
 import { getThemeColors } from "../utils/themeColors.js";
+import { ThemeContext } from "../utils/ThemeContext.jsx";
 import "../styles/Schedule.css"
 
 export default function Schedule() {
   const { user } = useContext(AuthContext);
+  const { isDarkMode } = useContext(ThemeContext);
   const [schedule, setSchedule] = useState([]);
   const [playoffStartWeek, setPlayoffStartWeek] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -20,7 +22,7 @@ export default function Schedule() {
   const navigate = useNavigate();
   const selectedWeek = Number(week);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { buttonBackground, buttonColor } = getThemeColors(user?.color);
+  const { buttonBackground, buttonColor } = getThemeColors(user?.color, isDarkMode);
 
   const buttonStyle = {
     backgroundColor: buttonBackground,
@@ -48,7 +50,6 @@ export default function Schedule() {
         const res = await getSchedule();
         const data = res.data;
         const enriched = await enrichRecentMatchesWithScores(data.schedule);
-        console.log(enriched);
         setSchedule(enriched);
         setPlayoffStartWeek(data.playoffWeek);
         setLoading(false);

@@ -1,15 +1,17 @@
 import React, { useState, useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
 import { getThemeColors } from "../src/utils/themeColors";
+import { ThemeContext } from "../src/utils/ThemeContext";
 import { processPlayerStats } from "../src/utils/ProcessPlayerStats";
 import { calculateFantasyPoints } from "../src/utils/FantasyPoints";
 import { AuthContext } from "../src/utils/AuthContext"; 
 
 export default function PlayerStatsTable({ players, isSinglePlayerPage = false }) {
-  const { user } = useContext(AuthContext); 
+  const { user } = useContext(AuthContext);
+  const { isDarkMode } = useContext(ThemeContext); 
   const [availableWeeks, setAvailableWeeks] = useState([]);
   const [selectedWeek, setSelectedWeek] = useState(null);
-  const { backgroundColor, color } = getThemeColors(user?.color);
+  const { backgroundColor, color } = getThemeColors(user?.color, isDarkMode);
   
   const getBaseName = (name) => name.split(" (")[0];
   const allSameName = players.every(

@@ -1,11 +1,13 @@
 import { useContext } from "react";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../src/utils/AuthContext";
+import { ThemeContext } from "../src/utils/ThemeContext";
 import { getThemeColors } from "../src/utils/themeColors";
 
 export const PlayerTable = ({ players, sortField, sortOrder, onSort }) => {
   const { user } = useContext(AuthContext);
-  const { backgroundColor, color } = getThemeColors(user?.color);
+  const { isDarkMode } = useContext(ThemeContext);
+  const { backgroundColor, color } = getThemeColors(user?.color, isDarkMode);
 
   const tableHeaderStyle = {
     backgroundColor,

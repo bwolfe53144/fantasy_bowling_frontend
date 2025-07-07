@@ -3,6 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { AuthContext } from "../utils/AuthContext.jsx";
 import { processPlayerStats } from "../utils/ProcessPlayerStats.js";
 import { getThemeColors } from "../utils/themeColors.js";
+import { ThemeContext } from "../utils/ThemeContext.jsx";
 import { fetchAllClaims, deleteClaim } from "../utils/api.js";
 import Header from "../../components/Header.jsx";
 import Navbar from "../../components/Navbar.jsx";
@@ -13,6 +14,7 @@ import '../styles/Players.css';
 
 const Players = () => {
   const { user, teams, loading, players } = useContext(AuthContext);
+  const { isDarkMode } = useContext(ThemeContext);
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(0);
   const playersPerPage = 50;
@@ -119,7 +121,7 @@ const Players = () => {
     return claimedTeamNames.length > 0 && !claimedTeamNames.includes(myTeamName);
   };
 
-  const { backgroundColor, color, buttonBackground } = getThemeColors(user?.color);
+  const { backgroundColor, color, buttonBackground } = getThemeColors(user?.color, isDarkMode);
   
   const buttonStyle = {
     backgroundColor: buttonBackground,

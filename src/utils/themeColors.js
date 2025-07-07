@@ -169,30 +169,28 @@ const themeColors = {
   }
 };
 
-export function getThemeColors(colorKey) {
+export function getThemeColors(colorKey, isDark) {
   const defaultTheme = {
-    buttonBackground: "#4f46e5", 
-    buttonColor: "#ffffff",      
+    buttonBackground: "#4f46e5",
+    buttonColor: "#ffffff",
     light: {
-      backgroundColor: "black", 
-      color: "white",           
-      extraBackground: "#f3f4f6"  
+      backgroundColor: "black",
+      color: "white",
+      extraBackground: "#f3f4f6",
     },
     dark: {
-      backgroundColor: "#3743a1", 
-      color: "#e0e0ff",           
-      extraBackground: "#000000"  
-    }
+      backgroundColor: "#3743a1",
+      color: "#e0e0ff",
+      extraBackground: "#000000",
+    },
   };
-  
 
   const theme = themeColors[colorKey] || defaultTheme;
-  const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
-  const modeTheme = prefersDark ? theme.dark : theme.light;
+  const modeTheme = isDark ? theme.dark : theme.light;
 
   return {
     ...modeTheme,
     buttonBackground: theme.buttonBackground,
-    buttonColor: theme.buttonColor
+    buttonColor: theme.buttonColor,
   };
 }

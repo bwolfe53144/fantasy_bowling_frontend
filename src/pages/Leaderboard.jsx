@@ -4,6 +4,7 @@ import { AuthContext } from "../utils/AuthContext";
 import { calculateFantasyPoints } from "../utils/FantasyPoints";
 import { processPlayerStats } from "../utils/ProcessPlayerStats";
 import { getThemeColors } from "../utils/themeColors";
+import { ThemeContext } from "../utils/ThemeContext";
 import Header from "../../components/Header";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
@@ -12,13 +13,14 @@ import "../styles/Leaderboard.css";
 
 const Leaderboard = () => {
   const { user, players, loading } = useContext(AuthContext);
+  const { isDarkMode } = useContext(ThemeContext);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [startWeek, setStartWeek] = useState(1);
   const [selectedLeagues, setSelectedLeagues] = useState([]);
   const [leagueDropdownOpen, setLeagueDropdownOpen] = useState(false);
   const leagueDropdownRef = useRef(null);
 
-  const { backgroundColor, color, buttonBackground, buttonColor } = getThemeColors(user?.color);
+  const { backgroundColor, color, buttonBackground, buttonColor } = getThemeColors(user?.color, isDarkMode);
   const tableHeaderStyle = { backgroundColor, color };
   const buttonStyle = { backgroundColor: buttonBackground, color: buttonColor };
 

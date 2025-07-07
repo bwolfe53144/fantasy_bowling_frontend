@@ -17,11 +17,13 @@ import { getAverageByLane } from "../utils/getAverageByLane.js";
 import { getAverageByOpponent } from "../utils/getAverageByOpponent.js";
 import { useWeekRange } from "../../hooks/useWeekRange.js";
 import { getThemeColors } from "../utils/themeColors.js";
+import { ThemeContext } from "../utils/ThemeContext.jsx";
 import "../styles/GraphPageStats.css";
 
 const BowlingTeamPage = () => {
   const { teamName, league } = useParams();
   const { user, loading } = useContext(AuthContext);
+  const { isDarkMode } = useContext(ThemeContext);
   const [teamData, setTeamData] = useState(null);
   const [stats, setStats] = useState(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -42,7 +44,7 @@ const BowlingTeamPage = () => {
     handleEndWeekChange,
   } = useWeekRange(maxWeek);
 
-  const {  buttonColor, buttonBackground } = getThemeColors(user?.color);
+  const {  buttonColor, buttonBackground } = getThemeColors(user?.color, isDarkMode);
 
   const buttonStyle = {
     backgroundColor: buttonBackground,

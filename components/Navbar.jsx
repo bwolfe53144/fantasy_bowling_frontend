@@ -1,11 +1,13 @@
 import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../src/utils/AuthContext";
+import { ThemeContext } from "../src/utils/ThemeContext";
 import { getCurrentWeek } from "../src/utils/api";
 import { getThemeColors } from '../src/utils/themeColors';   
 
 const Navbar = () => {
   const { user } = useContext(AuthContext);
+  const { isDarkMode } = useContext(ThemeContext);
   const [currentWeek, setCurrentWeek] = useState(null);
 
   useEffect(() => {
@@ -21,7 +23,7 @@ const Navbar = () => {
   }, []);
 
   // Get the theme colors based on the user's selected theme
-  const theme = getThemeColors(user?.color); 
+  const theme = getThemeColors(user?.color, isDarkMode); 
 
   const navStyle = {
     backgroundColor: theme.backgroundColor,   

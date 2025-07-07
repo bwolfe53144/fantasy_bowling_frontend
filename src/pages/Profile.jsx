@@ -12,6 +12,7 @@ import { fetchAllClaims, getCurrentWeek, getRostersForWeek,
   getRecentMatches, getPlayerByName } from "../utils/api.js";
 import { fetchCompletedWeeks } from "../utils/weekHelpers.js";
 import { getThemeColors } from "../utils/themeColors.js";
+import { ThemeContext } from "../utils/ThemeContext.jsx";
 import { calculateFantasyPoints } from "../utils/FantasyPoints.js";
 import PlayerStatsTable from "../../components/PlayerStatsTable.jsx"; // ✅ Make sure path matches
 
@@ -19,6 +20,7 @@ import "../styles/Profile.css";
 
 const Profile = () => {
   const { user, loading } = useContext(AuthContext);
+  const { isDarkMode } = useContext(ThemeContext);
   const [myClaims, setMyClaims] = useState([]);
   const [allClaims, setAllClaims] = useState([]);
   const [recentMatches, setRecentMatches] = useState([]);
@@ -29,7 +31,7 @@ const Profile = () => {
   const [myPlayerStats, setMyPlayerStats] = useState(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  const { buttonBackground, buttonColor } = getThemeColors(user?.color);
+  const { buttonBackground, buttonColor } = getThemeColors(user?.color, isDarkMode);
 
   const buttonStyle = {
     backgroundColor: buttonBackground,

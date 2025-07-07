@@ -8,6 +8,7 @@ import PlayerRosterGrid from "../../components/PlayerRosterGrid.jsx";
 import WeekSelector from "../../components/WeekSelector.jsx";
 import { AuthContext } from "../utils/AuthContext.jsx";
 import { getThemeColors } from "../utils/themeColors.js";
+import { ThemeContext } from "../utils/ThemeContext.jsx";
 import { getCurrentWeek, generateRoster, saveRoster, createTeam } from "../utils/api.js";
 import { updatePlayerPosition } from "../utils/updatePlayerPosition.js";
 import { fetchRoster } from "../utils/fetchRoster.js";
@@ -16,6 +17,7 @@ import "../styles/Roster.css";
 
 export default function Roster() {
   const { user, loading } = useContext(AuthContext);
+  const { isDarkMode } = useContext(ThemeContext);
   const navigate = useNavigate();
   const { weekNumber } = useParams();
   const [players, setPlayers] = useState(null);
@@ -31,7 +33,7 @@ export default function Roster() {
   const [playersLoaded, setPlayersLoaded] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  const { backgroundColor, color, buttonBackground, buttonColor } = getThemeColors(user?.color);
+  const { backgroundColor, color, buttonBackground, buttonColor } = getThemeColors(user?.color, isDarkMode);
 
   const themeStyle = {
     backgroundColor,

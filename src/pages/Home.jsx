@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { getCurrentWeek, getTeamsForHome } from "../utils/api";
 import { AuthContext } from "../utils/AuthContext";
 import { getThemeColors } from "../utils/themeColors";
+import { ThemeContext } from "../utils/ThemeContext";
 import Header from "../../components/Header";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
@@ -12,12 +13,13 @@ import '../styles/Home.css';
 
 export default function Home() {
   const { user, loading } = useContext(AuthContext);
+  const { isDarkMode } = useContext(ThemeContext);
   const [teams, setTeams] = useState([]);
   const [updatedTeams, setUpdatedTeams] = useState([]);
   const [myTeam, setMyTeam] = useState(null);
   const [weeksLeft, setWeeksLeft] = useState(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { backgroundColor, color } = getThemeColors(user?.color);
+  const { backgroundColor, color } = getThemeColors(user?.color, isDarkMode);
   
   useEffect(() => {
     const fetchData = async () => {

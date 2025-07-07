@@ -13,10 +13,12 @@ import { getPlayerByName } from "../utils/api.js";
 import { calculateStats } from "../utils/calculateStats.js";
 import { useWeekRange } from "../../hooks/useWeekRange.js";
 import { getThemeColors } from "../utils/themeColors.js";
+import { ThemeContext } from "../utils/ThemeContext.jsx";
 import "../styles/GraphPageStats.css";
 
 const PlayerDetail = () => {
   const { user, loading } = useContext(AuthContext);
+  const { isDarkMode } = useContext(ThemeContext);
   const { playerName } = useParams();
   const decodedName = decodeURIComponent(playerName);
   const [playerData, setPlayerData] = useState(null);
@@ -33,7 +35,7 @@ const PlayerDetail = () => {
     handleEndWeekChange,
   } = useWeekRange(maxWeek);
 
-  const { buttonBackground, buttonColor } = getThemeColors(user?.color);
+  const { buttonBackground, buttonColor } = getThemeColors(user?.color, isDarkMode);
   const buttonStyle = {
     backgroundColor: buttonBackground,
     color: buttonColor,
