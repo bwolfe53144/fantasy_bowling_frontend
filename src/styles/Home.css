@@ -211,22 +211,22 @@ tr.highlight {
 }
 
 @media (prefers-color-scheme: dark) {
-  .standingsContainer {
-    background-color: #1e1e1e;
-  }
-  
-  .standingsContainer tr:nth-child(even) {
-    background-color: #383535;
+  .homepage .standingsContainer tbody tr:nth-child(odd) {
+    background-color: #1e1e1e; /* dark row background */
   }
 
-  .standingsContainer tr.highlight {
+  .homepage .standingsContainer tbody tr:nth-child(even) {
+    background-color: #383535; /* dark alternate row */
+  }
+
+  .homepage .standingsContainer tr.highlight {
     background-color: gold;
     color: black;
   }
 
-  .standingsContainer tr.highlight .teamLink,
-  .standingsContainer tr.highlight .teamLink a {
-    color: #26418f !important; 
+  .homepage .standingsContainer tr.highlight .teamLink,
+  .homepage .standingsContainer tr.highlight .teamLink a {
+    color: #26418f !important;
     cursor: pointer;
   }
 }
