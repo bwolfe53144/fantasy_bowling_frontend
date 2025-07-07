@@ -78,8 +78,8 @@ const themeColors = {
       extraBackground: "#fff9c4"
     },
     dark: {
-      backgroundColor: "#4f2683",
-      color: "#ffb612",
+      backgroundColor: "#ffb612",
+      color: "#4f2683",
       extraBackground: "#000000"
     }
   },
@@ -92,7 +92,7 @@ const themeColors = {
       extraBackground: "#f5e4c3"
     },
     dark: {
-      backgroundColor: "#000000",
+      backgroundColor: "#b22222",
       color: "#ffffff",
       extraBackground: "#000000"
     }
