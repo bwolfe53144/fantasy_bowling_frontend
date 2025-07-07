@@ -225,7 +225,7 @@ tr.highlight {
   }
 
   .homepage .standingsContainer .highlight {
-    background-color: gold;
+    background-color: gold !important;
     color: black;
   }
 
