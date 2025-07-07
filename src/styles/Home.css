@@ -224,7 +224,7 @@ tr.highlight {
     background-color: #383535; /* dark alternate row */
   }
 
-  .homepage .standingsContainer tr.highlight {
+  .homepage .standingsContainer .highlight {
     background-color: gold;
     color: black;
   }
