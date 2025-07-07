@@ -46,6 +46,10 @@ td, th {
   border: 1px solid #ccc;
 }
 
+.homepage .standingsContainer tbody tr:nth-child(odd) {
+  background-color: white;
+}
+
 tr:nth-child(even) {
   background-color: #f9f9f9;
 }
@@ -107,6 +111,50 @@ tr.highlight {
   margin-top: 10px;
   font-size: 0.9em;
   color: #555;
+}
+
+.homepage .standingsContainer table {
+  border-collapse: separate;
+  border-spacing: 0;
+  width: 100%;
+}
+
+.homepage .standingsContainer th,
+.homepage .standingsContainer td {
+  padding: 8px;
+  text-align: left;
+  background-clip: padding-box;
+}
+
+/* Sticky header */
+.homepage .standingsContainer thead th {
+  background-color: var(--table-bg, black);
+  color: var(--table-color, white);
+  position: sticky;
+  top: 0;
+  z-index: 2; /* ensures header stays above body cells */
+}
+
+/* Sticky first column */
+.homepage .standingsContainer tbody td:first-child,
+.homepage .standingsContainer thead th:first-child {
+  position: sticky;
+  background-color: inherit;
+  color: inherit;
+  left: 0;
+  z-index: 1; /* ensures column stays above overlapping cells */
+}
+
+/* Extra: If you want the header first column to be above other cells fully */
+.homepage .standingsContainer thead th:first-child {
+  background-color: var(--table-bg, black);
+  color: var(--table-color, white);
+  z-index: 3;
+}
+
+/* Adjust highlight row color for your team */
+.homepage .standingsContainer .highlight {
+  background-color: var(--highlight-bg, #ffffe0); /* fallback light yellow */
 }
 
 /*Responsive Layout*/

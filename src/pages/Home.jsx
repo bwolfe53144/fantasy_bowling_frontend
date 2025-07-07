@@ -19,11 +19,6 @@ export default function Home() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { backgroundColor, color } = getThemeColors(user?.color);
   
-  const tableHeaderStyle = {
-    backgroundColor,
-    color,
-  };
-  
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -113,7 +108,12 @@ export default function Home() {
   }
 
   return (
-    <div className="pageContainer homepage">
+    <div className="pageContainer homepage"
+    style={{
+      "--table-bg": backgroundColor,
+      "--table-color": color,
+      "--highlight-bg": "#fff8dc"
+    }}>
       <Header onToggleMenu={setIsMenuOpen} isMenuOpen={isMenuOpen} />
       <Navbar />
       <div className="mainPage homepage">
@@ -133,7 +133,7 @@ export default function Home() {
             <div className="horizontalScrollArea">
             <table>
               <caption className="visually-hidden">Fantasy Bowling League Standings</caption>
-              <thead style={tableHeaderStyle}>
+              <thead>
                 <tr>
                   <th scope="col">Place</th>
                   <th scope="col">Team</th>
