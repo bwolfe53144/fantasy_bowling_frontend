@@ -172,7 +172,7 @@ export default function EditInfo() {
           style={buttonStyle}
           onClick={() => setIsDarkMode(!isDarkMode)}
         >
-          {isDarkMode ? "Switch to Light Theme" : "Switch to Dark Theme"}
+          {isDarkMode ? "Use Light Theme" : "Use Dark Theme"}
         </button>
 
         <h2>Upload Team Avatar</h2>
