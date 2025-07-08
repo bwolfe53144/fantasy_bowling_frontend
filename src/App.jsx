@@ -11,6 +11,7 @@ import Roster from "./pages/Roster";
 import RegularRoster from "./pages/RegularRoster";
 import Schedule from "./pages/Schedule";
 import MatchupPage from "./pages/MatchupPage";
+import Survivor from "./pages/Survivor";
 import TeamDetail from "./pages/TeamDetail";
 import PlayerDetail from "./pages/PlayerDetail";
 import Players from "./pages/Players";
@@ -50,6 +51,7 @@ function App() {
           <Route path="/fantasy-stats/:teamName" element={<TeamFantasyStats />} />
           <Route path="/schedule/:week" element={<Schedule />} />
           <Route path="/matchup/:id" element={<MatchupPage />} />
+          <Route path="/survivor" element={<Survivor />} />
           <Route path="/roster/week/:weekNumber" element={<Roster />} />
           <Route path="/regular-roster" element={<RegularRoster />} />
           <Route path="/stats" element={<Stats />} />

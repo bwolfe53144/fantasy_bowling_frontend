@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { AuthContext } from "../src/utils/AuthContext";
 import { ThemeContext } from "../src/utils/ThemeContext";
 import { getCurrentWeek } from "../src/utils/api";
-import { getThemeColors } from '../src/utils/themeColors';   
+import { getThemeColors } from "../src/utils/themeColors";   
 
 const Navbar = () => {
   const { user } = useContext(AuthContext);
@@ -22,37 +22,26 @@ const Navbar = () => {
     fetchCurrentWeek();
   }, []);
 
-  // Get the theme colors based on the user's selected theme
   const theme = getThemeColors(user?.color, isDarkMode); 
-
   const navStyle = {
     backgroundColor: theme.backgroundColor,   
     color: theme.color,
   };
-
   const iconFill = theme.color;  
 
   const navItems = [
     { to: "/", label: "Home", icon: HomeIcon },
-  
-    ...(user?.role 
-      ? [{ to: "/profile", label: "Profile", icon: AccountIcon }]
-      : []),
-  
+    ...(user?.role ? [{ to: "/profile", label: "Profile", icon: AccountIcon }] : []),
     ...(user?.role === "MANAGER" || user?.role === "ADMIN" || user?.role === "SUPERADMIN"
       ? [{ to: `/roster/week/${currentWeek}`, label: "Roster", icon: RosterIcon }]
       : []),
-  
     { to: `/schedule/${currentWeek ?? 1}`, label: "Schedule", icon: CalendarIcon },
     { to: "/stats", label: "Stats", icon: ChartIcon },
     { to: "/players", label: "Available Players", icon: PlayersIcon },
     { to: "/leaderboard", label: "Leaderboard", icon: TrophyIcon },
-  
-    ...(user
-      ? [{ to: "/forum", label: "Forum", icon: ForumIcon }]
-      : []),
-  
+    ...(user ? [{ to: "/forum", label: "Forum", icon: ForumIcon }] : []),
     { to: "/rules", label: "Rules", icon: BowlingIcon },
+    ...(user ? [{ to: "/survivor", label: "Survivor Bowling", icon: SurvivorIcon }] : []), // ✅ only show if logged in
   ];
 
   return (
@@ -112,4 +101,10 @@ const ForumIcon = ({ fill }) => (
 
 const BowlingIcon = ({ fill }) => (
   <svg {...svgProps} fill={fill}><path d="M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2M12.5,11A1.5,1.5 0 0,0 11,12.5A1.5,1.5 0 0,0 12.5,14A1.5,1.5 0 0,0 14,12.5A1.5,1.5 0 0,0 12.5,11M12,5A2,2 0 0,0 10,7A2,2 0 0,0 12,9A2,2 0 0,0 14,7A2,2 0 0,0 12,5M5.93,8.5C5.38,9.45 5.71,10.67 6.66,11.22C7.62,11.78 8.84,11.45 9.4,10.5C9.95,9.53 9.62,8.31 8.66,7.76C7.71,7.21 6.5,7.53 5.93,8.5Z"/></svg>
+);
+
+const SurvivorIcon = ({ fill }) => (
+  <svg {...svgProps} fill={fill} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+    <path d="M15.8,18.5L21.8,20.1L21.4,22L12,19.5L2.6,22L2.1,20.1L8.1,18.5L2,16.9L2.5,15L11.9,17.5L21.3,15L21.8,16.9L15.8,18.5M18,8C18,9.8 17.2,11.3 16,12.4V15H14V13.7L14,13H13V15H11V13H10V13.7L10,15H8V12.4C6.8,11.3 6,9.8 6,8A6,6 0 0,1 12,2A6,6 0 0,1 18,8M11,7.5C11,6.7 10.3,6 9.5,6C8.7,6 8,6.7 8,7.5C8,8.3 8.7,9 9.5,9C10.3,9 11,8.3 11,7.5M13,11L12,9L11,11H13M16,7.5C16,6.7 15.3,6 14.5,6C13.7,6 13,6.7 13,7.5C13,8.3 13.7,9 14.5,9C15.3,9 16,8.3 16,7.5Z" />
+  </svg>
 );
