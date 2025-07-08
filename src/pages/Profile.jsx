@@ -196,7 +196,9 @@ const Profile = () => {
       <div className="mainPage">
         <div>
           <h1>Profile</h1>
-
+          <Link to="/edit-team" style={buttonStyle} className="edit-team-button">
+            Customize My Profile
+          </Link>
           <Claims myClaims={myClaims} />
 
           {/* ✅ Bowling stats using PlayerStatsTable */}
@@ -215,10 +217,6 @@ const Profile = () => {
               currentWeek={currentWeek}
             />
           )}
-
-          <Link to="/edit-team" style={buttonStyle} className="edit-team-button">
-            Customize My Profile
-          </Link>
 
           {starredMessages.length > 0 && (
             <div>
