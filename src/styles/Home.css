@@ -133,27 +133,15 @@ tr.highlight {
   color: var(--table-color, white);
   position: sticky;
   top: 0;
-  z-index: 2; /* ensures header stays above body cells */
+  z-index: 2; 
 }
 
-/* Sticky first column */
-.homepage .standingsContainer tbody td:first-child,
-.homepage .standingsContainer thead th:first-child {
-  position: sticky;
-  background-color: inherit;
-  color: inherit;
-  left: 0;
-  z-index: 1; /* ensures column stays above overlapping cells */
-}
-
-/* Extra: If you want the header first column to be above other cells fully */
 .homepage .standingsContainer thead th:first-child {
   background-color: var(--table-bg, black);
   color: var(--table-color, white);
   z-index: 3;
 }
 
-/* Adjust highlight row color for your team */
 .homepage .standingsContainer .highlight {
   background-color: #ffffe0; /* fallback light yellow */
 }
@@ -202,6 +190,28 @@ tr.highlight {
 
   .pageContainer.homepage .headerLeft {
     margin-left: 3rem;
+  }
+
+  .homepage .standingsContainer tbody td:first-child,
+  .homepage .standingsContainer thead th:first-child {
+    display: none;
+  }
+
+  /* Make Team (originally second column) sticky instead */
+  .homepage .standingsContainer tbody td:nth-child(2),
+  .homepage .standingsContainer thead th:nth-child(2) {
+    position: sticky;
+    left: 0;
+    background-color: inherit;
+    color: inherit;
+    z-index: 1;
+  }
+
+  /* Ensure header "Team" stays on top if overlap occurs */
+  .homepage .standingsContainer thead th:nth-child(2) {
+    background-color: var(--table-bg, black);
+    color: var(--table-color, white);
+    z-index: 3;
   }
 }
 
