@@ -20,7 +20,7 @@ export default function Roster() {
   const { isDarkMode } = useContext(ThemeContext);
   const navigate = useNavigate();
   const { weekNumber } = useParams();
-  const [players, setPlayers] = useState(null);
+  const [players, setPlayers] = useState([]);
   const [assignedPositions, setAssignedPositions] = useState({});
   const [lockedPlayerIds, setLockedPlayerIds] = useState([]);
   const [lockedPositions, setLockedPositions] = useState([]);
