@@ -4,20 +4,16 @@ import { getThemeColors } from "../src/utils/themeColors";
 import { ThemeContext } from "../src/utils/ThemeContext";
 import { processPlayerStats } from "../src/utils/ProcessPlayerStats";
 import { calculateFantasyPoints } from "../src/utils/FantasyPoints";
-import { AuthContext } from "../src/utils/AuthContext"; 
+import { AuthContext } from "../src/utils/AuthContext";
 
-export default function PlayerStatsTable({ players, isSinglePlayerPage = false }) {
+export default function PlayerStatsTable({ players, isSinglePlayerPage = false, isTeamPage = false }) {
   const { user } = useContext(AuthContext);
-  const { isDarkMode } = useContext(ThemeContext); 
+  const { isDarkMode } = useContext(ThemeContext);
   const [availableWeeks, setAvailableWeeks] = useState([]);
   const [selectedWeek, setSelectedWeek] = useState(null);
   const { backgroundColor, color } = getThemeColors(user?.color, isDarkMode);
-  
+
   const getBaseName = (name) => name.split(" (")[0];
-  const allSameName = players.every(
-    (p) => getBaseName(p.name) === getBaseName(players[0].name)
-  );
-  const showPosition = !allSameName;
 
   useEffect(() => {
     if (players?.length) {
@@ -32,6 +28,18 @@ export default function PlayerStatsTable({ players, isSinglePlayerPage = false }
   if (!players || players.length === 0) {
     return <p>No players on this team.</p>;
   }
+
+  // Check if all players have the same base name
+  const allSameName = players.every(
+    (p) => getBaseName(p.name) === getBaseName(players[0].name)
+  );
+  const showPosition = !allSameName;
+
+  const renderPlayerLabel = (player) => {
+    if (isSinglePlayerPage) return player.league;
+    if (isTeamPage) return getBaseName(player.name);
+    return `${getBaseName(player.name)} (${player.league})`;
+  };
 
   return (
     <div
@@ -57,7 +65,13 @@ export default function PlayerStatsTable({ players, isSinglePlayerPage = false }
           <table>
             <thead>
               <tr>
-                <th className="sticky-col">{isSinglePlayerPage ? "League" : "Player Name"}</th>
+                <th className="sticky-col">
+                  {isSinglePlayerPage
+                    ? "League"
+                    : isTeamPage
+                    ? "Player Name"
+                    : "Player Name (League)"}
+                </th>
                 {showPosition && <th>Team Pos</th>}
                 <th>Points</th>
                 <th>Avg</th>
@@ -78,9 +92,11 @@ export default function PlayerStatsTable({ players, isSinglePlayerPage = false }
                   const thisWeekScore = player.weekScores?.find((ws) => ws.week === selectedWeek);
                   const prevScores = player.weekScores?.filter((ws) => ws.week < selectedWeek) || [];
                   const fantasyPoints = thisWeekScore ? calculateFantasyPoints([thisWeekScore]) : null;
+
                   const g1 = thisWeekScore?.game1 ?? "-";
                   const g2 = thisWeekScore?.game2 ?? "-";
                   const g3 = thisWeekScore?.game3 ?? "-";
+
                   const avg = (() => {
                     if (thisWeekScore?.average) return thisWeekScore.average;
                     if (!prevScores.length) return 0;
@@ -88,6 +104,7 @@ export default function PlayerStatsTable({ players, isSinglePlayerPage = false }
                     const stats = processPlayerStats(pseudoPlayer);
                     return stats.average || 0;
                   })();
+
                   const series = [g1, g2, g3].every((val) => typeof val === "number") ? g1 + g2 + g3 : "-";
 
                   return (
@@ -97,7 +114,7 @@ export default function PlayerStatsTable({ players, isSinglePlayerPage = false }
                           player.league
                         ) : (
                           <Link to={`/player/${encodeURIComponent(player.name)}`}>
-                            {`${getBaseName(player.name)} (${player.league})`}
+                            {renderPlayerLabel(player)}
                           </Link>
                         )}
                       </td>

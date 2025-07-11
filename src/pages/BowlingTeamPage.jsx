@@ -113,7 +113,7 @@ const BowlingTeamPage = () => {
         <h1>Stats For {teamName} - {league}</h1>
 
         <h2>Individual Stats</h2>
-        <PlayerStatsTable players={teamData.players} />
+        <PlayerStatsTable players={teamData.players} isTeamPage={true} />
 
         <h3>Week range filter for other stats</h3>
         <div className="week-filters">
