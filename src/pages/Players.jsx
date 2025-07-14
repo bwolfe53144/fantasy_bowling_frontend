@@ -22,7 +22,7 @@ const Players = () => {
   const [sortField, setSortField] = useState(null);
   const [sortOrder, setSortOrder] = useState("asc");
   const [sortPosition, setSortPosition] = useState("");
-  const [leagueFilter, setLeagueFilter] = useState([]);;
+  const [leagueFilter, setLeagueFilter] = useState([]);
   const [gamesFilter, setGamesFilter] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredData, setFilteredData] = useState([]);
@@ -30,6 +30,14 @@ const Players = () => {
   const [claimedPlayers, setClaimedPlayers] = useState([]);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
+
+  // Define fantasy leagues to filter by
+  const fantasyLeagues = [
+    "Andys Classic",
+    "Beavers Latestarters",
+    "Cheris Night Out",
+    "Ren Faire",
+  ];
 
   useEffect(() => {
     document.body.classList.toggle("menuOpen", isMenuOpen);
@@ -68,11 +76,13 @@ const Players = () => {
 
   const allPlayers = useMemo(() => {
     if (!Array.isArray(players)) return [];
-  
+
     return players
       .filter(player => {
         const hasTeam = teams?.some(t => t.id === player.teamId);
-        return !player.teamId || !hasTeam; // Keep only unassigned players
+        // Include only players without team or whose team is not in the teams list
+        // AND only from fantasyLeagues
+        return (!player.teamId || !hasTeam) && fantasyLeagues.includes(player.league);
       })
       .map(player => {
         return processPlayerStats({
@@ -102,11 +112,12 @@ const Players = () => {
     setFilteredData(data);
     setSortedData(data);
     setCurrentPage(0);
-    }, [searchQuery, gamesFilter, sortPosition, leagueFilter, allPlayers, loading]);
+  }, [searchQuery, gamesFilter, sortPosition, leagueFilter, allPlayers, loading]);
 
-    const uniqueLeagues = useMemo(() => {
-      return [...new Set(allPlayers.map(p => p.league))].sort();
-    }, [allPlayers]);
+  const uniqueLeagues = useMemo(() => {
+    // Only show leagues from fantasyLeagues that exist in allPlayers
+    return fantasyLeagues.filter(fl => allPlayers.some(p => p.league === fl));
+  }, [allPlayers]);
 
   const isClaimedByOthers = (playerId) => {
     const claimEntry = allclaims.find(pc => pc.playerId === playerId);
@@ -249,21 +260,21 @@ const Players = () => {
   
         <div className="horizontalScrollArea">
           <table className="playerStatsTable" border="1">
-          <thead className="statsHeader">
-            <tr>
-              {renderSortableHeader("Name", "name", { backgroundColor, color })}
-              {renderSortableHeader("League", "league", { backgroundColor, color })}
-              {renderSortableHeader("Position", "position", { backgroundColor, color })}
-              {renderSortableHeader("Games", "games", { backgroundColor, color })}
-              {renderSortableHeader("Total Pins", "totalPins", { backgroundColor, color })}
-              {renderSortableHeader("Average", "average", { backgroundColor, color })}
-              {renderSortableHeader("Total Fantasy Points", "totalPoints", { backgroundColor, color })}
-              {renderSortableHeader("Avg Fan Ppg", "avgFanppg", { backgroundColor, color })}
-              {(user?.role === "ADMIN" || user?.role === "MANAGER" || user?.role === "SUPERADMIN") && (
-                <th style={{ backgroundColor, color }}>Actions</th>
-              )}
-            </tr>
-          </thead>
+            <thead className="statsHeader">
+              <tr>
+                {renderSortableHeader("Name", "name", { backgroundColor, color })}
+                {renderSortableHeader("League", "league", { backgroundColor, color })}
+                {renderSortableHeader("Position", "position", { backgroundColor, color })}
+                {renderSortableHeader("Games", "games", { backgroundColor, color })}
+                {renderSortableHeader("Total Pins", "totalPins", { backgroundColor, color })}
+                {renderSortableHeader("Average", "average", { backgroundColor, color })}
+                {renderSortableHeader("Total Fantasy Points", "totalPoints", { backgroundColor, color })}
+                {renderSortableHeader("Avg Fan Ppg", "avgFanppg", { backgroundColor, color })}
+                {(user?.role === "ADMIN" || user?.role === "MANAGER" || user?.role === "SUPERADMIN") && (
+                  <th style={{ backgroundColor, color }}>Actions</th>
+                )}
+              </tr>
+            </thead>
             <tbody>
               {sortedData.length > 0 ? (
                 sortedData
