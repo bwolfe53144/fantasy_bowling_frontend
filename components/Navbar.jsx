@@ -41,7 +41,7 @@ const Navbar = () => {
     { to: "/leaderboard", label: "Leaderboard", icon: TrophyIcon },
     ...(user ? [{ to: "/forum", label: "Forum", icon: ForumIcon }] : []),
     { to: "/rules", label: "Rules", icon: BowlingIcon },
-    ...(user ? [{ to: "/survivor", label: "Survivor Bowling", icon: SurvivorIcon }] : []), // ✅ only show if logged in
+    { to: "/survivor", label: "Survivor Bowling", icon: SurvivorIcon },
   ];
 
   return (

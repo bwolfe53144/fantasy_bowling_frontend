@@ -12,6 +12,8 @@ import RegularRoster from "./pages/RegularRoster";
 import Schedule from "./pages/Schedule";
 import MatchupPage from "./pages/MatchupPage";
 import Survivor from "./pages/Survivor";
+import SurvivorLeaguePage from "./pages/SurvivorLeaguePage";
+import SurvivorTeamPage from "./pages/SurvivorTeamPage";
 import TeamDetail from "./pages/TeamDetail";
 import PlayerDetail from "./pages/PlayerDetail";
 import Players from "./pages/Players";
@@ -52,6 +54,8 @@ function App() {
           <Route path="/schedule/:week" element={<Schedule />} />
           <Route path="/matchup/:id" element={<MatchupPage />} />
           <Route path="/survivor" element={<Survivor />} />
+          <Route path="/survivor/:league" element={<SurvivorLeaguePage />} />
+          <Route path="/survivor/:league/:teamname" element={<SurvivorTeamPage />} />
           <Route path="/roster/week/:weekNumber" element={<Roster />} />
           <Route path="/regular-roster" element={<RegularRoster />} />
           <Route path="/stats" element={<Stats />} />

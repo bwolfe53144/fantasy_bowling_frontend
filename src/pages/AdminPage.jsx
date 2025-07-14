@@ -1,6 +1,13 @@
 import { useEffect, useContext, useState } from "react";
 import { AuthContext } from "../utils/AuthContext.jsx";
-import { clearWeekscores, clearPlayerTransactions, deleteTeamByName, sendStatsUpdateEmails } from "../utils/api.js";
+import { 
+  clearWeekscores, 
+  clearPlayerTransactions, 
+  deleteTeamByName, 
+  sendStatsUpdateEmails, 
+  resetSurvivorLeague, 
+  getTotalLeagues
+} from "../utils/api.js";
 import { Navigate } from "react-router-dom";
 import Header from "../../components/Header.jsx";
 import Navbar from "../../components/Navbar.jsx";
@@ -23,11 +30,30 @@ const AdminPage = () => {
   const [weeks, setWeeks] = useState(10);
   const [skipWeeksArray, setSkipWeeksArray] = useState([]);
   const [showLockSetter, setShowLockSetter] = useState(false);
+  const [selectedLeague, setSelectedLeague] = useState("");
+  const [availableLeagues, setAvailableLeagues] = useState([]);
 
   useEffect(() => {
     document.body.classList.toggle("menuOpen", isMenuOpen);
     return () => document.body.classList.remove("menuOpen");
   }, [isMenuOpen]);
+
+  useEffect(() => {
+    const fetchLeagues = async () => {
+      try {
+        const res = await getTotalLeagues();
+        if (res.status === 200 && Array.isArray(res.data.totalLeagues)) {
+          setAvailableLeagues(res.data.totalLeagues);
+        } else {
+          console.error("Unexpected leagues response", res);
+        }
+      } catch (error) {
+        console.error("Failed to fetch leagues:", error);
+      }
+    };
+
+    fetchLeagues();
+  }, []);
 
   const handleRemoveTeam = async () => {
     if (!removeTeamName) return alert("Select a team to remove");
@@ -78,6 +104,19 @@ const AdminPage = () => {
     }
   };
 
+  const handleResetSurvivorLeague = async () => {
+    if (!selectedLeague) return alert("Please select a league");
+    if (!window.confirm(`Are you sure you want to reset survivor data for ${selectedLeague}? This cannot be undone.`)) return;
+
+    try {
+      const res = await resetSurvivorLeague(selectedLeague);
+      if (res.status !== 200) throw new Error('Failed to reset survivor league');
+      alert(`Survivor league '${selectedLeague}' reset successfully!`);
+    } catch (error) {
+      alert(`Error: ${error.response?.data?.message || error.message}`);
+    }
+  };
+
   if (loading) {
     return <LoadingScreen />;
   }
@@ -100,7 +139,6 @@ const AdminPage = () => {
               Send Stats Update Email
             </button>
           </div>
-          {/* SUPERADMIN ONLY */}
           {user.role === "SUPERADMIN" && (
             <>
               <AdminClaims />
@@ -141,6 +179,24 @@ const AdminPage = () => {
               <div>
                 <button onClick={handleClearTransactions} className="admin-button danger">
                   Clear All Player Transactions
+                </button>
+              </div>
+              <div className="admin-section">
+                <h3>Reset Survivor League</h3>
+                <select value={selectedLeague} onChange={(e) => setSelectedLeague(e.target.value)}>
+                  <option value="">Select League</option>
+                  {availableLeagues.map((league) => (
+                    <option key={league.league} value={league.league}>
+                      {league.league}
+                    </option>
+                  ))}
+                </select>
+                <button
+                  onClick={handleResetSurvivorLeague}
+                  className="admin-button danger"
+                  style={{ marginTop: "0.5rem" }}
+                >
+                  Reset Survivor League
                 </button>
               </div>
             </>

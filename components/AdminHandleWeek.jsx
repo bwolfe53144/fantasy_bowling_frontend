@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { completeWeekLock, getIncompleteWeekLocks } from "../src/utils/api.js";
+import { completeWeekLock, completeSurvivorWeek, getIncompleteWeekLocks } from "../src/utils/api.js";
 import { useTeamRecords } from "../src/utils/useTeamRecords.js";
 
 const AdminHandleWeek = () => {
@@ -27,6 +27,11 @@ const AdminHandleWeek = () => {
         league: selectedWeek.league,
         week: selectedWeek.week,
         season: 2025,
+      });
+
+      await completeSurvivorWeek({
+        league: selectedWeek.league,
+        week: selectedWeek.week,
       });
 
       alert(`Marked ${selectedWeek.league} Week ${selectedWeek.week} as complete.`);

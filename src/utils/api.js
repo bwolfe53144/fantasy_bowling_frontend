@@ -11,6 +11,7 @@ export const fetchRecentTransactions = (page) => API.get(`/api/transactions/rece
 export const getCompletedLeagues = (week) => API.get(`/findCompletedLeagues/${week}`);
 export const getCompletedWeekLocks = () => API.get("/api/weeklocks/completed");
 export const getCurrentWeek = () => API.get('/getCurrentWeek');
+export const getEligibleSurvivorPlayers = (league, teamName) => API.get(`/api/survivor-eligible-players/${encodeURIComponent(league)}/${encodeURIComponent(teamName)}`);
 export const getIncompleteWeekLocks = () => API.get('/api/weeklocks/incomplete');
 export const getMatchById = (id) => API.get(`/api/match/${id}`);
 export const getMatchupsForWeek = (week) => API.get(`/matchups/week/${week}`);
@@ -26,6 +27,9 @@ export const getRosterLockStatus = (teamId, week) => API.get(`/roster-lock-statu
 export const getRostersForWeek = (week) => API.get(`/rostersForTheWeek/${week}`);
 export const getSchedule = () => API.get("/api/schedule");
 export const getStarredMessages = (userId) => API.get(`/api/starred-messages/${userId}`);
+export const getSurvivorEntriesForLeague = (league) => API.get(`/api/survivor-entries/${encodeURIComponent(league)}`);
+export const getSurvivorPicksForTeam = (league, teamName) => API.get(`/api/survivor-picks/${encodeURIComponent(league)}/${encodeURIComponent(teamName)}`);
+export const getSurvivorUserPicks = (league, teamName, userId) => API.get(`/api/survivor-picks/user/${league}/${teamName}?userId=${userId}`);
 export const getTeamById = (teamId) => API.get(`/team-by-id/${teamId}`);
 export const getTeamByName = (teamName) => API.get(`/team/${encodeURIComponent(teamName)}`);
 export const getTeamPlayers = (teamName) => API.get(`/api/team/${encodeURIComponent(teamName)}/players`);
@@ -35,6 +39,7 @@ export const getTotalLeagues = () => API.get('/totalLeagues');
 export const getUnassignedPlayers = () => API.get('/unassigned-players');
 export const getUser = (token) => API.get("/user", { headers: { Authorization: `Bearer ${token}` },});  
 export const getUsers = () => API.get('/api/get-users');
+export const getUserSurvivorEntries = (userId) => API.get(`/survivor-entries/${userId}`);
 export const getWeeks = () => API.get("/weeks");
 export const getWeekScoreForWeek = (week) => API.get(`/weekscoreForWeek/${week}`);
 
@@ -46,7 +51,9 @@ export const claimWithDrop = (claimPlayerId, dropPlayerId, userId) => API.post("
 export const clearPlayersFromTeams = () => API.post('/clear-players');
 export const clearWeekscores = () => API.post('/api/clear-weekscores');
 export const completeWeekLock = (data) => API.post('/api/weeklocks/complete', data);
+export const completeSurvivorWeek = (data) => API.post('/api/survivor/complete-week', data);
 export const createPlayer = (newPlayer) => API.post(`/api/player`, newPlayer);
+export const createSurvivorTeam = (data) => API.post('/api/survivor/signup', data);
 export const createTeam = (userId, teamName) => API.post('/create-team', { userId, teamName });
 export const createWeekScore = (newScore) => API.post(`/api/weekscore`, newScore);
 export const forgotPassword = (data) => API.post("/auth/forgot-password", data);
@@ -60,6 +67,7 @@ export const processClaim = (payload) => API.post('/api/admin-process-claim', pa
 export const resetPassword = (token, data) => API.post(`/auth/reset-password/${token}`, data);
 export const resetPositions = () => API.post('/reset-positions');
 export const resetRosters = (season) => API.post('/reset-rosters', { season: parseInt(season) });
+export const resetSurvivorLeague = (league) => API.post("/survivor/reset-league", { league });
 export const saveRoster = (payload) => API.post('/roster', payload);
 export const sendStatsUpdateEmails = () => API.post('/api/admin/send-stats-update-email');
 export const setLocktimes = (payload) => API.post('/api/setLocktimes', payload);
@@ -67,7 +75,7 @@ export const signIn = (data) => API.post("/signin", data);
 export const signUp = (data) => API.post("/signup", data);
 export const starMessage = (messageId, userId) => API.post(`/star-message/${messageId}`, { userId });
 export const submitRegularRoster = (payload) => API.post("/roster/regular", payload);
-export const updateColor = (userId, color) => API.patch("/update-color", { userId, color });
+export const submitSurvivorPicks = (league, teamName, picks) => API.post(`/api/survivor-picks/${league}/${teamName}`, { picks });export const updateColor = (userId, color) => API.patch("/update-color", { userId, color });
 export const updateMultipleRosters = (changeRosterData) => API.post(`/multiple-rosters`, { rosters: changeRosterData });
 export const uploadAvatar = (formData, token) => API.post("/upload-avatar", formData, { headers: { "Content-Type": "multipart/form-data", Authorization: `Bearer ${token}` } });
 export const changeTeamName = (userId, newTeamName) => API.patch("/change-team-name", { userId, newTeamName });
