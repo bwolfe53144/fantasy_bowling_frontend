@@ -2,19 +2,19 @@ import React, { useState } from "react";
 import { setLocktimes, resetRosters, resetPositions } from "../src/utils/api.js";
 
 const holidays = [
-  "2025-11-28", // Thanksgiving
-  "2025-12-24", // Christmas Eve
-  "2025-12-25", // Christmas Day
-  "2025-12-31", // New Year's Eve
-  "2026-01-01", // New Year's Day
+  "2025-11-28",
+  "2025-12-24",
+  "2025-12-25",
+  "2025-12-31",
+  "2026-01-01",
 ];
 
 const AdminLockTimeSetter = ({ playerList }) => {
   const [leagueStartTimes, setLeagueStartTimes] = useState({});
+  const [resetting, setResetting] = useState(false);
   const totalWeeks = 34;
   const currentYear = new Date().getFullYear();
 
-  // Get unique leagues from playerList
   const leagues = Array.from(new Set(playerList.map((p) => p.league)));
 
   const handleLeagueStartChange = (league, value) => {
@@ -22,27 +22,18 @@ const AdminLockTimeSetter = ({ playerList }) => {
   };
 
   const submitLocktimes = async () => {
-    // Find leagues with missing or invalid start times
-    const missingLeagues = leagues.filter(league => {
-      const time = leagueStartTimes[league];
-      return !time || isNaN(new Date(time));
-    });
-  
-    if (missingLeagues.length > 0) {
-      alert(`Please enter valid start times for: ${missingLeagues.join(", ")}`);
-      return; // prevent submission
-    }
-  
     const payload = [];
-  
+
     leagues.forEach((league) => {
       const baseDate = new Date(leagueStartTimes[league]);
+      if (!leagueStartTimes[league] || isNaN(baseDate)) return; // Skip empty
+
       let current = new Date(baseDate);
-  
+
       for (let week = 1; week <= totalWeeks; week++) {
         const dateStr = current.toISOString().split("T")[0];
         const isHoliday = holidays.includes(dateStr);
-  
+
         if (!isHoliday) {
           payload.push({
             league,
@@ -51,20 +42,39 @@ const AdminLockTimeSetter = ({ playerList }) => {
             lockTime: current.toISOString(),
           });
         }
-  
+
         current.setDate(current.getDate() + 7);
       }
     });
-  
+
+    if (payload.length === 0) {
+      alert("Please enter at least one valid league start time before submitting.");
+      return;
+    }
+
     try {
       await setLocktimes(payload);
-      await resetRosters(currentYear);
-      await resetPositions();
-  
-      alert("Lock times submitted and rosters/positions reset!");
+      alert("Selected lock times submitted!");
     } catch (err) {
       console.error(err);
-      alert("Failed to set lock times or reset data.");
+      alert("Failed to set lock times.");
+    }
+  };
+
+  const handleReset = async () => {
+    if (!window.confirm("Are you sure you want to reset all rosters and positions?")) {
+      return;
+    }
+    setResetting(true);
+    try {
+      await resetRosters(currentYear);
+      await resetPositions();
+      alert("Rosters and positions have been reset.");
+    } catch (err) {
+      console.error(err);
+      alert("Failed to reset rosters or positions.");
+    } finally {
+      setResetting(false);
     }
   };
 
@@ -84,6 +94,14 @@ const AdminLockTimeSetter = ({ playerList }) => {
       ))}
       <button onClick={submitLocktimes} className="admin-button">
         Submit Lock Times
+      </button>
+
+      <button
+        onClick={handleReset}
+        className="admin-button danger"
+        disabled={resetting}
+      >
+        {resetting ? "Resetting..." : "Reset Rosters & Positions"}
       </button>
     </div>
   );
