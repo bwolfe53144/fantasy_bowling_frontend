@@ -134,14 +134,20 @@ const Rules = () => {
             </p>
             <h2>Free Agency</h2>
             <p>
-            Looking to strengthen your lineup? Head over to the Available 
-            Players section and click the Add Player button next to any free 
-            agent you'd like to claim. Once you've made your selection, you'll 
-            be prompted to choose a player from your current roster to drop—if 
-            your claim goes through. Claims are processed after 48 hours, and 
-            if multiple teams place a claim on the same player, one will be 
-            chosen at random to receive them. You can track your pending and 
-            completed claims anytime from your Profile page.
+              Looking to strengthen your lineup? Head over to the Available 
+              Players section and click the Add Player button next to any free 
+              agent you'd like to claim. Once you've made your selection, you'll 
+              be prompted to choose a player from your current roster to drop—if 
+              your claim goes through. 
+            </p>
+            <p>
+              Claims are processed at 7 AM after a minimum of 48 hours has passed since your claim. 
+              For example, if you place a claim at 5 AM on December 5th, it will be resolved at 7 AM on December 7th. 
+              This timing ensures fairness and gives all managers a chance to make claims.
+            </p>
+            <p>
+              If multiple teams place a claim on the same player, one will be chosen at random to receive them. 
+              You can track your pending and completed claims anytime from your Profile page.
             </p>
         </div>
         <Footer page="rules"/>
