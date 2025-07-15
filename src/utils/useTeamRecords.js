@@ -41,8 +41,22 @@ import { calculateFantasyPoints } from "../utils/FantasyPoints.js";
       }
     };
   
-    const updateTeamRecordsAfterUpload = async (targetWeek, season = 2025) => {
+    const updateTeamRecordsAfterUpload = async (targetWeek, triggerLeague, season = 2025) => {
       try {
+        const fantasyLeagues = [
+          "Ren Faire",
+          "Beavers Latestarters",
+          "Cheris Nite Out",
+          "Andys Classic",
+        ];
+    
+        // Bail out early if triggerLeague is NOT in fantasyLeagues
+        if (!fantasyLeagues.includes(triggerLeague)) {
+          console.log(`League "${triggerLeague}" is not a fantasy league. Skipping update.`);
+          return false;
+        }
+    
+        // Otherwise proceed as usual
         const [weekLocksRes, allRostersRes, allScoresRes, totalLeaguesRes] = await Promise.all([
           getCompletedLeagues(targetWeek),
           getRostersForWeek(targetWeek),
@@ -55,16 +69,30 @@ import { calculateFantasyPoints } from "../utils/FantasyPoints.js";
         const allScores = allScoresRes.data;
         const { totalLeagues } = totalLeaguesRes.data;
     
-        const locksForTargetWeek = weekLocks.filter(w => w.week === targetWeek);
-        const allCompleted = locksForTargetWeek.length === totalLeagues.length && locksForTargetWeek.every(w => w.completed === "yes");        
-        if (!allCompleted) return false;
+        // Filter relevant leagues
+        const relevantLeagues = totalLeagues.filter(l => fantasyLeagues.includes(l.league));
+    
+        // Filter locks for targetWeek and relevant leagues
+        const locksForTargetWeek = weekLocks.filter(
+          w => w.week === targetWeek && fantasyLeagues.includes(w.league)
+        );
+    
+        // Check if all relevant leagues have completed the week
+        const allCompleted =
+          locksForTargetWeek.length === relevantLeagues.length &&
+          locksForTargetWeek.every(w => w.completed === "yes");
+    
+        if (!allCompleted) {
+          console.log(`Not all leagues completed for week ${targetWeek}. Skipping update.`);
+          return false;
+        }
     
         // Get current week info
         const response = await getCurrentWeek();
         const { totalWeeks, completedWeeks } = response.data;
         const remainingWeeks = totalWeeks - completedWeeks;
     
-        // Update team records only if 3 or more weeks remain (i.e., before playoffs)
+        // Update team records if 3 or more weeks remain
         if (remainingWeeks >= 3) {
           const teamScores = {};
           const validPositions = ["1", "2", "3", "4", "5", "Flex"];
@@ -95,7 +123,7 @@ import { calculateFantasyPoints } from "../utils/FantasyPoints.js";
           }
         }
     
-        // Then generate playoffs if 3 or fewer weeks remain (playoffs happen AFTER records are updated)
+        // Generate playoffs if 3 or fewer weeks remain
         if (remainingWeeks <= 3) {
           await generatePlayoffs({
             remainingWeeks,

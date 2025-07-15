@@ -44,7 +44,7 @@ const AdminHandleWeek = () => {
       );
 
       // Update team records and generate playoffs if needed (inside this function)
-      const allCompleted = await updateTeamRecordsAfterUpload(selectedWeek.week);
+      const allCompleted = await updateTeamRecordsAfterUpload(selectedWeek.week, selectedWeek.league);
       if (!allCompleted) {
         return;
       }
