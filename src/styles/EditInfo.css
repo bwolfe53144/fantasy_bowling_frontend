@@ -96,13 +96,11 @@ label {
   text-align: center;
 }
 
-.EmailSubscription input[type="email"] {
-  width: 100%;
+.editInfo input[type="email"] {
+  height: 25px; 
+  font-size: 1rem; 
   padding: 0.5rem 0.75rem;
-  border-radius: 5px;
-  border: 1px solid #bbb;
-  font-size: 1rem;
-  transition: border-color 0.3s ease;
+  border-radius: 8px;
 }
 
 .EmailSubscription input[type="email"]:focus {
@@ -112,7 +110,7 @@ label {
 }
 
 .EmailSubscription button {
-  margin-top: 0.75rem;
+  margin-top: .75rem;
   padding: 0.6rem 1.5rem;
   background-color: #2f86eb;
   color: white;
@@ -146,6 +144,10 @@ label {
   font-size: 1.1rem; 
   border-radius: 6px;
   border: 1px solid #ccc;
+}
+
+.edit-color {
+  font-weight: bold;
 }
 
 /*Responsive*/

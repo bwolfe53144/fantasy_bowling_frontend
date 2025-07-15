@@ -1,7 +1,7 @@
 export default function ColorSelector({ value, onChange }) {
   return (
-    <div style={{ margin: "1rem 0" }}>
-      <label htmlFor="color-select">Color Scheme </label>
+    <div>
+      <label className="edit-color" htmlFor="color-select">Color Scheme </label>
       <select
         id="color-select"
         value={value}
