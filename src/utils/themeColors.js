@@ -180,7 +180,7 @@ export function getThemeColors(colorKey, isDark) {
     },
     dark: {
       backgroundColor: "#3743a1",
-      color: "#e0e0ff",
+      color: "white",
       extraBackground: "#000000",
     },
   };
