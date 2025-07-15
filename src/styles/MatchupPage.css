@@ -139,7 +139,6 @@
   text-overflow: ellipsis;
 }
 
-/* Bold row */
 
 .boldRow td {
   font-weight: bold;
@@ -199,5 +198,9 @@
 }
 
 .dark .teamInfo .ownerName {
+  color: white;
+}
+
+.dark .boldRow td {
   color: white;
 }
