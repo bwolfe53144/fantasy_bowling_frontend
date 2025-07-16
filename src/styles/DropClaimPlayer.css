@@ -42,5 +42,25 @@
     margin-left: 0.3rem;
   }
 
+  .dark .dropClaimPage h1 {
+    color: #f0f0f0;
+  }
+  
+  .dark .dropClaimPage p {
+    color: #ddd;
+  }
+  
+  .dark .dropClaimPage h3 {
+    color: #ccc;
+  }
+  
+  .dark .dropClaimPage label {
+    color: #f0f0f0;
+  }
+  
+  .dark .dropClaimPage em {
+    color: #aaa;
+  }
+
 
   
