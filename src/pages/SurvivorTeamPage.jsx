@@ -18,8 +18,8 @@ const SurvivorTeamPage = () => {
 
   const { league, teamname } = useParams();
 
-  const { buttonBackground, buttonColor } = getThemeColors(user?.color, isDarkMode);
-  const buttonStyle = { backgroundColor: buttonBackground, color: buttonColor };
+  const { backgroundColor, color } = getThemeColors(user?.color, isDarkMode);
+  const headerStyle = { backgroundColor, color };
 
   useEffect(() => {
     document.body.classList.toggle("menuOpen", isMenuOpen);
@@ -57,7 +57,7 @@ const SurvivorTeamPage = () => {
           <p>This team has not submitted any completed picks yet.</p>
         ) : (
           <table className="survivor-picks-table">
-            <thead>
+            <thead style={headerStyle}>
               <tr>
                 <th>Week</th>
                 <th>Player Picked</th>

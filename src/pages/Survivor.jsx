@@ -13,6 +13,7 @@ import {
   fetchAllLockStatuses,
   getUserSurvivorEntries,
 } from "../utils/api";
+import "../styles/Survivor.css";
 
 const Survivor = () => {
   const { user, loading } = useContext(AuthContext);
@@ -87,22 +88,27 @@ const Survivor = () => {
 
   const openLeagues = leagues.filter((leagueObj) => {
     const leagueName = leagueObj.league;
-  
+
     const week3Lock = locks.find(
       (lock) => lock.league === leagueName && lock.week === 3
     );
-  
+
     if (!week3Lock || !week3Lock.lockTime) {
-      return false; // disallow if no lock info
+      return false;
     }
-  
+
     const now = new Date();
     const lockTime = new Date(week3Lock.lockTime);
-  
+
     return now < lockTime;
   });
 
-  if (loading) {
+  // Filter leagues user hasn't joined yet
+  const leaguesAvailableToJoin = openLeagues.filter(
+    (l) => !survivorEntries.find((entry) => entry.league === l.league)
+  );
+
+  if (loading || isLoadingLeagues) {
     return <LoadingScreen />;
   }
 
@@ -110,9 +116,9 @@ const Survivor = () => {
     <div className="pageContainer">
       <Header onToggleMenu={setIsMenuOpen} isMenuOpen={isMenuOpen} />
       <Navbar />
-      <div className="mainPage">
+      <div className="mainPage survivor">
         <h1>Survivor Bowling</h1>
-
+  
         {!user ? (
           <>
             <p>
@@ -130,63 +136,74 @@ const Survivor = () => {
           </>
         ) : (
           <>
-            {openLeagues.length === 0 ? (
-              <p>No leagues currently open for Survivor sign-ups.</p>
-            ) : (
-              openLeagues.map((leagueObj) => {
-                const league = leagueObj.league;
-                const isActive = activeLeagueForSignup === league;
-                const userEntry = survivorEntries.find((entry) => entry.league === league);
-
-                return (
-                  <div
-                    key={league}
-                    style={{
-                      marginBottom: "1rem",
-                      padding: "1rem",
-                      border: "1px solid #ccc",
-                      borderRadius: "8px",
-                    }}
-                  >
-                    <h2>{league}</h2>
-                    <p>Sign up before week 3!</p>
-
-                    {userEntry ? (
-                      <p>
-                        ✅ You already have a Survivor team:{" "}
-                        <strong>{userEntry.teamName}</strong>.{" "}
-                        <Link to={`/survivor/${league}`}>View your Survivor team</Link>
-                      </p>
-                    ) : !isActive ? (
-                      <button
-                        style={buttonStyle}
-                        onClick={() => handleStartSignup(league)}
-                      >
-                        Sign up for Survivor Bowling
-                      </button>
-                    ) : (
-                      <>
-                        <input
-                          type="text"
-                          placeholder="Enter your Survivor team name"
-                          value={teamNameInput}
-                          onChange={(e) => setTeamNameInput(e.target.value)}
-                          style={{ marginRight: "0.5rem" }}
-                        />
-                        <button style={buttonStyle} onClick={handleSubmitSignup}>
-                          Submit
+            {survivorEntries.length > 0 && (
+              <div>
+                <h2>My Survivor Leagues</h2>
+                <ul>
+                  {survivorEntries.map((entry) => {
+                    let statusText = "Active";
+                    let statusColor = "green";
+  
+                    if (entry.winnerStatus === "Winner") {
+                      statusText = "Winner";
+                      statusColor = "goldenrod";
+                    } else if (entry.eliminated) {
+                      statusText = "Eliminated";
+                      statusColor = "red";
+                    }
+  
+                    return (
+                      <li key={entry.id}>
+                        <Link to={`/survivor/${entry.league}`}>
+                          <strong>{entry.league}</strong>
+                        </Link>
+                        <div>
+                          {entry.teamName}:{" "}
+                          <span style={{ color: statusColor, fontWeight: "bold" }}>
+                            {statusText}
+                          </span>
+                        </div>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+            )}
+  
+            {leaguesAvailableToJoin.length > 0 && (
+              <div>
+                <h2>Leagues Available to Join</h2>
+                {leaguesAvailableToJoin.map((leagueObj) => {
+                  const league = leagueObj.league;
+                  const isActive = activeLeagueForSignup === league;
+  
+                  return (
+                    <div key={league}>
+                      <h3>{league}</h3>
+                      <p>Sign up before week 3!</p>
+  
+                      {!isActive ? (
+                        <button style={buttonStyle} onClick={() => handleStartSignup(league)}>
+                          Sign up for Survivor Bowling
                         </button>
-                        <button
-                          style={{ marginLeft: "0.5rem" }}
-                          onClick={() => setActiveLeagueForSignup(null)}
-                        >
-                          Cancel
-                        </button>
-                      </>
-                    )}
-                  </div>
-                );
-              })
+                      ) : (
+                        <>
+                          <input
+                            type="text"
+                            placeholder="Enter your Survivor team name"
+                            value={teamNameInput}
+                            onChange={(e) => setTeamNameInput(e.target.value)}
+                          />
+                          <button onClick={handleSubmitSignup}>Submit</button>
+                          <button onClick={() => setActiveLeagueForSignup(null)}>
+                            Cancel
+                          </button>
+                        </>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
             )}
           </>
         )}

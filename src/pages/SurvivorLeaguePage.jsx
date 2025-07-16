@@ -13,6 +13,7 @@ import {
   getEligibleSurvivorPlayers,
   submitSurvivorPicks,
 } from "../utils/api";
+import "../styles/Survivor.css";
 
 const SurvivorLeaguePage = () => {
   const { user, loading } = useContext(AuthContext);
@@ -27,8 +28,9 @@ const SurvivorLeaguePage = () => {
 
   const { league } = useParams();
 
-  const { buttonBackground, buttonColor } = getThemeColors(user?.color, isDarkMode);
+  const { buttonBackground, buttonColor, color, backgroundColor } = getThemeColors(user?.color, isDarkMode);
   const buttonStyle = { backgroundColor: buttonBackground, color: buttonColor };
+  const headerStyle = { color, backgroundColor };
 
   useEffect(() => {
     document.body.classList.toggle("menuOpen", isMenuOpen);
@@ -50,25 +52,20 @@ const SurvivorLeaguePage = () => {
     fetchEntries();
   }, [league]);
 
-  const leagueConfigs = {
-    "Sunday AM": {
-      rulesText: "Sunday AM rules: You may reuse players twice.",
-      allowRepeats: true,
-    },
-    "Tuesday PM": {
-      rulesText: "Tuesday PM: Strict single-use only, must pick before Monday.",
-      allowRepeats: false,
-    },
-    "Pro League": {
-      rulesText: "Pro League: Advanced scoring, no repeat players at all.",
-      allowRepeats: false,
-    },
+  const leagueCutoffs = {
+    "SundayAM": 0.4,
+    "Cheris Nite Out": 0.6,
+    "Ren Faire": 0.3,
+    "Beavers Latestarters": 0.3,
+    "Andys Classic": 0.25,
+    "Heyden Classic": 0.4,
   };
 
-  const config = leagueConfigs[league] || {
-    rulesText: "Standard survivor rules apply.",
-    allowRepeats: false,
-  };
+  const cutoff = leagueCutoffs[league];
+  const cutoffText = `Each week, your chosen bowler must finish in the top ${Math.round(cutoff * 100)}% of scores in this league to advance.`;
+
+  const userEntry = entries.find((entry) => entry.userId === user?.id);
+  const winnerEntry = entries.find((entry) => entry.winnerStatus === "winner");
 
   const sortedEntries = [...entries].sort((a, b) => {
     if (!a.eliminated && b.eliminated) return -1;
@@ -79,9 +76,6 @@ const SurvivorLeaguePage = () => {
     return 0;
   });
 
-  const userEntry = entries.find((entry) => entry.userId === user?.id);
-  const winnerEntry = entries.find((entry) => entry.winnerStatus === "winner");
-
   const handleOpenPickSection = async () => {
     if (!userEntry) return;
     try {
@@ -91,7 +85,6 @@ const SurvivorLeaguePage = () => {
       ]);
 
       setEligiblePlayers(playersRes.data.players || []);
-
       const currentPicks = picksRes.data.picks || [];
 
       const initialSelected = Array(5).fill("");
@@ -148,16 +141,12 @@ const SurvivorLeaguePage = () => {
     <div className="pageContainer">
       <Header onToggleMenu={setIsMenuOpen} isMenuOpen={isMenuOpen} />
       <Navbar />
-      <div className="mainPage">
+      <div className="mainPage survivor">
         <h1>Survivor League: {league}</h1>
-        <p>{config.rulesText}</p>
 
         {winnerEntry && (
-          <div style={{ marginTop: "1rem", padding: "1rem", backgroundColor: "#ffd700", borderRadius: "8px" }}>
+          <div className="winnerBanner">
             <h2>🏆 Winner: {winnerEntry.teamName}</h2>
-            <p>
-              Congratulations to {winnerEntry.user?.firstname} {winnerEntry.user?.lastname}!
-            </p>
           </div>
         )}
 
@@ -165,13 +154,13 @@ const SurvivorLeaguePage = () => {
         {sortedEntries.length === 0 ? (
           <p>No entries yet.</p>
         ) : (
-          <table style={{ width: "100%", borderCollapse: "collapse" }}>
-            <thead>
+          <table className="survivorLeaderboard">
+            <thead style={headerStyle}>
               <tr>
-                <th style={{ borderBottom: "1px solid #ccc", padding: "0.5rem" }}>Team Name</th>
-                <th style={{ borderBottom: "1px solid #ccc", padding: "0.5rem" }}>Eliminated</th>
-                <th style={{ borderBottom: "1px solid #ccc", padding: "0.5rem" }}>User</th>
-                <th style={{ borderBottom: "1px solid #ccc", padding: "0.5rem" }}>View Picks</th>
+                <th>Team Name</th>
+                <th>Eliminated</th>
+                <th>User</th>
+                <th>View Picks</th>
               </tr>
             </thead>
             <tbody>
@@ -186,14 +175,11 @@ const SurvivorLeaguePage = () => {
 
                 return (
                   <tr key={entry.id}>
-                    <td style={{ borderBottom: "1px solid #eee", padding: "0.5rem" }}>{entry.teamName}</td>
-                    <td style={{ borderBottom: "1px solid #eee", padding: "0.5rem" }}>{eliminatedText}</td>
-                    <td style={{ borderBottom: "1px solid #eee", padding: "0.5rem" }}>{userName}</td>
-                    <td style={{ borderBottom: "1px solid #eee", padding: "0.5rem" }}>
-                      <Link
-                        to={`/survivor/${encodeURIComponent(league)}/${encodedTeamName}`}
-                        style={{ color: buttonColor, textDecoration: "underline" }}
-                      >
+                    <td>{entry.teamName}</td>
+                    <td>{eliminatedText}</td>
+                    <td>{userName}</td>
+                    <td>
+                      <Link to={`/survivor/${encodeURIComponent(league)}/${encodedTeamName}`}>
                         View Picks
                       </Link>
                     </td>
@@ -206,20 +192,19 @@ const SurvivorLeaguePage = () => {
 
         {userEntry && !userEntry.eliminated && !winnerEntry && (
           <>
-            <button style={buttonStyle} onClick={handleOpenPickSection}>
+            <button style={buttonStyle} className="survivorAction" onClick={handleOpenPickSection}>
               Make your picks
             </button>
 
             {showPickSection && (
-              <div style={{ marginTop: "1rem" }}>
-                <h3>Select your lineup (1-5)</h3>
+              <div className="pickSection">
+                <h3>Select your lineup (1–5)</h3>
                 {[0, 1, 2, 3, 4].map((i) => (
-                  <div key={i} style={{ marginBottom: "0.5rem" }}>
-                    <label style={{ marginRight: "0.5rem" }}>Spot {i + 1}:</label>
+                  <div key={i} className="pickRow">
+                    <label>Spot {i + 1}:</label>
                     <select
                       value={selectedPlayers[i]}
                       onChange={(e) => handleSelectPlayer(i, e.target.value)}
-                      style={{ padding: "0.5rem" }}
                     >
                       <option value="">-- Select Player --</option>
                       {eligiblePlayers.map((p) => (
@@ -234,28 +219,27 @@ const SurvivorLeaguePage = () => {
                     </select>
                   </div>
                 ))}
-                <button style={buttonStyle} onClick={handleSubmitPick}>
+                <button className="survivorAction" onClick={handleSubmitPick}>
                   Submit Lineup
                 </button>
-                <button
-                  onClick={() => {
-                    setShowPickSection(false);
-                    setSelectedPlayers(["", "", "", "", ""]);
-                  }}
-                  style={{ marginLeft: "0.5rem" }}
-                >
+                <button className="cancelButton" onClick={() => {
+                  setShowPickSection(false);
+                  setSelectedPlayers(["", "", "", "", ""]);
+                }}>
                   Cancel
                 </button>
               </div>
             )}
           </>
         )}
+        <h2>Rules</h2>
+        <p>{cutoffText}</p>
 
         {!userEntry && (
-          <p style={{ marginTop: "1rem", fontStyle: "italic" }}>You don't have an entry in this league.</p>
+          <p className="noEntryNotice">
+            You don't have an entry in this league.
+          </p>
         )}
-
-        <h3>More features coming soon: Weekly results, stats, etc.</h3>
       </div>
       <Footer />
     </div>
