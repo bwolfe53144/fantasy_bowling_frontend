@@ -103,7 +103,7 @@ const TeamFantasyStats = () => {
   const filteredPlayers = getFilteredPlayers();
   const averageByName = getBowlerAverages(filteredPlayers);
 
-  if (loading || !teamData) {
+  if (loading || !teamData || !teamData.players) {
     return <LoadingScreen />;
   }
   
