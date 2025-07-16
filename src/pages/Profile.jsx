@@ -7,14 +7,21 @@ import Footer from "../../components/Footer.jsx";
 import LoadingScreen from "../../components/LoadingScreen.jsx";
 import Claims from "../../components/Claims.jsx";
 import { MatchupTable } from "../../components/MatchupTable.jsx";
-import { fetchAllClaims, getCurrentWeek, getRostersForWeek, 
-  getWeekScoreForWeek, getStarredMessages,
-  getRecentMatches, getPlayerByName } from "../utils/api.js";
+import {
+  fetchAllClaims,
+  getCurrentWeek,
+  getRostersForWeek,
+  getWeekScoreForWeek,
+  getStarredMessages,
+  getRecentMatches,
+  getPlayerByName,
+  getUserSurvivorEntries,
+} from "../utils/api.js";
 import { fetchCompletedWeeks } from "../utils/weekHelpers.js";
 import { getThemeColors } from "../utils/themeColors.js";
 import { ThemeContext } from "../utils/ThemeContext.jsx";
 import { calculateFantasyPoints } from "../utils/FantasyPoints.js";
-import PlayerStatsTable from "../../components/PlayerStatsTable.jsx"; // ✅ Make sure path matches
+import PlayerStatsTable from "../../components/PlayerStatsTable.jsx";
 
 import "../styles/Profile.css";
 
@@ -29,6 +36,7 @@ const Profile = () => {
   const [completedWeeks, setCompletedWeeks] = useState([]);
   const [starredMessages, setStarredMessages] = useState([]);
   const [myPlayerStats, setMyPlayerStats] = useState(null);
+  const [mySurvivorLeagues, setMySurvivorLeagues] = useState([]);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const { buttonBackground, buttonColor } = getThemeColors(user?.color, isDarkMode);
@@ -104,6 +112,19 @@ const Profile = () => {
     })();
   }, [user, currentWeek]);
 
+  useEffect(() => {
+    if (!user?.id) return;
+
+    (async () => {
+      try {
+        const res = await getUserSurvivorEntries(user.id);
+        setMySurvivorLeagues(res.data || []);
+      } catch (err) {
+        console.error("Error fetching survivor entries:", err);
+      }
+    })();
+  }, [user]);
+
   const enrichMatchesWithScores = async (matches) => {
     const uniqueWeeks = [...new Set(matches.map((m) => m.week))];
 
@@ -171,7 +192,6 @@ const Profile = () => {
     })();
   }, [recentMatches, completedWeeks]);
 
-  // ✅ Fetch bowling stats for user
   useEffect(() => {
     if (!user) return;
 
@@ -201,7 +221,6 @@ const Profile = () => {
           </Link>
           <Claims myClaims={myClaims} />
 
-          {/* ✅ Bowling stats using PlayerStatsTable */}
           {myPlayerStats && myPlayerStats.length > 0 && (
             <div>
               <h2>🎳 My Bowling Stats</h2>
@@ -216,6 +235,48 @@ const Profile = () => {
               completedWeeks={completedWeeks}
               currentWeek={currentWeek}
             />
+          )}
+
+          {mySurvivorLeagues && mySurvivorLeagues.length > 0 && (
+            <div>
+              <h2>My Survivor Leagues</h2>
+              <ul>
+                {mySurvivorLeagues.map((entry) => {
+                  console.log("entry", entry);
+
+                  // Determine status text and color
+                  let statusText = "Active";
+                  let statusColor = "green";
+
+                  if (entry.winnerStatus === "winner") {
+                    statusText = "Winner";
+                    statusColor = "goldenrod";
+                  } else if (entry.eliminated) {
+                    statusText = "Eliminated";
+                    statusColor = "red";
+                  }
+
+                  return (
+                    <li key={entry.id} style={{ marginBottom: "1rem" }}>
+                      <Link to={`/survivor/${entry.league}`}>
+                        <strong>{entry.league}</strong>
+                      </Link>
+                      <div>
+                        {entry.teamName}:{" "}
+                        <span
+                          style={{
+                            color: statusColor,
+                            fontWeight: "bold",
+                          }}
+                        >
+                          {statusText}
+                        </span>
+                      </div>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
           )}
 
           {starredMessages.length > 0 && (
