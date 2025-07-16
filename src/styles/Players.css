@@ -248,6 +248,12 @@
     display: none;
   }
 }
+
+@media (min-width: 768px) {
+  .horizontalScrollArea {
+    max-height: 80vh; /* bigger on tablets and up */
+  }
+}
   
 .dark .graphPageStats label {
   color: white;
