@@ -103,8 +103,22 @@ const TeamFantasyStats = () => {
   const filteredPlayers = getFilteredPlayers();
   const averageByName = getBowlerAverages(filteredPlayers);
 
-  if (loading || !teamData || !teamData.players || teamData.players.length === 0) {
+  if (loading || !teamData) {
     return <LoadingScreen />;
+  }
+  
+  if (teamData.players.length === 0) {
+    return (
+      <div className="pageContainer graphPageStats">
+        <Header onToggleMenu={setIsMenuOpen} isMenuOpen={isMenuOpen} />
+        <Navbar />
+        <div className="mainPage">
+          <h1>Fantasy Team Stats: {teamName}</h1>
+          <p>No players found for this team.</p>
+        </div>
+        <Footer />
+      </div>
+    );
   }
 
   return (
