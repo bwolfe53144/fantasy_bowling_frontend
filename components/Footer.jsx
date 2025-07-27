@@ -17,15 +17,17 @@ const Footer = ({ page }) => {
         About
       </Link>
 
-      <button
+      <a
+        href="https://www.facebook.com/groups/1780323492061614"
+        target="_blank"
+        rel="noopener noreferrer"
         className="footer-button"
-        onClick={() => openExternalLink("https://www.facebook.com/groups/1780323492061614")}
         aria-label="Join us on Facebook"
         title="Facebook Group"
         style={{ background: "none", border: "none", padding: 0, cursor: "pointer" }}
       >
         <img className="footImg" src="/facebook.png" alt="Facebook" />
-      </button>
+      </a>
 
       <button
         className="footer-button"
