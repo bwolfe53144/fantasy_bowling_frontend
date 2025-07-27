@@ -29,7 +29,12 @@ const SurvivorLeaguePage = () => {
   const { league } = useParams();
 
   const { buttonBackground, buttonColor, color, backgroundColor } = getThemeColors(user?.color, isDarkMode);
-  const buttonStyle = { backgroundColor: buttonBackground, color: buttonColor };
+  const buttonStyle = { 
+    backgroundColor: buttonBackground, 
+    color: buttonColor, 
+    marginTop: "2rem",
+    maxWidth: "220px"
+  };
   const headerStyle = { color, backgroundColor };
 
   useEffect(() => {
@@ -53,7 +58,7 @@ const SurvivorLeaguePage = () => {
   }, [league]);
 
   const leagueCutoffs = {
-    "SundayAM": 0.4,
+    "Sunday AM": 0.4,
     "Cheris Nite Out": 0.6,
     "Ren Faire": 0.3,
     "Beavers Latestarters": 0.3,
