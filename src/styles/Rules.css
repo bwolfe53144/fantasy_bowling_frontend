@@ -1,107 +1,86 @@
+/* Layout container for scores */
 .scoreText {
   display: flex;
   justify-content: space-around;
   flex-wrap: wrap;
-  gap: 1rem; 
+  gap: 1rem;
 }
 
 .scoreText p {
-  min-width: 200px; 
+  min-width: 200px;
 }
 
-/* Main content styling for rules page */
+/* Main rules page content */
 .mainPage.rules {
   position: relative;
   z-index: 1;
-  background-color: rgba(0, 0, 0, 0.5) !important; 
+  background-color: rgba(0, 0, 0, 0.5) !important;
   font-weight: bold;
   color: white;
   padding: 0 1rem;
+  min-height: 100vh;
+  box-sizing: border-box;
+  padding-bottom: 100px; /* room for footer */
 }
 
-/* Fixed background image via ::before on html */
-html.rules-bg {
-  position: relative;
-  min-height: 100%;
-}
-
+/* Fixed full-screen background image */
 html.rules-bg::before {
   content: "";
   position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
+  top: 0; left: 0;
+  width: 100vw;
+  height: 100vh;
   background-image: url("/pexels-pavel-danilyuk-7429597.jpg");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  z-index: -9999;
+  z-index: -1;
   pointer-events: none;
 }
 
-/* Transparent body so fixed background shows through */
+/* Transparent body to reveal background */
 body.rules-bg {
   background-color: transparent;
-  min-height: 100vh;
+  min-height: 100dvh;
   margin: 0;
   padding: 0;
   position: relative;
   z-index: 0;
+  overflow-x: hidden;
 }
 
-/* Transparent footer */
+/* Footer styling on rules page */
 .footer.rules {
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 1rem;
   padding: 1rem;
-  background-color: rgba(0, 0, 0, 0.5) !important; 
+  background-color: rgba(0, 0, 0, 0.5) !important;
   color: white;
-  z-index: 2; /* above the background */
+  z-index: 2;
+  width: 100%;
+  position: relative;
+  box-sizing: border-box;
 }
 
-/* Responsive adjustments */
+/* Responsive text wrapping for smaller screens */
 @media (max-width: 849px) {
   .scoreText p {
-    flex: 1 1 48%; 
+    flex: 1 1 48%;
   }
 }
 
-html.rules-bg, body.rules-bg {
-  overscroll-behavior: none; /* prevent bounce */
-  overscroll-behavior-y: contain;
-  overscroll-behavior-x: none;
-  -webkit-overflow-scrolling: auto !important;
-  touch-action: none;
-}
-
-html.rules-bg::before {
-  content: "";
-  position: fixed;
-  top: -10vh;
-  left: 0;
-  width: 100%;
-  height: 120vh;
-  background-image: url("/pexels-pavel-danilyuk-7429597.jpg");
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  z-index: -9999;
-  pointer-events: none;
-}
-
+/* Fix mobile layout quirks */
 @media (max-width: 500px) {
   .footer.rules {
-    display: flex !important;
-    position: relative !important;
-    background-color: transparent !important; 
-    width: 100%;
-    height: auto;
-    min-height: 60px;
-    z-index: 2;
+    flex-direction: column;
+    padding: 1rem;
+    background-color: rgba(0, 0, 0, 0.6) !important;
   }
 
   .mainPage.rules {
-    padding-bottom: 160px; 
+    padding-bottom: 160px;
   }
 }
 
