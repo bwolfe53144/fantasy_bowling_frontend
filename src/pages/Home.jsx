@@ -20,7 +20,7 @@ export default function Home() {
   const [weeksLeft, setWeeksLeft] = useState(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { backgroundColor, color } = getThemeColors(user?.color, isDarkMode);
-  
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -28,7 +28,7 @@ export default function Home() {
           getCurrentWeek(),
           getTeamsForHome()
         ]);
-  
+
         const { totalWeeks, currentWeek, completedWeeks } = weekRes.data;
         setWeeksLeft(totalWeeks - completedWeeks - 3);
         setTeams(teamsRes.data);
@@ -36,7 +36,7 @@ export default function Home() {
         console.error("Error fetching week or team info:", error);
       }
     };
-  
+
     fetchData();
   }, []);
 
@@ -60,7 +60,7 @@ export default function Home() {
     if (playoffTeams.length === 3) {
       const sortedByPlayoff = [...playoffTeams].sort((a, b) => a.playoffSeed - b.playoffSeed);
       const remaining = teams.filter((t) => t.playoffSeed == null).sort((a, b) => b.wins - a.wins);
-  
+
       const sortedWithTrophies = sortedByPlayoff.map((team, index) => {
         let trophy = "";
         if (index === 0) trophy = "🏆";
@@ -68,7 +68,7 @@ export default function Home() {
         else if (index === 2) trophy = "🥉";
         return { ...team, trophy };
       });
-  
+
       updated = [...sortedWithTrophies, ...remaining];
     } else {
       const teamScore = (team) => team.wins + 0.5 * (team.ties ?? 0);
@@ -99,26 +99,29 @@ export default function Home() {
         };
       });
     }
-  
+
     setUpdatedTeams(updated);
   }, [teams, weeksLeft]);
 
   const anyClinched = updatedTeams.some(team => team.clinched);
 
   if (loading) {
-    return  <LoadingScreen />
+    return <LoadingScreen />;
   }
 
   return (
-    <div className="pageContainer homepage"
-    style={{
-      "--table-bg": backgroundColor,
-      "--table-color": color,
-    }}>
+    <div
+      className="pageContainer homepage"
+      style={{
+        "--table-bg": backgroundColor,
+        "--table-color": color,
+      }}
+    >
       <Header onToggleMenu={setIsMenuOpen} isMenuOpen={isMenuOpen} />
       <Navbar />
       <div className="mainPage homepage">
         <h1 className="mainTitle">Fantasy Bowling League</h1>
+
         {!user && !loading && (
           <div className="signUpButtonWrapper">
             <h2>Not a user already? What are you waiting for... sign up now!</h2>
@@ -126,12 +129,26 @@ export default function Home() {
               Sign Up
             </Link>
           </div>
-        )}        
+        )}
+
+        {/* ✅ App Download Button */}
+        <div className="appDownloadWrapper">
+          <p style={{ fontWeight: "bold", marginTop: "1rem" }}>On Android? Download the app:</p>
+          <a
+            href="/downloads/FantasyBowlingApp.apk"
+            className="signUpButton"
+            download
+            style={{ marginTop: "0.5rem" }}
+          >
+            📱 Download Android App
+          </a>
+        </div>
+
         <div className="standingsContainer">
-            <div className="standingsHeader">
-              <h2 className="standingsTitle">Standings</h2>
-            </div>
-            <div className="horizontalScrollArea">
+          <div className="standingsHeader">
+            <h2 className="standingsTitle">Standings</h2>
+          </div>
+          <div className="horizontalScrollArea">
             <table>
               <caption className="visually-hidden">Fantasy Bowling League Standings</caption>
               <thead>
@@ -151,7 +168,8 @@ export default function Home() {
                     <td>{index + 1}</td>
                     <td className="teamLink">
                       <Link to={`/team/${team.name}`}>
-                        {team.trophy ? team.trophy : team.clinched}{team.name}
+                        {team.trophy ? team.trophy : team.clinched}
+                        {team.name}
                       </Link>
                     </td>
                     <td>{team.record}</td>
@@ -163,13 +181,17 @@ export default function Home() {
                 ))}
               </tbody>
             </table>
+          </div>
+          {anyClinched && (
+            <div className="clinchLegend">
+              <p>
+                <strong>*</strong> Clinched Playoffs
+              </p>
+              <p>
+                <strong>**</strong> Clinched Bye
+              </p>
             </div>
-            {anyClinched && (
-              <div className="clinchLegend">
-                <p><strong>*</strong> Clinched Playoffs</p>
-                <p><strong>**</strong> Clinched Bye</p>
-              </div>
-            )}
+          )}
         </div>
       </div>
       <Footer />
