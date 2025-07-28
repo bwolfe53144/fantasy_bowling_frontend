@@ -8,6 +8,8 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  --app-height: 100vh; 
 }
 
 ::selection {
@@ -36,6 +38,8 @@ html, body {
   width: 100%;
   overflow-x: hidden;
   font-family: sans-serif;
+  font-size: 16px;
+  height: var(--app-height);
 }
 
 body {
@@ -167,8 +171,7 @@ html, body {
   display: grid;
   grid-template-columns: 110px 1fr; /* Sidebar + Main content */
   grid-template-rows: minmax(70px, auto) 1fr minmax(60px, auto);
-  min-height: 100vh;
-  min-height: 100dvh;
+  min-height: var(--app-height);
 }
 
 /* Navbar on the left */
@@ -259,7 +262,7 @@ body.menuOpen .navbar {
   top: 70px;
   left: 0;
   width: 100%;
-  height: calc(100vh - 70px);
+  height: calc(var(--app-height) - 70px);
   background-color: #333;
   padding: 1rem 1rem 3rem 1rem; /* <-- Add bottom padding */
   z-index: 1000;
