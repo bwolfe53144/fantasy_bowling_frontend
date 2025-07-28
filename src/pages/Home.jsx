@@ -131,19 +131,6 @@ export default function Home() {
           </div>
         )}
 
-        {/* ✅ App Download Button */}
-        <div className="appDownloadWrapper">
-          <p style={{ fontWeight: "bold", marginTop: "1rem" }}>On Android? Download the app:</p>
-          <a
-            href="/downloads/FantasyBowlingApp.apk"
-            className="signUpButton"
-            download
-            style={{ marginTop: "0.5rem" }}
-          >
-            📱 Download Android App
-          </a>
-        </div>
-
         <div className="standingsContainer">
           <div className="standingsHeader">
             <h2 className="standingsTitle">Standings</h2>
@@ -193,6 +180,45 @@ export default function Home() {
             </div>
           )}
         </div>
+        {/* Android App Download Button - show only on Android */}
+        {(() => {
+          const isAndroid = /Android/i.test(navigator.userAgent);
+          if (isAndroid) {
+            return (
+              <div className="appDownloadWrapper">
+                <p style={{ fontWeight: "bold", marginTop: "1rem" }}>On Android? Download the app:</p>
+                <a
+                  href="/downloads/FantasyBowlingApp.apk"
+                  className="signUpButton"
+                  download
+                  style={{ marginTop: "0.5rem" }}
+                >
+                  📱 Download Android App
+                </a>
+              </div>
+            );
+          }
+          return null;
+        })()}
+
+        {/* iOS Add to Home Screen Prompt - only on iOS Safari */}
+        {(() => {
+          const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+          const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+
+          if (isIOS && isSafari && !user) {
+            return (
+              <div className="iosPromptBox">
+                <p><strong>On iPhone?</strong> Add this site to your home screen:</p>
+                <ol>
+                  <li>Tap <span style={{ fontSize: "1.2rem" }}>Share <i className="fas fa-share-square" /></span></li>
+                  <li>Then tap <strong>"Add to Home Screen"</strong></li>
+                </ol>
+              </div>
+            );
+          }
+          return null;
+        })()}
       </div>
       <Footer />
     </div>
