@@ -183,7 +183,9 @@ export default function Home() {
         {/* Android App Download Button - show only on Android */}
         {(() => {
           const isAndroid = /Android/i.test(navigator.userAgent);
-          if (isAndroid) {
+          const isInStandaloneMode = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+
+          if (isAndroid && !isInStandaloneMode) {
             return (
               <div className="appDownloadWrapper">
                 <p style={{ fontWeight: "bold", marginTop: "1rem" }}>On Android? Download the app:</p>
