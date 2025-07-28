@@ -21,11 +21,35 @@ export default function Home() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { backgroundColor, color } = getThemeColors(user?.color, isDarkMode);
 
-  // NEW: state for platform detection
+  // Platform detection state
   const [isAndroid, setIsAndroid] = useState(false);
   const [isStandalone, setIsStandalone] = useState(false);
   const [isIOS, setIsIOS] = useState(false);
   const [isSafari, setIsSafari] = useState(false);
+
+  // Utility function for standalone detection
+  const isInStandaloneMode = () => {
+    return window.matchMedia('(display-mode: standalone)').matches ||
+           window.navigator.standalone === true;
+  };
+
+  useEffect(() => {
+    // Detect platform once on mount
+    const ua = navigator.userAgent || "";
+
+    const android = /Android/i.test(ua);
+    const ios = /iPad|iPhone|iPod/.test(ua);
+    const safari = /^((?!chrome|android).)*safari/i.test(ua);
+    const standaloneMode = isInStandaloneMode();
+
+    // Debug logs (remove or comment out in production)
+    console.log("Platform detection:", { android, ios, safari, standaloneMode });
+
+    setIsAndroid(android);
+    setIsIOS(ios);
+    setIsSafari(safari);
+    setIsStandalone(standaloneMode);
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -58,21 +82,6 @@ export default function Home() {
     document.body.classList.toggle("menuOpen", isMenuOpen);
     return () => document.body.classList.remove("menuOpen");
   }, [isMenuOpen]);
-
-  useEffect(() => {
-    // Detect platform once on mount
-    const ua = navigator.userAgent || "";
-
-    setIsAndroid(/Android/i.test(ua));
-    setIsIOS(/iPad|iPhone|iPod/.test(ua));
-    setIsSafari(/^((?!chrome|android).)*safari/i.test(ua));
-
-    // Standalone mode detection for PWA and iOS
-    const standaloneMode =
-      window.matchMedia('(display-mode: standalone)').matches ||
-      window.navigator.standalone === true;
-    setIsStandalone(standaloneMode);
-  }, []);
 
   useEffect(() => {
     const playoffTeams = teams.filter(
