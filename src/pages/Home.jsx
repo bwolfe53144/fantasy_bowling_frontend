@@ -21,33 +21,11 @@ export default function Home() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { backgroundColor, color } = getThemeColors(user?.color, isDarkMode);
 
-  // Platform detection state
+  // NEW: state for platform detection
   const [isAndroid, setIsAndroid] = useState(false);
   const [isStandalone, setIsStandalone] = useState(false);
   const [isIOS, setIsIOS] = useState(false);
   const [isSafari, setIsSafari] = useState(false);
-
-  // Utility function for standalone detection
-  const isInStandaloneMode = () => {
-    return window.matchMedia('(display-mode: standalone)').matches ||
-           window.navigator.standalone === true;
-  };
-
-  useEffect(() => {
-    const ua = navigator.userAgent || "";
-  
-    const isAndroid = /Android/i.test(ua);
-    const isIOS = /iPhone|iPad|iPod/i.test(ua);
-    const isWebView = /\bwv\b/.test(ua) || /\bVersion\/[\d.]+ Mobile\/\w+\sSafari/.test(ua) === false;
-    const isStandalone =
-      window.matchMedia('(display-mode: standalone)').matches ||
-      window.navigator.standalone === true ||
-      isWebView;
-  
-    setIsAndroid(isAndroid);
-    setIsIOS(isIOS);
-    setIsStandalone(isStandalone);
-  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -80,6 +58,21 @@ export default function Home() {
     document.body.classList.toggle("menuOpen", isMenuOpen);
     return () => document.body.classList.remove("menuOpen");
   }, [isMenuOpen]);
+
+  useEffect(() => {
+    // Detect platform once on mount
+    const ua = navigator.userAgent || "";
+
+    setIsAndroid(/Android/i.test(ua));
+    setIsIOS(/iPad|iPhone|iPod/.test(ua));
+    setIsSafari(/^((?!chrome|android).)*safari/i.test(ua));
+
+    // Standalone mode detection for PWA and iOS
+    const standaloneMode =
+      window.matchMedia('(display-mode: standalone)').matches ||
+      window.navigator.standalone === true;
+    setIsStandalone(standaloneMode);
+  }, []);
 
   useEffect(() => {
     const playoffTeams = teams.filter(
