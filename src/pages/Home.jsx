@@ -34,21 +34,19 @@ export default function Home() {
   };
 
   useEffect(() => {
-    // Detect platform once on mount
     const ua = navigator.userAgent || "";
-
-    const android = /Android/i.test(ua);
-    const ios = /iPad|iPhone|iPod/.test(ua);
-    const safari = /^((?!chrome|android).)*safari/i.test(ua);
-    const standaloneMode = isInStandaloneMode();
-
-    // Debug logs (remove or comment out in production)
-    console.log("Platform detection:", { android, ios, safari, standaloneMode });
-
-    setIsAndroid(android);
-    setIsIOS(ios);
-    setIsSafari(safari);
-    setIsStandalone(standaloneMode);
+  
+    const isAndroid = /Android/i.test(ua);
+    const isIOS = /iPhone|iPad|iPod/i.test(ua);
+    const isWebView = /\bwv\b/.test(ua) || /\bVersion\/[\d.]+ Mobile\/\w+\sSafari/.test(ua) === false;
+    const isStandalone =
+      window.matchMedia('(display-mode: standalone)').matches ||
+      window.navigator.standalone === true ||
+      isWebView;
+  
+    setIsAndroid(isAndroid);
+    setIsIOS(isIOS);
+    setIsStandalone(isStandalone);
   }, []);
 
   useEffect(() => {
