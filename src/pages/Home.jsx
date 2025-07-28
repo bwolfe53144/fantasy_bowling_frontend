@@ -21,6 +21,12 @@ export default function Home() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { backgroundColor, color } = getThemeColors(user?.color, isDarkMode);
 
+  // NEW: state for platform detection
+  const [isAndroid, setIsAndroid] = useState(false);
+  const [isStandalone, setIsStandalone] = useState(false);
+  const [isIOS, setIsIOS] = useState(false);
+  const [isSafari, setIsSafari] = useState(false);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -29,7 +35,7 @@ export default function Home() {
           getTeamsForHome()
         ]);
 
-        const { totalWeeks, currentWeek, completedWeeks } = weekRes.data;
+        const { totalWeeks, completedWeeks } = weekRes.data;
         setWeeksLeft(totalWeeks - completedWeeks - 3);
         setTeams(teamsRes.data);
       } catch (error) {
@@ -54,12 +60,33 @@ export default function Home() {
   }, [isMenuOpen]);
 
   useEffect(() => {
-    const playoffTeams = teams.filter((t) => t.playoffSeed !== null && t.playoffSeed !== undefined);
+    // Detect platform once on mount
+    const ua = navigator.userAgent || "";
+
+    setIsAndroid(/Android/i.test(ua));
+    setIsIOS(/iPad|iPhone|iPod/.test(ua));
+    setIsSafari(/^((?!chrome|android).)*safari/i.test(ua));
+
+    // Standalone mode detection for PWA and iOS
+    const standaloneMode =
+      window.matchMedia('(display-mode: standalone)').matches ||
+      window.navigator.standalone === true;
+    setIsStandalone(standaloneMode);
+  }, []);
+
+  useEffect(() => {
+    const playoffTeams = teams.filter(
+      (t) => t.playoffSeed !== null && t.playoffSeed !== undefined
+    );
 
     let updated;
     if (playoffTeams.length === 3) {
-      const sortedByPlayoff = [...playoffTeams].sort((a, b) => a.playoffSeed - b.playoffSeed);
-      const remaining = teams.filter((t) => t.playoffSeed == null).sort((a, b) => b.wins - a.wins);
+      const sortedByPlayoff = [...playoffTeams].sort(
+        (a, b) => a.playoffSeed - b.playoffSeed
+      );
+      const remaining = teams
+        .filter((t) => t.playoffSeed == null)
+        .sort((a, b) => b.wins - a.wins);
 
       const sortedWithTrophies = sortedByPlayoff.map((team, index) => {
         let trophy = "";
@@ -73,7 +100,9 @@ export default function Home() {
     } else {
       const teamScore = (team) => team.wins + 0.5 * (team.ties ?? 0);
 
-      const sortedTeams = [...teams].sort((a, b) => teamScore(b) - teamScore(a));
+      const sortedTeams = [...teams].sort(
+        (a, b) => teamScore(b) - teamScore(a)
+      );
       const seventhTeamScore = teamScore(sortedTeams[6] ?? { wins: 0, ties: 0 });
       const thirdTeamScore = teamScore(sortedTeams[2] ?? { wins: 0, ties: 0 });
 
@@ -103,7 +132,7 @@ export default function Home() {
     setUpdatedTeams(updated);
   }, [teams, weeksLeft]);
 
-  const anyClinched = updatedTeams.some(team => team.clinched);
+  const anyClinched = updatedTeams.some((team) => team.clinched);
 
   if (loading) {
     return <LoadingScreen />;
@@ -137,7 +166,9 @@ export default function Home() {
           </div>
           <div className="horizontalScrollArea">
             <table>
-              <caption className="visually-hidden">Fantasy Bowling League Standings</caption>
+              <caption className="visually-hidden">
+                Fantasy Bowling League Standings
+              </caption>
               <thead>
                 <tr>
                   <th scope="col">Place</th>
@@ -180,47 +211,38 @@ export default function Home() {
             </div>
           )}
         </div>
-        {/* Android App Download Button - show only on Android */}
-        {(() => {
-          const isAndroid = /Android/i.test(navigator.userAgent);
-          const isInStandaloneMode = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
 
-          if (isAndroid && !isInStandaloneMode) {
-            return (
-              <div className="appDownloadWrapper">
-                <p style={{ fontWeight: "bold", marginTop: "1rem" }}>On Android? Download the app:</p>
-                <a
-                  href="/downloads/FantasyBowlingApp.apk"
-                  className="signUpButton"
-                  download
-                  style={{ marginTop: "0.5rem" }}
-                >
-                  📱 Download Android App
-                </a>
-              </div>
-            );
-          }
-          return null;
-        })()}
+        {/* Android App Download Button - only show on Android and NOT in standalone */}
+        {!loading && isAndroid && !isStandalone && (
+          <div className="appDownloadWrapper">
+            <p style={{ fontWeight: "bold", marginTop: "1rem" }}>
+              On Android? Download the app:
+            </p>
+            <a
+              href="/downloads/FantasyBowlingApp.apk"
+              className="signUpButton"
+              download
+              style={{ marginTop: "0.5rem" }}
+            >
+              📱 Download Android App
+            </a>
+          </div>
+        )}
 
-        {/* iOS Add to Home Screen Prompt - only on iOS Safari */}
-        {(() => {
-          const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-          const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-
-          if (isIOS && isSafari && !user) {
-            return (
-              <div className="iosPromptBox">
-                <p><strong>On iPhone?</strong> Add this site to your home screen:</p>
-                <ol>
-                  <li>Tap <span style={{ fontSize: "1.2rem" }}>Share <i className="fas fa-share-square" /></span></li>
-                  <li>Then tap <strong>"Add to Home Screen"</strong></li>
-                </ol>
-              </div>
-            );
-          }
-          return null;
-        })()}
+        {/* iOS Add to Home Screen Prompt - only on iOS Safari and not logged in */}
+        {!loading && isIOS && isSafari && !user && (
+          <div className="iosPromptBox">
+            <p>
+              <strong>On iPhone?</strong> Add this site to your home screen:
+            </p>
+            <ol>
+              <li>
+                Tap <span style={{ fontSize: "1.2rem" }}>Share <i className="fas fa-share-square" /></span>
+              </li>
+              <li>Then tap <strong>"Add to Home Screen"</strong></li>
+            </ol>
+          </div>
+        )}
       </div>
       <Footer />
     </div>
