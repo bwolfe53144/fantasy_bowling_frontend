@@ -4,17 +4,27 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite + React</title>
+    <title>Fantasy Bowling</title>
+
+    <!-- Set --app-height for Android WebView + mobile -->
+    <script>
+      function setAppHeight() {
+        document.documentElement.style.setProperty('--app-height', `${window.innerHeight}px`);
+      }
+
+      window.addEventListener('resize', setAppHeight);
+      window.addEventListener('orientationchange', () => {
+        setTimeout(setAppHeight, 100); // Allow Android WebView to settle
+      });
+      window.addEventListener('load', setAppHeight);
+
+      setAppHeight(); // Call on initial load
+    </script>
   </head>
   <body>
     <div id="root"></div>
-    <script type="module" src="/src/main.jsx">
-      const setAppHeight = () => {
-        document.documentElement.style.setProperty('--app-height', `${window.innerHeight}px`);
-      };
-      window.addEventListener('resize', setAppHeight);
-      window.addEventListener('orientationchange', setAppHeight);
-      setAppHeight();
-    </script>
+    
+    <!-- Main React App -->
+    <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
