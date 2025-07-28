@@ -157,6 +157,8 @@ tr.highlight {
   .pageContainer.homepage {
     grid-template-columns: 1fr;
     grid-template-rows: minmax(70px, auto) 1fr minmax(60px, auto);
+    min-height: 100vh;
+    min-height: 100dvh;
   }
 
   .pageContainer.homepage .footer {
