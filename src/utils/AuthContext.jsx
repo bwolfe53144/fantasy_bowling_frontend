@@ -13,8 +13,11 @@ const AuthProvider = ({ children }) => {
   const [loadingPlayers, setLoadingPlayers] = useState(true);
   const [loadingWeekScores, setLoadingWeekScores] = useState(true);
 
+  const isAndroidApp = /fantasybowling\/android/i.test(navigator.userAgent);
+  const storage = isAndroidApp ? localStorage : sessionStorage;
+
   const fetchUser = async () => {
-    const token = localStorage.getItem("token");
+    const token = storage.getItem("token");
     if (!token || token === "undefined" || token === "null") {
       setUser(null);
       setLoadingUser(false);
@@ -77,13 +80,13 @@ const AuthProvider = ({ children }) => {
   const loading = loadingUser || loadingTeams || loadingPlayers || loadingWeekScores;
 
   const login = (token) => {
-    localStorage.setItem("token", token);
+    storage.setItem("token", token);
     setLoadingUser(true);
     fetchUser();
   };
 
   const logout = () => {
-    localStorage.removeItem("token");
+    storage.removeItem("token");
     setUser(null);
   };
 
