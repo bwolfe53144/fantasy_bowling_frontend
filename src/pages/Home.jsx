@@ -230,8 +230,7 @@ export default function Home() {
         )}
 
         {/* iOS Add to Home Screen Prompt - only on iOS Safari and not logged in */}
-        {!loading && isIOS && isSafari && !user && (
-          <div className="iosPromptBox">
+        {!loading && isIOS && isSafari && !isStandalone && !user && (          <div className="iosPromptBox">
             <p>
               <strong>On iPhone?</strong> Add this site to your home screen:
             </p>
