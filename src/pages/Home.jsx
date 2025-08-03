@@ -213,7 +213,7 @@ export default function Home() {
         </div>
 
         {/* Android App Download Button - only show on Android and NOT in standalone */}
-        {!loading && isAndroid && !isStandalone && !user && (
+        {!loading && isAndroid && !isStandalone && !window.matchMedia('(display-mode: standalone)').matches && !user && (
           <div className="appDownloadWrapper">
             <p style={{ fontWeight: "bold", marginTop: "1rem" }}>
               On Android? Download the app:
