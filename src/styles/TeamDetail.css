@@ -144,27 +144,27 @@ body.dark .matchupTable td {
 }
 
 body.dark .matchupTable a {
-  color: #91a7ff; /* accent link color in dark mode */
+  font-weight: bold;
 }
 
 body.dark .matchupTable a:hover {
-  color: #c3d3ff;
+  color: #a1b4e7;
 }
 
 /* Adjust win/loss/tie row backgrounds to stay readable in dark mode */
 body.dark .match-row.win {
-  background-color: #4caf50 !important; /* brighter green */
-  color: #fff;
+  background-color: #38ac3c !important; /* brighter green */
+  color: #000 !important;
 }
 
 body.dark .match-row.loss {
-  background-color: #e57373 !important; /* brighter red */
-  color: #fff;
+  background-color: #d14848 !important; /* brighter red */
+  color: #000 !important;
 }
 
 body.dark .match-row.tie {
   background-color: #90caf9 !important; /* light blue */
-  color: #000;
+  color: #000 !important;
 }
 
 body.dark .match-row.current-week {
