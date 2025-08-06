@@ -117,6 +117,12 @@ button:focus-visible {
   width: 100%;
 }
 
+input[type="text"],
+input[type="number"],
+select {
+  min-height: 30px;
+}
+
 /* Header styles */
 .headerLeft {
   display: flex;
@@ -268,6 +274,35 @@ body.menuOpen .navBtn {
   flex: none;
 }
 
+.rank-tan {
+  color: #d2b48c;
+  font-weight: bold;
+}
+.rank-pink {
+  color: #ff69b4;
+  font-weight: bold;
+}
+.rank-orange {
+  color: #ff8c00;
+  font-weight: bold;
+}
+.rank-purple {
+  color: #9370db;
+  font-weight: bold;
+}
+.rank-blue {
+  color: #1e90ff;
+  font-weight: bold;
+}
+.rank-green {
+  color: #3cb371;
+  font-weight: bold;
+}
+.rank-grey {
+  color: #a9a9a9;
+  font-weight: bold;
+}
+
 @media (max-width: 300px) {
   .avatar {
     display: none;
@@ -399,3 +434,4 @@ body.dark .standingsContainer td {
 body.dark .mainPage {
   background-color: black;
 }
+
