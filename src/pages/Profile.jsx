@@ -7,6 +7,8 @@ import Footer from "../../components/Footer.jsx";
 import LoadingScreen from "../../components/LoadingScreen.jsx";
 import Claims from "../../components/Claims.jsx";
 import { MatchupTable } from "../../components/MatchupTable.jsx";
+import PlayerBadgeDisplay from "../../components/PlayerBadgeDisplay.jsx";
+import PlayerRankTable from "../../components/PlayerRankTable.jsx";
 import {
   fetchAllClaims,
   getCurrentWeek,
@@ -242,8 +244,6 @@ const Profile = () => {
               <h2>My Survivor Leagues</h2>
               <ul>
                 {mySurvivorLeagues.map((entry) => {
-                  console.log("entry", entry);
-
                   // Determine status text and color
                   let statusText = "Active";
                   let statusColor = "green";
@@ -303,6 +303,12 @@ const Profile = () => {
             </div>
           )}
         </div>
+        <PlayerRankTable
+          players={myPlayerStats}
+          headerBg={isDarkMode ? "#222" : "#f0f0f0"}
+          headerColor={isDarkMode ? "#fff" : "#000"}
+        />
+        <PlayerBadgeDisplay players={myPlayerStats} />
       </div>
       <Footer />
     </div>
