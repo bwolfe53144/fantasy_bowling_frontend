@@ -23,6 +23,7 @@ const AuthProvider = ({ children }) => {
       setLoadingUser(false);
       return;
     }
+
     try {
       const res = await getUser(token);
       setUser(res.data);
@@ -32,6 +33,12 @@ const AuthProvider = ({ children }) => {
     } finally {
       setLoadingUser(false);
     }
+  };
+
+  const refreshUser = async () => {
+    setLoadingUser(true);
+    await fetchUser();
+    setLoadingUser(false);
   };
 
   const fetchTeams = async () => {
@@ -92,7 +99,16 @@ const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ user, teams, players, loading, weekScores, login, logout }}
+      value={{
+        user,
+        refreshUser,
+        teams,
+        players,
+        loading,
+        weekScores,
+        login,
+        logout,
+      }}
     >
       {children}
     </AuthContext.Provider>
