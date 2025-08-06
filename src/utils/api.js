@@ -8,6 +8,8 @@ export const fetchAllClaims = () => API.get('/api/claims/all');
 export const fetchAllLockStatuses = () => API.get(`/get-all-lock-statuses`);
 export const fetchAllRosters = () => API.get(`/roster/all`);
 export const fetchRecentTransactions = (page) => API.get(`/api/transactions/recent?page=${page}&limit=10`);
+export const getAllOwners = () => API.get("/api/owners");
+export const getAvailablePriorYears = () => API.get("/prior-years");
 export const getCompletedLeagues = (week) => API.get(`/findCompletedLeagues/${week}`);
 export const getCompletedWeekLocks = () => API.get("/api/weeklocks/completed");
 export const getCurrentWeek = () => API.get('/getCurrentWeek');
@@ -18,9 +20,11 @@ export const getMatchupsForWeek = (week) => API.get(`/matchups/week/${week}`);
 export const getMessages = (userId, page, limit) => API.get("/messages", { params: { userId, page, limit } });
 export const getMessageById = (id) => API.get(`/messages/${id}`);
 export const getMyClaims = (token) => API.get(`/api/claims/my`, { headers: { Authorization: `Bearer ${token}` } });
+export const getOwner = (ownerName) => API.get(`/api/owner/${encodeURIComponent(ownerName)}`);
 export const getPlayerByName = (decodedName) => API.get(`/api/player-by-name/${encodeURIComponent(decodedName)}`);
 export const getPlayers = () => API.get("/players");
 export const getPlayersByTeamName = (teamName) => API.get(`/api/fantasy-team/${encodeURIComponent(teamName)}/players`);
+export const getPriorYearStandings = (year) => API.get(`/prior-year-standings/${year}`);
 export const getRecentMatches = (teamName, currentWeek) => API.get(`/api/matches/recent/${encodeURIComponent(teamName)}/${currentWeek}`);
 export const getRoster = (teamId, week) => API.get(`/roster/${teamId}/${week}`);
 export const getRosterLockStatus = (teamId, week) => API.get(`/roster-lock-status/${teamId}/${week}`);
@@ -33,6 +37,7 @@ export const getSurvivorUserPicks = (league, teamName, userId) => API.get(`/api/
 export const getTeamById = (teamId) => API.get(`/team-by-id/${teamId}`);
 export const getTeamByName = (teamName) => API.get(`/team/${encodeURIComponent(teamName)}`);
 export const getTeamPlayers = (teamName) => API.get(`/api/team/${encodeURIComponent(teamName)}/players`);
+export const getTeamRanks = (league, teamName) => API.get(`/api/team/${encodeURIComponent(league)}/${encodeURIComponent(teamName)}/ranks`);
 export const getTeams = () => API.get("/teams");
 export const getTeamsForHome = () => API.get('/teamsForHome');
 export const getTotalLeagues = () => API.get('/totalLeagues');
@@ -45,6 +50,8 @@ export const getWeekScoreForWeek = (week) => API.get(`/weekscoreForWeek/${week}`
 
 // POST requests
 export const addComment = (content, messageId, authorId) => API.post('/add-comment', { content, messageId, authorId });
+export const addPriorYearStanding = (data) => API.post("/api/prior-year-standings", data);
+export const assignPlayerBadge = (data) => API.post("/api/badges", data);
 export const assignPlayerToTeam = (data) => API.post('/api/assign-player-to-team', data);
 export const changeUserRole = (data) => API.post('/api/change-role', data);
 export const claimWithDrop = (claimPlayerId, dropPlayerId, userId) => API.post("/api/claims/with-drop", { claimPlayerId, dropPlayerId: dropPlayerId || null, userId });
