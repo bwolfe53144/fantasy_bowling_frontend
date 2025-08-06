@@ -59,7 +59,7 @@ const SurvivorLeaguePage = () => {
 
   const leagueCutoffs = {
     "Sunday AM": 0.4,
-    "Cheris Nite Out": 0.6,
+    "Cheris Night Out": 0.6,
     "Ren Faire": 0.3,
     "Beavers Latestarters": 0.3,
     "Andys Classic": 0.25,
