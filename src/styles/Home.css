@@ -6,6 +6,8 @@
   padding: 2rem;
   max-width: 1000px;
   margin: 0 auto;
+  margin-bottom: 2rem;
+
 }
 
 .standingsInner {
@@ -96,6 +98,13 @@ tr.highlight {
   text-decoration: underline;
 }
 
+.prevYearButton {
+  padding: .7rem 1rem;
+  border-radius: 12px;
+  background-color: #007bff;
+  color: white;
+}
+
 /*Accessibility*/
 .visually-hidden {
   position: absolute;
@@ -143,7 +152,7 @@ tr.highlight {
 }
 
 .homepage .standingsContainer .highlight {
-  background-color: #ffffe0; /* fallback light yellow */
+  background-color: #fafa82 !important;
 }
 
 /*Responsive Layout*/
@@ -248,5 +257,10 @@ tr.highlight {
 
 .dark .signUpButton {
   background-color: #f2f2f2;
+  color: rgb(40, 13, 102);
+}
+
+.dark .prevYearButton {
+  color: white;
 }
 
