@@ -37,6 +37,12 @@ const Rules = () => {
         <h2>General Rules</h2>
             <ul>
                 <li>Rosters will consist of 15 players. </li>
+                <li>Leagues included in fantasy bowling this year will be Ren Faire (Friday Nights at Sheridan)
+                , Beavers Latestarters (Wednesday Nights at GRC), Cheri's Night Out 
+                (Wednesday Nights at GRC), Andy's Classic (Tuesday Nights at GRC), and Inner City 
+                (Thursday Nights at Surfside).</li>
+                <li>The leagues mentioned above as well as Sunday AM (Sunday Mornings at 
+                Sheridan) and Heyden Classic (Thursday Nights at GRC) will be included for Survivor Bowling</li>
                 <li>Each week you will start a bowler in each position (1,2,3,4,5).</li>
                 <li>You will also start a flex player each week. 
                 Your flex bowler can bowl anywhere in the lineup.</li>
