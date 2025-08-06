@@ -10,7 +10,7 @@ import BowlerAveragesChart from "../../components/BowlerAveragesChart.jsx";
 import LaneAverageChart from "../../components/LaneAverageChart.jsx";
 import OpponentAverageChart from "../../components/OpponentAverageChart.jsx";
 import { AuthContext } from "../utils/AuthContext.jsx";
-import { getTeamPlayers } from "../utils/api.js";
+import { getTeamPlayers, getTeamRanks } from "../utils/api.js";
 import { calculateTeamStats } from "../utils/calculateTeamStats.js";
 import { getBowlerAverages } from "../utils/getBowlerAverages.js";
 import { getAverageByLane } from "../utils/getAverageByLane.js";
@@ -25,11 +25,13 @@ const BowlingTeamPage = () => {
   const { user, loading } = useContext(AuthContext);
   const { isDarkMode } = useContext(ThemeContext);
   const [teamData, setTeamData] = useState(null);
+  const [teamRank, setTeamRank] = useState(null);
   const [stats, setStats] = useState(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showNameChart, setShowNameChart] = useState(false);
   const [showLaneChart, setShowLaneChart] = useState(false);
   const [showOpponentChart, setShowOpponentChart] = useState(false);
+
   const maxWeek = Math.max(
     1,
     ...(teamData?.players?.flatMap(player =>
@@ -44,7 +46,7 @@ const BowlingTeamPage = () => {
     handleEndWeekChange,
   } = useWeekRange(maxWeek);
 
-  const {  buttonColor, buttonBackground } = getThemeColors(user?.color, isDarkMode);
+  const { buttonColor, buttonBackground } = getThemeColors(user?.color, isDarkMode);
 
   const buttonStyle = {
     backgroundColor: buttonBackground,
@@ -56,7 +58,6 @@ const BowlingTeamPage = () => {
 
   const getFilteredScores = (data) => {
     if (!data?.players) return [];
-
     return data.players.flatMap(player =>
       player.weekScores?.filter(score => {
         const week = parseInt(score.week, 10);
@@ -67,16 +68,20 @@ const BowlingTeamPage = () => {
   };
 
   useEffect(() => {
-    const fetchTeamPlayers = async () => {
+    const fetchData = async () => {
       try {
-        const response = await getTeamPlayers(teamName);
-        setTeamData(response.data);
+        const [teamRes, rankRes] = await Promise.all([
+          getTeamPlayers(teamName),
+          getTeamRanks(league, teamName)
+        ]);
+        setTeamData(teamRes.data);
+        setTeamRank(rankRes.data.rank);
       } catch (error) {
-        console.error("Failed to fetch team players:", error);
+        console.error("Failed to fetch data:", error);
       }
     };
-    fetchTeamPlayers();
-  }, [teamName]);
+    fetchData();
+  }, [teamName, league]);
 
   useEffect(() => {
     if (isMenuOpen) {
@@ -85,7 +90,7 @@ const BowlingTeamPage = () => {
       document.body.classList.remove("menuOpen");
     }
   }, [isMenuOpen]);
-  
+
   useEffect(() => {
     if (!teamData) return;
 
@@ -100,6 +105,16 @@ const BowlingTeamPage = () => {
   const averageByName = teamData?.players
     ? getBowlerAverages(teamData.players, startWeek, endWeek)
     : [];
+
+  const getPercentClass = (percent) => {
+    if (percent === 100) return "rank-tan";
+    if (percent >= 99) return "rank-pink";
+    if (percent >= 95) return "rank-orange";
+    if (percent >= 75) return "rank-purple";
+    if (percent >= 50) return "rank-blue";
+    if (percent >= 25) return "rank-green";
+    return "rank-grey";
+  };
 
   if (loading || !teamData?.players?.length) {
     return <LoadingScreen />;
@@ -162,6 +177,77 @@ const BowlingTeamPage = () => {
 
         <h2>Team Stats</h2>
         {stats ? <StatsTable stats={stats} /> : <p>No stats available for this team.</p>}
+
+        {teamRank && (
+          <>
+            <h2>Team Rankings</h2>
+            <table className="statTable">
+              <thead>
+                <tr>
+                  <th>Average</th>
+                  <th>Fan Points</th>
+                  <th>Fan PPG</th>
+                  <th>Series</th>
+                  <th>Pinfall</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    {teamRank.avgRank > 0 && (
+                      <>
+                        {teamRank.avgRank}{" "}
+                        <span className={getPercentClass(teamRank.avgPercent)}>
+                          ({teamRank.avgPercent}%)
+                        </span>
+                      </>
+                    )}
+                  </td>
+                  <td>
+                    {teamRank.fanPoints > 0 && (
+                      <>
+                        {teamRank.fanPoints}{" "}
+                        <span className={getPercentClass(teamRank.fanPercent)}>
+                          ({teamRank.fanPercent}%)
+                        </span>
+                      </>
+                    )}
+                  </td>
+                  <td>
+                    {teamRank.fanPPG > 0 && (
+                      <>
+                        {teamRank.fanPPG}{" "}
+                        <span className={getPercentClass(teamRank.fanPPGPercent)}>
+                          ({teamRank.fanPPGPercent}%)
+                        </span>
+                      </>
+                    )}
+                  </td>
+                  <td>
+                    {teamRank.seriesRank > 0 && (
+                      <>
+                        {teamRank.seriesRank}{" "}
+                        <span className={getPercentClass(teamRank.seriesPercent)}>
+                          ({teamRank.seriesPercent}%)
+                        </span>
+                      </>
+                    )}
+                  </td>
+                  <td>
+                    {teamRank.pinfallRank > 0 && (
+                      <>
+                        {teamRank.pinfallRank}{" "}
+                        <span className={getPercentClass(teamRank.pinfallPercent)}>
+                          ({teamRank.pinfallPercent}%)
+                        </span>
+                      </>
+                    )}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </>
+        )}
       </div>
       <Footer />
     </div>
