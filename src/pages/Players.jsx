@@ -37,6 +37,7 @@ const Players = () => {
     "Beavers Latestarters",
     "Cheris Night Out",
     "Ren Faire",
+    "Inner City",
   ];
 
   useEffect(() => {
