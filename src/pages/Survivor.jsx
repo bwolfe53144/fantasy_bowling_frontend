@@ -41,9 +41,8 @@ const Survivor = () => {
         const [leaguesRes, locksRes, entriesRes] = await Promise.all([
           getTotalLeagues(),
           fetchAllLockStatuses(),
-          getUserSurvivorEntries(user.id),
+          user?.id ? getUserSurvivorEntries(user.id) : Promise.resolve({ data: [] }),
         ]);
-
         setLeagues(leaguesRes.data.totalLeagues || []);
         setLocks(locksRes.data || []);
         setSurvivorEntries(entriesRes.data || []);
@@ -54,9 +53,7 @@ const Survivor = () => {
       }
     };
 
-    if (user?.id) {
-      fetchData();
-    }
+    fetchData();
   }, [user]);
 
   const handleStartSignup = (leagueName) => {
@@ -86,31 +83,25 @@ const Survivor = () => {
     }
   };
 
+  const now = new Date();
   const openLeagues = leagues.filter((leagueObj) => {
     const leagueName = leagueObj.league;
-
     const week3Lock = locks.find(
       (lock) => lock.league === leagueName && lock.week === 3
     );
-
-    if (!week3Lock || !week3Lock.lockTime) {
-      return false;
-    }
-
-    const now = new Date();
-    const lockTime = new Date(week3Lock.lockTime);
-
-    return now < lockTime;
+    if (!week3Lock?.lockTime) return false;
+    return now < new Date(week3Lock.lockTime);
   });
 
-  // Filter leagues user hasn't joined yet
   const leaguesAvailableToJoin = openLeagues.filter(
     (l) => !survivorEntries.find((entry) => entry.league === l.league)
   );
 
-  if (loading || isLoadingLeagues) {
-    return <LoadingScreen />;
-  }
+  const expiredLeagues = leagues.filter(
+    (l) => !openLeagues.find((ol) => ol.league === l.league)
+  );
+
+  if (loading || isLoadingLeagues) return <LoadingScreen />;
 
   return (
     <div className="pageContainer">
@@ -118,7 +109,7 @@ const Survivor = () => {
       <Navbar />
       <div className="mainPage survivor">
         <h1>Survivor Bowling</h1>
-  
+
         {!user ? (
           <>
             <p>
@@ -143,15 +134,15 @@ const Survivor = () => {
                   {survivorEntries.map((entry) => {
                     let statusText = "Active";
                     let statusColor = "green";
-  
-                    if (entry.winnerStatus === "Winner") {
+
+                    if (entry.winnerStatus === "winner") {
                       statusText = "Winner";
                       statusColor = "goldenrod";
                     } else if (entry.eliminated) {
                       statusText = "Eliminated";
                       statusColor = "red";
                     }
-  
+
                     return (
                       <li key={entry.id}>
                         <Link to={`/survivor/${entry.league}`}>
@@ -169,33 +160,33 @@ const Survivor = () => {
                 </ul>
               </div>
             )}
-  
+
             {leaguesAvailableToJoin.length > 0 && (
               <div>
                 <h2>Leagues Available to Join</h2>
                 {leaguesAvailableToJoin.map((leagueObj) => {
                   const league = leagueObj.league;
                   const isActive = activeLeagueForSignup === league;
-  
+
                   return (
                     <div key={league}>
                       <h3>{league}</h3>
                       <p>Sign up before week 3!</p>
-  
+
                       {!isActive ? (
                         <button style={buttonStyle} onClick={() => handleStartSignup(league)}>
                           Sign up for Survivor Bowling
                         </button>
                       ) : (
                         <>
-                          <input
+                          <input className="survivorInput"
                             type="text"
                             placeholder="Enter your Survivor team name"
                             value={teamNameInput}
                             onChange={(e) => setTeamNameInput(e.target.value)}
                           />
-                          <button onClick={handleSubmitSignup}>Submit</button>
-                          <button onClick={() => setActiveLeagueForSignup(null)}>
+                          <button className="survivorButton" onClick={handleSubmitSignup}>Submit</button>
+                          <button className="survivorButton" onClick={() => setActiveLeagueForSignup(null)}>
                             Cancel
                           </button>
                         </>
@@ -203,6 +194,29 @@ const Survivor = () => {
                     </div>
                   );
                 })}
+              </div>
+            )}
+
+            {expiredLeagues.length > 0 && (
+              <div>
+                <h2>Past Survivor Leagues</h2>
+                <ul>
+                  {expiredLeagues
+                    .filter((leagueObj) =>
+                      !survivorEntries.find((entry) => entry.league === leagueObj.league)
+                    )
+                    .map((leagueObj) => {
+                      const league = leagueObj.league;
+                      return (
+                        <li key={league}>
+                          <strong>{league}</strong>
+                          <span style={{ marginLeft: "1ch" }}>
+                            <Link to={`/survivor/${league}`}>View League</Link>
+                          </span>
+                        </li>
+                      );
+                    })}
+                </ul>
               </div>
             )}
           </>
@@ -214,4 +228,3 @@ const Survivor = () => {
 };
 
 export default Survivor;
-  
