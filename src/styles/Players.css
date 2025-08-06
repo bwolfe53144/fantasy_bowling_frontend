@@ -159,6 +159,75 @@
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
 }
 
+.badge-circle {
+  margin: 1rem;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-weight: bold;
+  font-size: 0.7rem;
+  background-color: transparent; /* keep this for fallback */
+}
+
+.badge-circle::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background-color: currentColor;
+  z-index: 0;
+}
+
+.badge-circle img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0.5; 
+  z-index: 1;
+}
+
+.badge-circle .badge-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 90%;
+  color: white;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  text-shadow: 0 0 3px black;
+  pointer-events: none;
+}
+
+.badges-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem; /* space between badges */
+  justify-content: flex-start; /* align badges from left */
+}
+
+/* Color layers using text color via currentColor */
+.rank-gold {
+  color: gold;
+}
+.rank-silver {
+  color: rgb(160, 156, 156);
+}
+.rank-bronze {
+  color: #cd7f32;
+}
+.rank-platinum {
+  color: #7b8a99;
+}
+
 /* Responsive */
 @media (max-width: 975px) {
   .pageContainer.player-page {
@@ -256,6 +325,11 @@
 }
   
 .dark .graphPageStats label {
+  color: white;
+}
+
+.dark .statsFilterContainer {
+  background-color: #383535;
   color: white;
 }
 

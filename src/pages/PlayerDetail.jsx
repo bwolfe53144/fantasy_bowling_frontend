@@ -7,6 +7,8 @@ import LoadingScreen from "../../components/LoadingScreen.jsx";
 import PlayerStatsTable from "../../components/PlayerStatsTable.jsx";
 import LaneAverageChart from "../../components/LaneAverageChart.jsx";
 import OpponentAverageChart from "../../components/OpponentAverageChart.jsx";
+import PlayerBadgeDisplay from "../../components/PlayerBadgeDisplay.jsx";
+import PlayerRankTable from "../../components/PlayerRankTable.jsx";
 import StatsTable from "../../components/StatsTable.jsx";
 import { AuthContext } from "../utils/AuthContext.jsx";
 import { getPlayerByName } from "../utils/api.js";
@@ -26,6 +28,7 @@ const PlayerDetail = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showLaneChart, setShowLaneChart] = useState(false);
   const [showOpponentChart, setShowOpponentChart] = useState(false);
+
   const maxWeek = Math.max(...(playerData?.weekScores?.map(w => parseInt(w.week, 10)) || [1]));
 
   const {
@@ -35,7 +38,7 @@ const PlayerDetail = () => {
     handleEndWeekChange,
   } = useWeekRange(maxWeek);
 
-  const { buttonBackground, buttonColor } = getThemeColors(user?.color, isDarkMode);
+  const { buttonBackground, buttonColor, backgroundColor, color } = getThemeColors(user?.color, isDarkMode);
   const buttonStyle = {
     backgroundColor: buttonBackground,
     color: buttonColor,
@@ -77,7 +80,6 @@ const PlayerDetail = () => {
   const scores = getFilteredScores();
   const stats = calculateStats({ scores });
 
-  // Extract unique leagues and prepare league filter options
   const uniqueLeagues = [...new Set(playerData?.weekScores?.map(w => w.league) ?? [])];
   const availableLeagues = uniqueLeagues.length > 1 ? ["All", ...uniqueLeagues] : uniqueLeagues;
 
@@ -100,11 +102,9 @@ const PlayerDetail = () => {
 
   const calculateAvgWithWeekHandicap = (weekScores) => {
     const adjustedGameScores = [];
-
     for (const week of weekScores) {
       const { game1, game2, game3, average } = week;
       const games = [game1, game2, game3];
-
       games.forEach(game => {
         if (average >= 220) {
           adjustedGameScores.push(game);
@@ -114,18 +114,15 @@ const PlayerDetail = () => {
         }
       });
     }
-
     if (adjustedGameScores.length === 0) return 0;
-
     const total = adjustedGameScores.reduce((sum, g) => sum + g, 0);
     return total / adjustedGameScores.length;
   };
 
   const avgWithHandicap = calculateAvgWithWeekHandicap(scores);
+  const firstName = decodedName.split(" ")[0];
 
-  if (loading) {
-    return <LoadingScreen />;
-  }
+  if (loading) return <LoadingScreen />;
 
   return (
     <div className="pageContainer graphPageStats">
@@ -133,7 +130,6 @@ const PlayerDetail = () => {
       <Navbar />
       <div className="mainPage">
         <h1>Player: {decodedName}</h1>
-        {/* Teams Played For */}
         {teamsPlayedFor.length > 0 && (
           <div className="bowling-teams">
             <strong>Bowling Teams:</strong>{" "}
@@ -151,7 +147,6 @@ const PlayerDetail = () => {
         )}
         <PlayerStatsTable players={playerData?.players || []} isSinglePlayerPage />
         <h3>Filters for other stats</h3>
-        {/* League Filter */}
         {availableLeagues.length > 1 && (
           <div>
             <label>Filter by League </label>
@@ -160,56 +155,48 @@ const PlayerDetail = () => {
               onChange={(e) => setSelectedLeague(e.target.value)}
             >
               {availableLeagues.map((league, idx) => (
-                <option key={`${league}-${idx}`} value={league}>
-                  {league}
-                </option>
+                <option key={`${league}-${idx}`} value={league}>{league}</option>
               ))}
             </select>
           </div>
         )}
-        {/* Week Filters */}
         <div className="week-filters">
-  <label>
-    Start Week:
-    <input
-      type="number"
-      min="1"
-      max={maxWeek}
-      value={startWeek}
-      onChange={handleStartWeekChange}
-    />
-  </label>
-  <label>
-    End Week:
-    <input
-      type="number"
-      min="1"
-      max={maxWeek}
-      value={endWeek}
-      onChange={handleEndWeekChange}
-    />
-  </label>
-</div>
-        {/* Lane Average Chart */}
+          <label>
+            Start Week:
+            <input type="number" min="1" max={maxWeek} value={startWeek} onChange={handleStartWeekChange} />
+          </label>
+          <label>
+            End Week:
+            <input type="number" min="1" max={maxWeek} value={endWeek} onChange={handleEndWeekChange} />
+          </label>
+        </div>
         <div>
           <button style={buttonStyle} onClick={() => setShowLaneChart(!showLaneChart)}>
             {showLaneChart ? "▼" : "►"} Average Score by Lane
           </button>
           {showLaneChart && <LaneAverageChart scores={scores} />}
         </div>
-        {/* Opponent Average Chart */}
         <div>
           <button style={buttonStyle} onClick={() => setShowOpponentChart(!showOpponentChart)}>
             {showOpponentChart ? "▼" : "►"} Average Score by Opponent
           </button>
           {showOpponentChart && <OpponentAverageChart scores={scores} />}
         </div>
-        {/* Stats Table */}
         {stats ? (
           <StatsTable stats={stats} avgWithHandicap={avgWithHandicap} isSinglePlayer />
         ) : (
           <p>No stats available for this player.</p>
         )}
+        <PlayerRankTable
+          players={playerData?.players || []}
+          headerBg={backgroundColor}
+          headerColor={color}
+          displayName={firstName}
+        />
+        <PlayerBadgeDisplay
+          players={playerData?.players || []}
+          displayName={firstName}
+        />
       </div>
       <Footer />
     </div>
