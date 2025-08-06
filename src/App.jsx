@@ -30,6 +30,10 @@ import DropClaimPlayer from "./pages/DropClaimPlayer";
 import AdminPage from "./pages/AdminPage";
 import Rules from "./pages/Rules";
 import About from "./pages/About";
+import PreviousYears from "./pages/PreviousYears";
+import PreviousYearStandings from "./pages/PreviousYearStandings";
+import OwnerDetail from "./pages/OwnerDetail";
+import AllOwners from "./pages/AllOwners";
 import Other from "./Other";
 import ErrorPage from "./pages/ErrorPage";
 import "./index.css";
@@ -70,6 +74,10 @@ function App() {
           <Route path="/about" element={<About />} />
           <Route path="/rules" element={<Rules />} />
           <Route path="/other" element={<Other />} />
+          <Route path="/previous-standings" element={<PreviousYears />} />
+          <Route path="/previous-standings/:year" element={<PreviousYearStandings />} />
+          <Route path="/owner/:ownerName" element={<OwnerDetail />} />
+          <Route path="/owners" element={<AllOwners />} />
           <Route path="/" element={<Home />} />
           <Route path="*" element={<ErrorPage />} />
         </Routes>
