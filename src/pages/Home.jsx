@@ -21,8 +21,8 @@ export default function Home() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { backgroundColor, color } = getThemeColors(user?.color, isDarkMode);
 
-  // NEW: state for platform detection
   const [isAndroid, setIsAndroid] = useState(false);
+  const [isInAndroidApp, setIsInAndroidApp] = useState(false);
   const [isStandalone, setIsStandalone] = useState(false);
   const [isIOS, setIsIOS] = useState(false);
   const [isSafari, setIsSafari] = useState(false);
@@ -60,10 +60,11 @@ export default function Home() {
   }, [isMenuOpen]);
 
   useEffect(() => {
-    // Detect platform once on mount
+    // Detect platform and app mode once on mount
     const ua = navigator.userAgent || "";
 
     setIsAndroid(/Android/i.test(ua));
+    setIsInAndroidApp(/fantasybowling\/android/i.test(ua));  // Detect Android app WebView
     setIsIOS(/iPad|iPhone|iPod/.test(ua));
     setIsSafari(/^((?!chrome|android).)*safari/i.test(ua));
 
@@ -194,7 +195,15 @@ export default function Home() {
                     <td>{team.pointsFor}</td>
                     <td>{team.pointsAgainst}</td>
                     <td>{team.streak}</td>
-                    <td>{team.captain}</td>
+                    <td>
+                      {team.owner ? (
+                        <Link to={`/owner/${encodeURIComponent(`${team.owner.firstname} ${team.owner.lastname}`)}`}>
+                          {team.owner.firstname} {team.owner.lastname}
+                        </Link>
+                      ) : (
+                        "—"
+                      )}
+                    </td>                 
                   </tr>
                 ))}
               </tbody>
@@ -211,9 +220,14 @@ export default function Home() {
             </div>
           )}
         </div>
+        <div className="previousYearsLink" style={{ textAlign: "center", marginTop: "1rem" }}>
+          <Link to="/previous-standings" className="prevYearButton">
+            📅 View Previous Years
+          </Link>
+        </div>
 
-        {/* Android App Download Button - only show on Android and NOT in standalone */}
-        {!loading && isAndroid && !isStandalone && !window.matchMedia('(display-mode: standalone)').matches && !user && (
+        {/* Android App Download Button - only show on Android and NOT in standalone or inside app */}
+        {!loading && isAndroid && !isStandalone && !isInAndroidApp && !user && (
           <div className="appDownloadWrapper">
             <p style={{ fontWeight: "bold", marginTop: "1rem" }}>
               On Android? Download the app:
@@ -230,7 +244,8 @@ export default function Home() {
         )}
 
         {/* iOS Add to Home Screen Prompt - only on iOS Safari and not logged in */}
-        {!loading && isIOS && isSafari && !isStandalone && !user && (          <div className="iosPromptBox">
+        {!loading && isIOS && isSafari && !isStandalone && !user && (
+          <div className="iosPromptBox">
             <p>
               <strong>On iPhone?</strong> Add this site to your home screen:
             </p>
