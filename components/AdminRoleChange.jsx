@@ -1,23 +1,9 @@
-import { useState, useEffect } from "react";
-import { changeUserRole, getUsers } from "../src/utils/api.js";
+import { useState } from "react";
+import { changeUserRole } from "../src/utils/api.js";
 
-const AdminRoleChange = () => {
-  const [users, setUsers] = useState([]);
+const AdminRoleChange = ({ users }) => {
   const [selectedUserId, setSelectedUserId] = useState('');
   const [selectedRole, setSelectedRole] = useState('');
-
-  useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const res = await getUsers();
-        setUsers(res.data);
-      } catch (error) {
-        console.error("Error fetching users:", error);
-      }
-    };
-
-    fetchUsers();
-  }, []);
 
   const handleChangeRole = async () => {
     try {
@@ -34,10 +20,11 @@ const AdminRoleChange = () => {
 
   return (
     <div className="admin-section admin-column">
-      <h2>Change Team Role</h2>
-      <label>Choose Team Member:</label>
+      <h2>Change User Role</h2>
+
+      <label>Choose User:</label>
       <select
-        value={selectedUserId || ''}
+        value={selectedUserId}
         onChange={(e) => setSelectedUserId(e.target.value)}
         className="admin-input"
       >
@@ -51,7 +38,7 @@ const AdminRoleChange = () => {
 
       <label>Choose Role:</label>
       <select
-        value={selectedRole || ''}
+        value={selectedRole}
         onChange={(e) => setSelectedRole(e.target.value)}
         className="admin-input"
       >
