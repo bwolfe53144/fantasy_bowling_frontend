@@ -156,3 +156,18 @@
     font-weight: bold;
     cursor: pointer;
   }
+
+  .dark .dropdownMenu {
+    background-color: #222;
+    color: #f0f0f0;
+    border: 1px solid #555;
+  }
+  
+  .dark .dropdownItem:hover {
+    background-color: #333;
+  }
+  
+  .dark .dropdownItem.selected {
+    font-weight: bold;
+    background-color: #444;
+  }
