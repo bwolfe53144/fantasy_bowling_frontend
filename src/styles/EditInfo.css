@@ -132,8 +132,23 @@ label {
   font-size: 0.9rem;
 }
 
+.nameButton, 
 .cancelButton {
-  background-color: #e4dfdf;
+  margin: 1rem;
+}
+
+.cancelButton {
+  background-color: #686363;
+}
+
+.nameInput {
+  width: 300px;     
+  height: 40px;      
+  font-size: 1.2rem; 
+  padding: 8px 12px; 
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
 }
 
 /* ===== Color input box ===== */

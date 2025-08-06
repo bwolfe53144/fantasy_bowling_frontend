@@ -15,7 +15,7 @@ import { getThemeColors } from "../utils/themeColors";
 import "../styles/EditInfo.css";
 
 export default function EditInfo() {
-  const { user, loading } = useContext(AuthContext);
+  const { user, loading, refreshUser } = useContext(AuthContext);
   const { isDarkMode, setIsDarkMode } = useContext(ThemeContext); 
   const [avatarFile, setAvatarFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
@@ -68,6 +68,7 @@ export default function EditInfo() {
       setPreviewUrl(null);
       setAvatarFile(null);
       setFavoriteColor("");
+      await refreshUser();
     } catch (error) {
       console.error("Upload error:", error);
       alert("Failed to upload avatar");
@@ -79,6 +80,7 @@ export default function EditInfo() {
     setFavoriteColor(newColor);
     try {
       await updateColor(user.id, newColor);
+      await refreshUser();
     } catch (error) {
       console.error("Failed to update color:", error);
       alert("Failed to save favorite color.");
