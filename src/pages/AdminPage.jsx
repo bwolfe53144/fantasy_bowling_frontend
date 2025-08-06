@@ -6,13 +6,16 @@ import {
   deleteTeamByName, 
   sendStatsUpdateEmails, 
   resetSurvivorLeague, 
-  getTotalLeagues
+  getTotalLeagues,
+  getUsers,
 } from "../utils/api.js";
 import { Navigate } from "react-router-dom";
 import Header from "../../components/Header.jsx";
 import Navbar from "../../components/Navbar.jsx";
 import Footer from "../../components/Footer.jsx";
 import LoadingScreen from "../../components/LoadingScreen";
+import AdminAssignBadge from "../../components/AdminAssignBadge.jsx";
+import AdminAddPriorStandings from "../../components/AdminAddPriorStandings.jsx";
 import AdminUploadSection from "../../components/AdminUploadSection.jsx";
 import AdminLockTimeSetter from "../../components/AdminLockTimeSetter.jsx";
 import AdminScheduleGenerator from "../../components/AdminScheduleGenerator.jsx";
@@ -32,6 +35,7 @@ const AdminPage = () => {
   const [showLockSetter, setShowLockSetter] = useState(false);
   const [selectedLeague, setSelectedLeague] = useState("");
   const [availableLeagues, setAvailableLeagues] = useState([]);
+  const [users, setUsers] = useState([]);
 
   useEffect(() => {
     document.body.classList.toggle("menuOpen", isMenuOpen);
@@ -53,6 +57,19 @@ const AdminPage = () => {
     };
 
     fetchLeagues();
+  }, []);
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const res = await getUsers();
+        setUsers(res.data);
+      } catch (error) {
+        console.error("Error fetching users:", error);
+      }
+    };
+
+    fetchUsers();
   }, []);
 
   const handleRemoveTeam = async () => {
@@ -141,8 +158,10 @@ const AdminPage = () => {
           </div>
           {user.role === "SUPERADMIN" && (
             <>
+              <AdminAssignBadge players={playerList} />
+              <AdminAddPriorStandings teams={teams} users={users} />
               <AdminClaims />
-              <AdminRoleChange />
+              <AdminRoleChange users={users} />
               <AdminAssignPlayer teams={teams} />
               <AdminScheduleGenerator
                 setSkipWeeksArray={setSkipWeeksArray}
