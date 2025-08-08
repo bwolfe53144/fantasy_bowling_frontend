@@ -3,9 +3,8 @@ import { setLocktimes, resetRosters, resetPositions } from "../src/utils/api.js"
 
 const holidays = [
   "2025-11-28",
-  "2025-12-24",
   "2025-12-25",
-  "2025-12-31",
+  "2025-12-26",
   "2026-01-01",
 ];
 
@@ -26,11 +25,12 @@ const AdminLockTimeSetter = ({ playerList }) => {
 
     leagues.forEach((league) => {
       const baseDate = new Date(leagueStartTimes[league]);
-      if (!leagueStartTimes[league] || isNaN(baseDate)) return; // Skip empty
+      if (!leagueStartTimes[league] || isNaN(baseDate)) return;
 
       let current = new Date(baseDate);
+      let week = 1;
 
-      for (let week = 1; week <= totalWeeks; week++) {
+      while (week <= totalWeeks) {
         const dateStr = current.toISOString().split("T")[0];
         const isHoliday = holidays.includes(dateStr);
 
@@ -41,9 +41,10 @@ const AdminLockTimeSetter = ({ playerList }) => {
             week,
             lockTime: current.toISOString(),
           });
+          week++; // only increment if not a holiday
         }
 
-        current.setDate(current.getDate() + 7);
+        current.setDate(current.getDate() + 7); // always move forward a week
       }
     });
 
@@ -62,9 +63,8 @@ const AdminLockTimeSetter = ({ playerList }) => {
   };
 
   const handleReset = async () => {
-    if (!window.confirm("Are you sure you want to reset all rosters and positions?")) {
-      return;
-    }
+    if (!window.confirm("Are you sure you want to reset all rosters and positions?")) return;
+
     setResetting(true);
     try {
       await resetRosters(currentYear);
