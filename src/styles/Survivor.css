@@ -5,6 +5,11 @@
     margin-bottom: 1rem;
   }
 
+  .pickRow {
+    margin: 1rem;
+  }
+
+
 .winnerBanner {
     background-color: #ffd700;
     padding: 1rem;
@@ -31,6 +36,7 @@
     padding: 0.6rem 1rem;
     width: 100%;
     max-width: 400px;
+    margin: 1rem;
     border: 2px solid #ccc;
     border-radius: 8px;
     box-sizing: border-box;
