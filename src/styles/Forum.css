@@ -246,3 +246,7 @@ button:disabled {
   background-color: #555;
   color: #999;
 }
+
+.dark .viewMessagePage .commentList li {
+  color: black;
+}
