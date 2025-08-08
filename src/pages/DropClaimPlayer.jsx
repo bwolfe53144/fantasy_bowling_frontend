@@ -15,9 +15,14 @@ const DropClaimPlayer = () => {
   const { isDarkMode } = useContext(ThemeContext);
   const { playerId, playerName, playerLeague, playerPosition } = useParams();
   const navigate = useNavigate();
+
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [playerToDrop, setPlayerToDrop] = useState(null);
   const [roster, setRoster] = useState([]);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [showResultModal, setShowResultModal] = useState(false);
+  const [claimResult, setClaimResult] = useState(null); // 'success' or 'error'
+  const [isClaiming, setIsClaiming] = useState(false);
 
   useEffect(() => {
     document.body.classList.toggle("menuOpen", isMenuOpen);
@@ -43,22 +48,69 @@ const DropClaimPlayer = () => {
     cursor: "pointer",
   };
 
-  const handleClaimAndDrop = async () => {
-    const confirmed = window.confirm(
-      playerToDrop?.name
-        ? `Add: ${playerName}, Drop: ${playerToDrop.name}`
-        : `Add: ${playerName}`
-    );
-    if (!confirmed) return;
+  const handleStartClaim = () => {
+    setShowConfirmModal(true);
+  };
+
+  const handleConfirmClaim = async () => {
+    setShowConfirmModal(false);
+    setIsClaiming(true);
     try {
       await claimWithDrop(playerId, playerToDrop?.id, user.id);
-      alert("Claim successful!");
-      navigate("/players");
+      setClaimResult("success");
     } catch (error) {
       console.error("Error claiming player and dropping another:", error);
-      alert("Failed to claim and drop player.");
+      setClaimResult("error");
+    } finally {
+      setIsClaiming(false);
+      setShowResultModal(true);
     }
   };
+
+  const renderConfirmModal = () => (
+    <div className="modalOverlay">
+      <div className="modalContent">
+        <h2>Confirm Claim</h2>
+        <p>
+          {playerToDrop?.name
+            ? `Add: ${playerName}, Drop: ${playerToDrop.name}`
+            : `Add: ${playerName}`}
+        </p>
+        <div className="modalActions">
+          <button onClick={handleConfirmClaim} style={buttonStyle}>
+            Confirm
+          </button>
+          <button onClick={() => setShowConfirmModal(false)} className="cancelBtn">
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+
+  const renderResultModal = () => (
+    <div className="modalOverlay">
+      <div className="modalContent">
+        <h2>{claimResult === "success" ? "Success!" : "Error"}</h2>
+        <p>
+          {claimResult === "success"
+            ? "Claim successful!"
+            : "Failed to claim and drop player."}
+        </p>
+        <div className="modalActions">
+          <button
+            onClick={() => {
+              setShowResultModal(false);
+              if (claimResult === "success") navigate("/players");
+            }}
+            style={buttonStyle}
+          >
+            OK
+          </button>
+        </div>
+      </div>
+    </div>
+  );
 
   if (loading) return <LoadingScreen />;
 
@@ -107,11 +159,11 @@ const DropClaimPlayer = () => {
               </div>
             ))}
             <button
-              onClick={handleClaimAndDrop}
+              onClick={handleStartClaim}
               disabled={roster.length === 15 && !playerToDrop}
               style={buttonStyle}
             >
-              Confirm Claim
+              {isClaiming ? "Claiming..." : "Confirm Claim"}
             </button>
           </div>
         ) : (
@@ -119,6 +171,10 @@ const DropClaimPlayer = () => {
         )}
       </div>
       <Footer />
+
+      {/* Custom modals */}
+      {showConfirmModal && renderConfirmModal()}
+      {showResultModal && renderResultModal()}
     </div>
   );
 };
