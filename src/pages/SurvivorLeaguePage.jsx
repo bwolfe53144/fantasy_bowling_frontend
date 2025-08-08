@@ -206,7 +206,7 @@ const SurvivorLeaguePage = () => {
                 <h3>Select your lineup (1–5)</h3>
                 {[0, 1, 2, 3, 4].map((i) => (
                   <div key={i} className="pickRow">
-                    <label>Spot {i + 1}:</label>
+                    <label>Spot {i + 1} </label>
                     <select
                       value={selectedPlayers[i]}
                       onChange={(e) => handleSelectPlayer(i, e.target.value)}
