@@ -97,6 +97,8 @@ export default function AdminAssignBadge({ players }) {
             <option value="highfanpts.jpg">highfanpts.jpg</option>
             <option value="multileaguechamp.png">multileaguechamp.png</option>
             <option value="halloffame.png">halloffame.png</option>
+            <option value="300.png">300.png</option>
+            <option value="800.png">800.png</option>
           </select>
 
           <input
