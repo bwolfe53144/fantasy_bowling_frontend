@@ -1,14 +1,14 @@
 import { useEffect, useContext, useState } from "react";
-import { AuthContext } from "../utils/AuthContext.jsx";
-import { 
-  clearWeekscores, 
-  clearPlayerTransactions, 
-  deleteTeamByName, 
-  sendStatsUpdateEmails, 
-  resetSurvivorLeague, 
+import { AuthContext } from "../src/utils/AuthContext.jsx";
+import {
+  clearWeekscores,
+  clearPlayerTransactions,
+  deleteTeamByName,
+  sendStatsUpdateEmails,
+  resetSurvivorLeague,
   getTotalLeagues,
   getUsers,
-} from "../utils/api.js";
+} from "../src/utils/api.js";
 import { Navigate } from "react-router-dom";
 import Header from "../../components/Header.jsx";
 import Navbar from "../../components/Navbar.jsx";
@@ -23,6 +23,8 @@ import AdminClaims from "../../components/AdminClaims.jsx";
 import AdminAssignPlayer from "../../components/AdminManageRosters.jsx";
 import AdminRoleChange from "../../components/AdminRoleChange.jsx";
 import AdminHandleWeek from "../../components/AdminHandleWeek.jsx";
+
+import { useModal } from "../../hooks/useModal"; // Your custom hook providing modal control
 import '../styles/Admin.css';
 
 const AdminPage = () => {
@@ -36,6 +38,9 @@ const AdminPage = () => {
   const [selectedLeague, setSelectedLeague] = useState("");
   const [availableLeagues, setAvailableLeagues] = useState([]);
   const [users, setUsers] = useState([]);
+
+  // Use your modal hook
+  const [showModal, modalElement] = useModal();
 
   useEffect(() => {
     document.body.classList.toggle("menuOpen", isMenuOpen);
@@ -73,64 +78,111 @@ const AdminPage = () => {
   }, []);
 
   const handleRemoveTeam = async () => {
-    if (!removeTeamName) return alert("Select a team to remove");
-    if (!confirm("You sure you want to delete this team?")) return;
+    if (!removeTeamName) {
+      await showModal({ title: "Error", message: "Select a team to remove", confirmText: "OK" });
+      return;
+    }
+
+    const confirmed = await showModal({
+      title: "Confirm Team Removal",
+      message: "Are you sure you want to delete this team?",
+      confirmText: "Yes",
+      cancelText: "No",
+      showCancel: true,
+    });
+
+    if (!confirmed) return;
+
     try {
       await deleteTeamByName(removeTeamName);
-      alert("Team removed");
+      await showModal({ title: "Success", message: "Team removed", confirmText: "OK" });
     } catch (err) {
       console.error("Error removing team:", err);
-      alert("Failed to remove team");
+      await showModal({ title: "Error", message: "Failed to remove team", confirmText: "OK" });
     }
   };
 
   const handleClearTransactions = async () => {
-    const confirmed = window.confirm('Are you sure you want to delete ALL player transactions? This action cannot be undone.');
+    const confirmed = await showModal({
+      title: "Clear All Player Transactions",
+      message: "Are you sure you want to delete ALL player transactions? This action cannot be undone.",
+      confirmText: "Yes",
+      cancelText: "No",
+      showCancel: true,
+    });
+
     if (!confirmed) return;
 
     try {
       const res = await clearPlayerTransactions();
       if (res.status !== 200) throw new Error('Failed to clear player transactions');
-      alert('All player transactions cleared successfully!');
+      await showModal({ title: "Success", message: "All player transactions cleared successfully!", confirmText: "OK" });
     } catch (error) {
-      alert(`Error: ${error.response?.data?.message || error.message}`);
+      await showModal({ title: "Error", message: `Error: ${error.response?.data?.message || error.message}`, confirmText: "OK" });
     }
   };
 
   const handleClearWeekScores = async () => {
-    const confirmed = window.confirm('Are you sure you want to delete ALL weekscores? This action cannot be undone.');
+    const confirmed = await showModal({
+      title: "Clear All WeekScores",
+      message: "Are you sure you want to delete ALL weekscores? This action cannot be undone.",
+      confirmText: "Yes",
+      cancelText: "No",
+      showCancel: true,
+    });
+
     if (!confirmed) return;
 
     try {
       const res = await clearWeekscores();
       if (res.status !== 200) throw new Error('Failed to clear weekscores');
-      alert('All team weekscores cleared successfully!');
+      await showModal({ title: "Success", message: "All team weekscores cleared successfully!", confirmText: "OK" });
     } catch (error) {
-      alert(`Error: ${error.response?.data?.message || error.message}`);
+      await showModal({ title: "Error", message: `Error: ${error.response?.data?.message || error.message}`, confirmText: "OK" });
     }
   };
 
   const handleSendStatsUpdateEmail = async () => {
-    if (!window.confirm("Send stats update email to all opted-in users?")) return;
+    const confirmed = await showModal({
+      title: "Send Stats Update Email",
+      message: "Send stats update email to all opted-in users?",
+      confirmText: "Yes",
+      cancelText: "No",
+      showCancel: true,
+    });
+
+    if (!confirmed) return;
 
     try {
       await sendStatsUpdateEmails();
-      alert("Stats update emails sent successfully!");
+      await showModal({ title: "Success", message: "Stats update emails sent successfully!", confirmText: "OK" });
     } catch (error) {
-      alert(`Error sending emails: ${error.response?.data?.error || error.message}`);
+      await showModal({ title: "Error", message: `Error sending emails: ${error.response?.data?.error || error.message}`, confirmText: "OK" });
     }
   };
 
   const handleResetSurvivorLeague = async () => {
-    if (!selectedLeague) return alert("Please select a league");
-    if (!window.confirm(`Are you sure you want to reset survivor data for ${selectedLeague}? This cannot be undone.`)) return;
+    if (!selectedLeague) {
+      await showModal({ title: "Error", message: "Please select a league", confirmText: "OK" });
+      return;
+    }
+
+    const confirmed = await showModal({
+      title: "Reset Survivor League",
+      message: `Are you sure you want to reset survivor data for ${selectedLeague}? This cannot be undone.`,
+      confirmText: "Yes",
+      cancelText: "No",
+      showCancel: true,
+    });
+
+    if (!confirmed) return;
 
     try {
       const res = await resetSurvivorLeague(selectedLeague);
       if (res.status !== 200) throw new Error('Failed to reset survivor league');
-      alert(`Survivor league '${selectedLeague}' reset successfully!`);
+      await showModal({ title: "Success", message: `Survivor league '${selectedLeague}' reset successfully!`, confirmText: "OK" });
     } catch (error) {
-      alert(`Error: ${error.response?.data?.message || error.message}`);
+      await showModal({ title: "Error", message: `Error: ${error.response?.data?.message || error.message}`, confirmText: "OK" });
     }
   };
 
@@ -223,6 +275,9 @@ const AdminPage = () => {
         </div>
       </div>
       <Footer />
+
+      {/* Modal */}
+      {modalElement}
     </div>
   );
 };

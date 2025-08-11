@@ -1,90 +1,79 @@
-import { useState } from "react";
-import { changeUserRole } from "../src/utils/api.js";
+import React, { useState } from "react";
+import { generateTheSchedule } from "../src/utils/api";
+import Modal from "./Modal";
+import { useModal } from "../hooks/useModal";
 
-const AdminRoleChange = ({ users }) => {
-  const [selectedUserId, setSelectedUserId] = useState('');
-  const [selectedRole, setSelectedRole] = useState('');
+const AdminScheduleGenerator = ({ setSkipWeeksArray }) => {
+  const [weeks, setWeeks] = useState(14);
+  const [numSkippedWeeks, setNumSkippedWeeks] = useState(0);
+  const [modalProps, showModal] = useModal();
 
-  // Modal state
-  const [showAlertModal, setShowAlertModal] = useState(false);
-  const [alertMessage, setAlertMessage] = useState('');
-
-  const openAlert = (msg) => {
-    setAlertMessage(msg);
-    setShowAlertModal(true);
-  };
-
-  const handleChangeRole = async () => {
+  const generateSchedule = async () => {
     try {
-      await changeUserRole({
-        userId: selectedUserId,
-        role: selectedRole,
+      const currentYear = new Date().getFullYear();
+      const totalWeeks = parseInt(weeks);
+      const numToSkip = parseInt(numSkippedWeeks);
+      const skipWeeks = [];
+
+      for (let i = 1; i <= numToSkip; i++) {
+        skipWeeks.push(i);
+      }
+
+      setSkipWeeksArray(skipWeeks);
+
+      await generateTheSchedule({
+        weeks: totalWeeks,
+        season: currentYear,
+        skipWeeks,
       });
-      openAlert('Role updated successfully!');
-    } catch (error) {
-      console.error('Error changing role:', error);
-      openAlert('Error changing role. See console for details.');
+
+      const confirmed = await showModal({
+        title: "Success",
+        message: "Schedule generated successfully! Ready to continue?",
+        confirmText: "Yes",
+        cancelText: "No",
+        showCancel: true,
+      });
+
+      if (!confirmed) {
+        // doesn't really have any action if no is clicked for now
+      }
+
+    } catch (err) {
+      console.error(err);
+      await showModal({
+        title: "Error",
+        message: "Failed to generate schedule.",
+        confirmText: "OK",
+        showCancel: false,
+      });
     }
   };
 
   return (
     <div className="admin-section admin-column">
-      <h2>Change User Role</h2>
-
-      <label>Choose User:</label>
-      <select
-        value={selectedUserId}
-        onChange={(e) => setSelectedUserId(e.target.value)}
+      <h1>Schedule Generator</h1>
+      <label>Weeks:</label>
+      <input
+        type="number"
+        value={weeks}
+        onChange={(e) => setWeeks(e.target.value)}
         className="admin-input"
-      >
-        <option value="">-- Select User --</option>
-        {users.map((user) => (
-          <option key={user.id} value={user.id}>
-            {user.name}
-          </option>
-        ))}
-      </select>
-
-      <label>Choose Role:</label>
-      <select
-        value={selectedRole}
-        onChange={(e) => setSelectedRole(e.target.value)}
+      />
+      <label>Number of Skipped Weeks:</label>
+      <input
+        type="number"
+        value={numSkippedWeeks}
+        onChange={(e) => setNumSkippedWeeks(parseInt(e.target.value) || 0)}
         className="admin-input"
-      >
-        <option value="">-- Select Role --</option>
-        <option value="ADMIN">ADMIN</option>
-        <option value="MANAGER">MANAGER</option>
-        <option value="MEMBER">MEMBER</option>
-        <option value="NEW">NEW</option>
-      </select>
-
-      <button
-        className="admin-button"
-        onClick={handleChangeRole}
-        disabled={!selectedUserId || !selectedRole}
-      >
-        Change Role
+      />
+      <button onClick={generateSchedule} className="admin-button success">
+        Generate Schedule
       </button>
 
-      {/* Alert Modal */}
-      {showAlertModal && (
-        <div className="modalOverlay">
-          <div className="modalContent">
-            <h2>Notice</h2>
-            <p>{alertMessage}</p>
-            <div className="modalActions">
-              <button
-                onClick={() => setShowAlertModal(false)}
-                className="modal-cancel-button"
-              >
-                OK
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      {modalProps && <Modal {...modalProps} />}
     </div>
   );
 };
 
-export default AdminRoleChange;
+export default AdminScheduleGenerator;

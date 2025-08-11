@@ -1,16 +1,19 @@
 import React, { useState, useEffect } from "react";
-import { completeWeekLock, completeSurvivorWeek, getIncompleteWeekLocks } from "../src/utils/api.js";
+import {
+  completeWeekLock,
+  completeSurvivorWeek,
+  getIncompleteWeekLocks,
+} from "../src/utils/api.js";
 import { useTeamRecords } from "../src/utils/useTeamRecords.js";
+import Modal from "./Modal";
+import { useModal } from "../hooks/useModal";
 
 const AdminHandleWeek = () => {
   const [incompleteWeeks, setIncompleteWeeks] = useState([]);
   const [selectedWeek, setSelectedWeek] = useState(null);
   const { updateTeamRecordsAfterUpload } = useTeamRecords();
 
-  // Modal state
-  const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [showErrorModal, setShowErrorModal] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
+  const [modalProps, showModal] = useModal();
 
   useEffect(() => {
     const fetchIncompleteWeeks = async () => {
@@ -19,12 +22,16 @@ const AdminHandleWeek = () => {
         setIncompleteWeeks(res.data);
       } catch (err) {
         console.error("Failed to fetch incomplete weeks", err);
-        setErrorMessage("Failed to fetch incomplete weeks");
-        setShowErrorModal(true);
+        await showModal({
+          title: "Error",
+          message: "Failed to fetch incomplete weeks.",
+          confirmText: "OK",
+          showCancel: false,
+        });
       }
     };
     fetchIncompleteWeeks();
-  }, []);
+  }, [showModal]);
 
   const handleCompleteWeek = async () => {
     if (!selectedWeek) return;
@@ -41,27 +48,36 @@ const AdminHandleWeek = () => {
         week: selectedWeek.week,
       });
 
-      setShowSuccessModal(true);
+      await showModal({
+        title: "Success",
+        message: `Marked ${selectedWeek.league} Week ${selectedWeek.week} as complete.`,
+        confirmText: "OK",
+        showCancel: false,
+      });
 
-      // Remove the completed week from the incompleteWeeks list
       setIncompleteWeeks((prev) =>
         prev.filter(
           (w) => !(w.league === selectedWeek.league && w.week === selectedWeek.week)
         )
       );
 
-      // Update team records and generate playoffs if needed (inside this function)
-      const allCompleted = await updateTeamRecordsAfterUpload(selectedWeek.week, selectedWeek.league);
+      const allCompleted = await updateTeamRecordsAfterUpload(
+        selectedWeek.week,
+        selectedWeek.league
+      );
       if (!allCompleted) {
         return;
       }
 
-      // Clear selectedWeek after successful completion
       setSelectedWeek(null);
     } catch (err) {
       console.error("Error completing week:", err);
-      setErrorMessage("Failed to complete week.");
-      setShowErrorModal(true);
+      await showModal({
+        title: "Error",
+        message: "Failed to complete week.",
+        confirmText: "OK",
+        showCancel: false,
+      });
     }
   };
 
@@ -94,43 +110,7 @@ const AdminHandleWeek = () => {
         Complete Week
       </button>
 
-      {/* Success Modal */}
-      {showSuccessModal && (
-        <div className="modalOverlay">
-          <div className="modalContent">
-            <h2>Success!</h2>
-            <p>
-              Marked {selectedWeek?.league} Week {selectedWeek?.week} as complete.
-            </p>
-            <div className="modalActions">
-              <button
-                onClick={() => setShowSuccessModal(false)}
-                className="modal-cancel-button"
-              >
-                OK
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Error Modal */}
-      {showErrorModal && (
-        <div className="modalOverlay">
-          <div className="modalContent">
-            <h2>Error</h2>
-            <p>{errorMessage}</p>
-            <div className="modalActions">
-              <button
-                onClick={() => setShowErrorModal(false)}
-                className="modal-cancel-button"
-              >
-                OK
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      {modalProps && <Modal {...modalProps} />}
     </div>
   );
 };

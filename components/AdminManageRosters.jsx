@@ -7,6 +7,8 @@ import {
   removePlayerFromTeam, 
   updatePlayerPosition 
 } from "../src/utils/api.js";
+import Modal from "./Modal";
+import { useModal } from "../hooks/useModal";
 
 const AdminManageRosters = ({ teams }) => {
   const { players } = useContext(AuthContext);
@@ -19,11 +21,7 @@ const AdminManageRosters = ({ teams }) => {
   const [positionPlayerId, setPositionPlayerId] = useState("");
   const [newPosition, setNewPosition] = useState("");
 
-  // Modal state
-  const [showAlertModal, setShowAlertModal] = useState(false);
-  const [alertMessage, setAlertMessage] = useState("");
-  const [showConfirmModal, setShowConfirmModal] = useState(false);
-  const [confirmCallback, setConfirmCallback] = useState(null);
+  const [modalProps, showModal] = useModal();
 
   const fetchUnassignedPlayers = async () => {
     try {
@@ -31,7 +29,6 @@ const AdminManageRosters = ({ teams }) => {
       setUnassignedPlayers(res.data);
     } catch (error) {
       console.error("Error fetching unassigned players:", error);
-      openAlert(`Error fetching unassigned players: ${error.message || error}`);
     }
   };
 
@@ -50,93 +47,142 @@ const AdminManageRosters = ({ teams }) => {
     fetchUnassignedPlayers();
   }, []);
 
-  // Modal helpers
-  const openAlert = (msg) => {
-    setAlertMessage(msg);
-    setShowAlertModal(true);
-  };
+  const handleClearPlayers = async () => {
+    const confirmed = await showModal({
+      title: "Confirm Clear All",
+      message: "Are you sure you want to delete ALL team rosters? This action cannot be undone.",
+      confirmText: "Yes",
+      cancelText: "No",
+      showCancel: true,
+    });
+    if (!confirmed) return;
 
-  const openConfirm = (msg, onConfirm) => {
-    setAlertMessage(msg);
-    setConfirmCallback(() => onConfirm);
-    setShowConfirmModal(true);
-  };
-
-  // Handlers
-  const handleClearPlayers = () => {
-    openConfirm(
-      "Are you sure you want to delete ALL team rosters? This action cannot be undone.",
-      async () => {
-        setShowConfirmModal(false);
-        try {
-          const res = await clearPlayersFromTeams();
-          if (res.status !== 200) throw new Error("Failed to clear players from teams");
-          openAlert("All players removed from teams!");
-          await fetchUnassignedPlayers();
-        } catch (error) {
-          openAlert(`Error: ${error.response?.data?.message || error.message}`);
-        }
-      }
-    );
+    try {
+      const res = await clearPlayersFromTeams();
+      if (res.status !== 200) throw new Error("Failed to clear players from teams");
+      await showModal({
+        title: "Success",
+        message: "All players removed from teams!",
+        confirmText: "OK",
+        showCancel: false,
+      });
+      await fetchUnassignedPlayers();
+    } catch (error) {
+      await showModal({
+        title: "Error",
+        message: error.response?.data?.message || error.message || "Error clearing players.",
+        confirmText: "OK",
+        showCancel: false,
+      });
+    }
   };
 
   const handleAssignPlayer = async () => {
     if (!assignPlayerId || !assignTeamId) {
-      openAlert("Please select both a player and a team to assign.");
+      await showModal({
+        title: "Missing Selection",
+        message: "Please select both a player and a team to assign.",
+        confirmText: "OK",
+        showCancel: false,
+      });
       return;
     }
     try {
       const res = await assignPlayerToTeam({ playerId: assignPlayerId, teamId: assignTeamId });
       if (res.status !== 200) throw new Error("Failed to assign player");
-      openAlert("Player assigned successfully!");
+      await showModal({
+        title: "Success",
+        message: "Player assigned successfully!",
+        confirmText: "OK",
+        showCancel: false,
+      });
       setAssignPlayerId("");
       setAssignTeamId("");
-      fetchUnassignedPlayers();
+      await fetchUnassignedPlayers();
     } catch (error) {
-      openAlert("Error assigning player to team");
+      await showModal({
+        title: "Error",
+        message: "Error assigning player to team",
+        confirmText: "OK",
+        showCancel: false,
+      });
       console.error(error);
     }
   };
 
-  const handleRemovePlayer = () => {
+  const handleRemovePlayer = async () => {
     if (!removeTeamId || !removePlayerId) {
-      openAlert("Please select both a team and a player to remove.");
+      await showModal({
+        title: "Missing Selection",
+        message: "Please select both a team and a player to remove.",
+        confirmText: "OK",
+        showCancel: false,
+      });
       return;
     }
-    openConfirm(
-      "Are you sure you want to remove this player from the team?",
-      async () => {
-        setShowConfirmModal(false);
-        try {
-          const res = await removePlayerFromTeam(removePlayerId);
-          if (res.status !== 200) throw new Error("Failed to remove player");
-          openAlert("Player removed successfully!");
-          const updatedPlayers = players.filter(p => p.id !== removePlayerId);
-          setTeamPlayers(updatedPlayers.filter(p => p.teamId === removeTeamId));
-          setRemovePlayerId("");
-          await fetchUnassignedPlayers();
-        } catch (error) {
-          openAlert("Error removing player from team");
-          console.error(error);
-        }
-      }
-    );
+
+    const confirmed = await showModal({
+      title: "Confirm Remove Player",
+      message: "Are you sure you want to remove this player from the team?",
+      confirmText: "Yes",
+      cancelText: "No",
+      showCancel: true,
+    });
+    if (!confirmed) return;
+
+    try {
+      const res = await removePlayerFromTeam(removePlayerId);
+      if (res.status !== 200) throw new Error("Failed to remove player");
+      await showModal({
+        title: "Success",
+        message: "Player removed successfully!",
+        confirmText: "OK",
+        showCancel: false,
+      });
+      const updatedPlayers = players.filter(p => p.id !== removePlayerId);
+      setTeamPlayers(updatedPlayers.filter(p => p.teamId === removeTeamId));
+      setRemovePlayerId("");
+      await fetchUnassignedPlayers();
+    } catch (error) {
+      await showModal({
+        title: "Error",
+        message: "Error removing player from team",
+        confirmText: "OK",
+        showCancel: false,
+      });
+      console.error(error);
+    }
   };
 
   const handleChangePlayerPosition = async () => {
     if (!positionPlayerId || !newPosition) {
-      openAlert("Select both player and new position");
+      await showModal({
+        title: "Missing Selection",
+        message: "Select both player and new position",
+        confirmText: "OK",
+        showCancel: false,
+      });
       return;
     }
-
+  
     try {
       const res = await updatePlayerPosition(positionPlayerId, newPosition);
       if (res.status !== 200) throw new Error("Failed to update position");
-      openAlert("Player position updated!");
+      await showModal({
+        title: "Success",
+        message: "Player position updated!",
+        confirmText: "OK",
+        showCancel: false,
+      });
       setPositionPlayerId("");
       setNewPosition("");
     } catch (error) {
-      openAlert("Error updating player position");
+      await showModal({
+        title: "Error",
+        message: "Error updating player position",
+        confirmText: "OK",
+        showCancel: false,
+      });
       console.error(error);
     }
   };
@@ -250,7 +296,7 @@ const AdminManageRosters = ({ teams }) => {
                   <option key={p.id} value={p.id}>
                     {p.name} - {p.league} - {p.position}
                   </option>
-                ))}
+              ))}
             </select>
 
             <label>Select New Position:</label>
@@ -277,49 +323,7 @@ const AdminManageRosters = ({ teams }) => {
         </div>
       </div>
 
-      {/* Alert Modal */}
-      {showAlertModal && (
-        <div className="modalOverlay">
-          <div className="modalContent">
-            <h2>Notice</h2>
-            <p>{alertMessage}</p>
-            <div className="modalActions">
-              <button
-                onClick={() => setShowAlertModal(false)}
-                className="modal-cancel-button"
-              >
-                OK
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Confirm Modal */}
-      {showConfirmModal && (
-        <div className="modalOverlay">
-          <div className="modalContent">
-            <h2>Confirm Action</h2>
-            <p>{alertMessage}</p>
-            <div className="modalActions">
-              <button
-                onClick={() => setShowConfirmModal(false)}
-                className="modal-cancel-button"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={() => {
-                  if (confirmCallback) confirmCallback();
-                }}
-                className="modal-confirm-button"
-              >
-                Yes
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      {modalProps && <Modal {...modalProps} />}
     </div>
   );
 };

@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { setLocktimes, resetRosters, resetPositions } from "../src/utils/api.js";
+import Modal from "./Modal";
+import { useModal } from "../hooks/useModal";
 
 const holidays = [
   "2025-11-28",
@@ -11,22 +13,14 @@ const holidays = [
 const AdminLockTimeSetter = ({ playerList }) => {
   const [leagueStartTimes, setLeagueStartTimes] = useState({});
   const [resetting, setResetting] = useState(false);
-  const [showAlertModal, setShowAlertModal] = useState(false);
-  const [alertMessage, setAlertMessage] = useState("");
-  const [showConfirmModal, setShowConfirmModal] = useState(false);
-  const [confirmCallback, setConfirmCallback] = useState(null);
   const totalWeeks = 34;
   const currentYear = new Date().getFullYear();
+  const [modalProps, showModal] = useModal();
 
   const leagues = Array.from(new Set(playerList.map((p) => p.league)));
 
   const handleLeagueStartChange = (league, value) => {
     setLeagueStartTimes((prev) => ({ ...prev, [league]: value }));
-  };
-
-  const openAlert = (msg) => {
-    setAlertMessage(msg);
-    setShowAlertModal(true);
   };
 
   const submitLocktimes = async () => {
@@ -58,35 +52,66 @@ const AdminLockTimeSetter = ({ playerList }) => {
     });
 
     if (payload.length === 0) {
-      openAlert("Please enter at least one valid league start time before submitting.");
+      await showModal({
+        title: "Missing Data",
+        message: "Please enter at least one valid league start time before submitting.",
+        confirmText: "OK",
+        showCancel: false,
+      });
       return;
     }
 
     try {
       await setLocktimes(payload);
-      openAlert("Selected lock times submitted!");
+      await showModal({
+        title: "Success",
+        message: "Selected lock times submitted!",
+        confirmText: "OK",
+        showCancel: false,
+      });
     } catch (err) {
       console.error(err);
-      openAlert("Failed to set lock times.");
+      await showModal({
+        title: "Error",
+        message: "Failed to set lock times.",
+        confirmText: "OK",
+        showCancel: false,
+      });
     }
   };
 
-  const handleReset = () => {
-    setConfirmCallback(() => async () => {
-      setShowConfirmModal(false);
-      setResetting(true);
-      try {
-        await resetRosters(currentYear);
-        await resetPositions();
-        openAlert("Rosters and positions have been reset.");
-      } catch (err) {
-        console.error(err);
-        openAlert("Failed to reset rosters or positions.");
-      } finally {
-        setResetting(false);
-      }
+  const handleReset = async () => {
+    const confirmed = await showModal({
+      title: "Confirm Reset",
+      message: "Are you sure you want to reset all rosters and positions?",
+      confirmText: "Yes",
+      cancelText: "No",
+      showCancel: true,
     });
-    setShowConfirmModal(true);
+
+    if (!confirmed) return;
+
+    setResetting(true);
+    try {
+      await resetRosters(currentYear);
+      await resetPositions();
+      await showModal({
+        title: "Success",
+        message: "Rosters and positions have been reset.",
+        confirmText: "OK",
+        showCancel: false,
+      });
+    } catch (err) {
+      console.error(err);
+      await showModal({
+        title: "Error",
+        message: "Failed to reset rosters or positions.",
+        confirmText: "OK",
+        showCancel: false,
+      });
+    } finally {
+      setResetting(false);
+    }
   };
 
   return (
@@ -115,51 +140,7 @@ const AdminLockTimeSetter = ({ playerList }) => {
         {resetting ? "Resetting..." : "Reset Rosters & Positions"}
       </button>
 
-      {/* Alert Modal */}
-      {showAlertModal && (
-        <div className="modalOverlay">
-          <div className="modalContent">
-            <h2>Notice</h2>
-            <p>{alertMessage}</p>
-            <div className="modalActions">
-              <button
-                onClick={() => setShowAlertModal(false)}
-                className="modal-cancel-button"
-              >
-                OK
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Confirm Modal */}
-      {showConfirmModal && (
-        <div className="modalOverlay">
-          <div className="modalContent">
-            <h2>Confirm Reset</h2>
-            <p>Are you sure you want to reset all rosters and positions?</p>
-            <div className="modalActions">
-              <button
-                onClick={() => {
-                  setShowConfirmModal(false);
-                }}
-                className="modal-cancel-button"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={() => {
-                  if (confirmCallback) confirmCallback();
-                }}
-                className="modal-confirm-button"
-              >
-                Yes, Reset
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      {modalProps && <Modal {...modalProps} />}
     </div>
   );
 };

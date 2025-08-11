@@ -1,17 +1,16 @@
-import React, { useEffect, useState } from 'react';
-import { fetchAllClaims, processClaim } from '../src/utils/api';
+import React, { useEffect, useState } from "react";
+import { fetchAllClaims, processClaim } from "../src/utils/api";
+import Modal from "./Modal";
+import { useModal } from "../hooks/useModal";
 
 const AdminClaims = () => {
   const [claims, setClaims] = useState([]);
-  const [selectedClaimId, setSelectedClaimId] = useState('');
-  const [selectedTeamId, setSelectedTeamId] = useState('');
+  const [selectedClaimId, setSelectedClaimId] = useState("");
+  const [selectedTeamId, setSelectedTeamId] = useState("");
   const [teamsToChoose, setTeamsToChoose] = useState([]);
   const [showClaimsDropdown, setShowClaimsDropdown] = useState(false);
 
-  // Modal state
-  const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [showErrorModal, setShowErrorModal] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
+  const [modalProps, showModal] = useModal();
 
   const fetchClaims = async () => {
     try {
@@ -19,21 +18,43 @@ const AdminClaims = () => {
       if (res.status === 200) {
         setClaims(res.data.allClaimedPlayers);
       } else {
-        setErrorMessage('Failed to fetch claims');
-        setShowErrorModal(true);
+        await showModal({
+          title: "Error",
+          message: "Failed to fetch claims",
+          confirmText: "OK",
+          showCancel: false,
+        });
       }
     } catch (error) {
-      setErrorMessage(`Error fetching claims: ${error.response?.data?.message || error.message}`);
-      setShowErrorModal(true);
+      await showModal({
+        title: "Error",
+        message: `Error fetching claims: ${error.response?.data?.message || error.message}`,
+        confirmText: "OK",
+        showCancel: false,
+      });
     }
   };
 
   const handleProcessClaim = async () => {
     if (!selectedClaimId || (teamsToChoose.length > 1 && !selectedTeamId)) {
-      setErrorMessage('Please select a claim and a team to process.');
-      setShowErrorModal(true);
+      await showModal({
+        title: "Missing Selection",
+        message: "Please select a claim and a team to process.",
+        confirmText: "OK",
+        showCancel: false,
+      });
       return;
     }
+
+    const confirmed = await showModal({
+      title: "Confirm Process Claim",
+      message: "Are you sure you want to process this claim?",
+      confirmText: "Yes",
+      cancelText: "No",
+      showCancel: true,
+    });
+
+    if (!confirmed) return;
 
     try {
       const payload = {
@@ -42,19 +63,32 @@ const AdminClaims = () => {
       };
       const res = await processClaim(payload);
       if (res.status === 200) {
-        setShowSuccessModal(true);
-        setSelectedClaimId('');
-        setSelectedTeamId('');
+        await showModal({
+          title: "Success",
+          message: "Claim processed successfully!",
+          confirmText: "OK",
+          showCancel: false,
+        });
+        setSelectedClaimId("");
+        setSelectedTeamId("");
         setTeamsToChoose([]);
         setShowClaimsDropdown(false);
         fetchClaims(); // Reload claims
       } else {
-        setErrorMessage('Failed to process claim');
-        setShowErrorModal(true);
+        await showModal({
+          title: "Error",
+          message: "Failed to process claim",
+          confirmText: "OK",
+          showCancel: false,
+        });
       }
     } catch (error) {
-      setErrorMessage(`Error processing claim: ${error.response?.data?.message || error.message}`);
-      setShowErrorModal(true);
+      await showModal({
+        title: "Error",
+        message: `Error processing claim: ${error.response?.data?.message || error.message}`,
+        confirmText: "OK",
+        showCancel: false,
+      });
     }
   };
 
@@ -75,7 +109,7 @@ const AdminClaims = () => {
         <div className="admin-form-card">
           <label>Select a claim:</label>
           <select
-            value={selectedClaimId || ''}
+            value={selectedClaimId || ""}
             onChange={(e) => {
               const claimId = e.target.value;
               const claim = claims.find((c) => c.playerId === claimId);
@@ -83,13 +117,13 @@ const AdminClaims = () => {
 
               if (claim?.teams?.length > 1) {
                 setTeamsToChoose(claim.teams);
-                setSelectedTeamId('');
+                setSelectedTeamId("");
               } else if (claim?.teams?.length === 1) {
                 setTeamsToChoose([]);
                 setSelectedTeamId(claim.teams[0].id);
               } else {
                 setTeamsToChoose([]);
-                setSelectedTeamId('');
+                setSelectedTeamId("");
               }
             }}
             className="admin-input"
@@ -99,7 +133,7 @@ const AdminClaims = () => {
               claims.map((claim) => (
                 <option key={claim.playerId} value={claim.playerId}>
                   {claim.playerName} (claimed by {claim.teams?.length} team
-                  {claim.teams?.length > 1 ? 's' : ''})
+                  {claim.teams?.length > 1 ? "s" : ""})
                 </option>
               ))
             ) : (
@@ -125,7 +159,7 @@ const AdminClaims = () => {
             </div>
           )}
 
-          {(selectedClaimId && (teamsToChoose.length <= 1 || selectedTeamId)) && (
+          {selectedClaimId && (teamsToChoose.length <= 1 || selectedTeamId) && (
             <button onClick={handleProcessClaim} className="admin-button">
               Process Claim
             </button>
@@ -133,41 +167,7 @@ const AdminClaims = () => {
         </div>
       )}
 
-      {/* Success Modal */}
-      {showSuccessModal && (
-        <div className="modalOverlay">
-          <div className="modalContent">
-            <h2>Success!</h2>
-            <p>Claim processed successfully.</p>
-            <div className="modalActions">
-              <button
-                onClick={() => setShowSuccessModal(false)}
-                className="modal-cancel-button"
-              >
-                OK
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Error Modal */}
-      {showErrorModal && (
-        <div className="modalOverlay">
-          <div className="modalContent">
-            <h2>Error</h2>
-            <p>{errorMessage}</p>
-            <div className="modalActions">
-              <button
-                onClick={() => setShowErrorModal(false)}
-                className="modal-cancel-button"
-              >
-                OK
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      {modalProps && <Modal {...modalProps} />}
     </div>
   );
 };

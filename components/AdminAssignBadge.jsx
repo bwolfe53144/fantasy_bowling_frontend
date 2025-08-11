@@ -1,5 +1,7 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { assignPlayerBadge } from "../src/utils/api";
+import Modal from "./Modal";
+import { useModal } from "../hooks/useModal";
 
 export default function AdminAssignBadge({ players }) {
   const [showForm, setShowForm] = useState(false);
@@ -10,16 +12,28 @@ export default function AdminAssignBadge({ players }) {
   const [year, setYear] = useState(new Date().getFullYear());
   const [rank, setRank] = useState("");
 
-  const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [showErrorModal, setShowErrorModal] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
+  const [modalProps, showModal] = useModal();
 
   const handleAssignBadge = async () => {
     if (!selectedPlayer || !name || !year || !iconUrl) {
-      setErrorMessage("Player, badge name, year, and icon are required.");
-      setShowErrorModal(true);
+      await showModal({
+        title: "Missing Required Fields",
+        message: "Player, badge name, year, and icon are required.",
+        confirmText: "OK",
+        showCancel: false,
+      });
       return;
     }
+
+    const confirmed = await showModal({
+      title: "Confirm Badge Assignment",
+      message: `Are you sure you want to assign the badge "${name}" to the selected player?`,
+      confirmText: "Yes",
+      cancelText: "No",
+      showCancel: true,
+    });
+
+    if (!confirmed) return;
 
     try {
       await assignPlayerBadge({
@@ -30,17 +44,30 @@ export default function AdminAssignBadge({ players }) {
         year: parseInt(year),
         rank,
       });
-      setShowSuccessModal(true);
+
+      await showModal({
+        title: "Success",
+        message: "Badge assigned!",
+        confirmText: "OK",
+        showCancel: false,
+      });
+
+      // Reset form fields
+      setSelectedPlayer("");
       setName("");
       setDescription("");
       setIconUrl("");
       setRank("");
-      setSelectedPlayer("");
       setYear(new Date().getFullYear());
+      setShowForm(false);
     } catch (err) {
       console.error("Failed to assign badge:", err);
-      setErrorMessage("Failed to assign badge.");
-      setShowErrorModal(true);
+      await showModal({
+        title: "Error",
+        message: "Failed to assign badge",
+        confirmText: "OK",
+        showCancel: false,
+      });
     }
   };
 
@@ -135,41 +162,7 @@ export default function AdminAssignBadge({ players }) {
         </div>
       )}
 
-      {/* Success Modal */}
-      {showSuccessModal && (
-        <div className="modalOverlay">
-          <div className="modalContent">
-            <h2>Success!</h2>
-            <p>Badge assigned successfully.</p>
-            <div className="modalActions">
-              <button
-                onClick={() => setShowSuccessModal(false)}
-                className="modal-cancel-button"
-              >
-                OK
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Error Modal */}
-      {showErrorModal && (
-        <div className="modalOverlay">
-          <div className="modalContent">
-            <h2>Error</h2>
-            <p>{errorMessage}</p>
-            <div className="modalActions">
-              <button
-                onClick={() => setShowErrorModal(false)}
-                className="modal-cancel-button"
-              >
-                OK
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      {modalProps && <Modal {...modalProps} />}
     </div>
   );
 }
