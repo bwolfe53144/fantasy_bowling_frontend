@@ -13,6 +13,9 @@ const Signin = () => {
   const [forgotSuccess, setForgotSuccess] = useState("");
   const [showForgotForm, setShowForgotForm] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -22,14 +25,19 @@ const Signin = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError("");
     try {
       const { data } = await signIn(form);
-      alert("Sign in successful!");
       login(data.token);
-      navigate("/profile");
+      setShowSuccessModal(true); // Show modal on success
     } catch (err) {
       setError(err.response?.data?.error || "An unexpected error occurred.");
     }
+  };
+
+  const handleSuccessModalClose = () => {
+    setShowSuccessModal(false);
+    navigate("/profile");
   };
 
   const handleForgotSubmit = async (e) => {
@@ -149,6 +157,21 @@ const Signin = () => {
           </form>
         )}
       </div>
+
+      {/* Success Modal */}
+      {showSuccessModal && (
+        <div className="modalOverlay">
+          <div className="modalContent">
+            <h2>Sign In Successful!</h2>
+            <p>Welcome back, {form.username}.</p>
+            <div className="modalActions">
+              <button onClick={handleSuccessModalClose} className="modal-cancel-button">
+                OK
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
