@@ -142,6 +142,7 @@
   .resetButton {
     padding: 0.5rem;
     min-width: 90px;
+    margin-left: .5rem;
     border: none;
     border-radius: 10px;
     font-weight: bold;
@@ -155,6 +156,28 @@
     border-radius: 10px;
     font-weight: bold;
     cursor: pointer;
+  }
+
+  @media (max-width: 400px) {
+    .gamesContainer {
+      flex-wrap: wrap;
+      gap: 0.25rem;
+    }
+    .gamesContainer input,
+    .resetButton {
+      margin-top: 1rem;
+      flex-shrink: 0;
+      width: 100%;
+      max-width: none;
+    }
+  
+    /* Stack search input and team select */
+    .playerSearchInput,
+    #teamFilter {
+      margin-top: 1rem;
+      width: 100%;
+      max-width: none;
+    }
   }
 
   .dark .dropdownMenu {
