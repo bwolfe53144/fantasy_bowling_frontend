@@ -71,7 +71,7 @@ const DropClaimPlayer = () => {
     <div className="modalOverlay">
       <div className="modalContent">
         <h2>Confirm Claim</h2>
-        <p>
+        <p className="modal-p">
           {playerToDrop?.name
             ? `Add: ${playerName}, Drop: ${playerToDrop.name}`
             : `Add: ${playerName}`}
