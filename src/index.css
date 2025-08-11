@@ -36,9 +36,19 @@ body {
   flex-direction: column;
 }
 
+body, .loadImgContainer {
+  font-size: 1.5rem; 
+}
+
 h1 {
   font-size: 3.2em;
   line-height: 1.1;
+}
+
+#loading-screen p {
+  position: relative;
+  right: .5rem;
+  top: .55rem;
 }
 
 button {
