@@ -19,7 +19,7 @@ export default function WeekSelector({
           className="arrowButton"
           type="button"
         >
-          ←
+          ◀
         </button>
 
         <select
@@ -47,7 +47,7 @@ export default function WeekSelector({
           className="arrowButton"
           type="button"
         >
-          →
+          ▶
         </button>
       </div>
   );
