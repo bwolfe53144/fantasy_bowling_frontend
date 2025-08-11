@@ -91,7 +91,7 @@ button:focus-visible {
 
 .cancelBtn {
   background: #999;
-  padding: 1rem;
+  padding: .2 rem 1rem;
   border-radius: 10px;
   border: none;
   cursor: pointer;
