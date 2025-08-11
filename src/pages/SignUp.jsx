@@ -1,71 +1,71 @@
-import { useState, useContext } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { AuthContext } from "../utils/AuthContext";
-import { signUp } from "../utils/api";
-import LoadingScreen from "../../components/LoadingScreen";
-import "../styles/Signup.css";
+import { useAuth } from "../utils/AuthContext";
+import { loginUser } from "../utils/api";
 
-const Signup = () => {
-  const { loading } = useContext(AuthContext);
-  const [form, setForm] = useState({
-    firstname: "",
-    lastname: "",
-    username: "",
-    email: "",
-    password: "",
-    confPassword: "",
-  });
-  const [errors, setErrors] = useState([]);
+export default function SignIn() {
+  const { setUser } = useAuth();
   const navigate = useNavigate();
 
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-    setErrors([]);
-  };
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [modalOpen, setModalOpen] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     try {
-      await signUp(form);
-      alert("Signup successful!");
-      navigate("/signin");
-    } catch (err) {
-      if (err.response?.data?.errors) {
-        setErrors(err.response.data.errors.map((error) => error.msg));
-      } else {
-        setErrors([err.response?.data?.error || "An error occurred"]);
-      }
+      const userData = await loginUser({ email, password });
+      setUser(userData);
+      setModalOpen(true); // show modal instead of alert
+    } catch (error) {
+      console.error("Login failed:", error);
+      // Optionally: show an error modal or toast here
     }
   };
 
-  if (loading) {
-    return  <LoadingScreen />
-  }
+  const closeModal = () => {
+    setModalOpen(false);
+    navigate("/"); // go to home after closing modal
+  };
 
   return (
-    <div className="signup-page">
-      <div className="signup-container">
-        <form className="signup-form" onSubmit={handleSubmit}>
-          <h2>Sign Up</h2>
-          {errors.length > 0 && (
-            <ul className="error-list">
-              {errors.map((error, index) => (
-                <li key={index}>{error}</li>
-              ))}
-            </ul>
-          )}
-          <input name="firstname" placeholder="First Name" onChange={handleChange} required />
-          <input name="lastname" placeholder="Last Name" onChange={handleChange} required />
-          <input name="username" placeholder="Username" onChange={handleChange} required />
-          <input type="email" name="email" placeholder="Email" onChange={handleChange} />
-          <input type="password" name="password" placeholder="Password" onChange={handleChange} required />
-          <input type="password" name="confPassword" placeholder="Confirm Password" onChange={handleChange} required />
-          <button type="submit">Sign Up</button>
-          <a className="home-link" href="/">← Back to Home</a>
-        </form>
-      </div>
+    <div className="signInPage">
+      <h2>Sign In</h2>
+      <form onSubmit={handleSubmit}>
+        <input
+          type="email"
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+        />
+        <input
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+        />
+        <button type="submit">Sign In</button>
+      </form>
+
+      {/* Success Modal */}
+      {modalOpen && (
+        <div className="modalOverlay">
+          <div className="modalContent">
+            <p className="modal-p">Sign in successful!</p>
+            <div className="modalActions">
+              <button
+                onClick={closeModal}
+                className="modal-cancel-button"
+              >
+                OK
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
-};
-
-export default Signup;
+}
