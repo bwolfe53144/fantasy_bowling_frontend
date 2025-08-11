@@ -80,7 +80,7 @@ const DropClaimPlayer = () => {
           <button onClick={handleConfirmClaim} style={buttonStyle}>
             Confirm
           </button>
-          <button onClick={() => setShowConfirmModal(false)} className="cancelBtn">
+          <button onClick={() => setShowConfirmModal(false)} className="modal-cancel-button">
             Cancel
           </button>
         </div>
