@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
+import { Navigate } from "react-router-dom";
 import { AuthContext } from "../utils/AuthContext";
 import { ThemeContext } from "../utils/ThemeContext"; // <-- import ThemeContext
 import Header from "../../components/Header";
