@@ -13,6 +13,9 @@ import { getCurrentWeek, generateRoster, saveRoster, createTeam } from "../utils
 import { updatePlayerPosition } from "../utils/updatePlayerPosition.js";
 import { fetchRoster } from "../utils/fetchRoster.js";
 import { handleRosterSubmit } from "../utils/handleRosterSubmit.js";
+import { useModal } from "../../hooks/useModal.js";   
+import Modal from "../../components/Modal.jsx";       
+
 import "../styles/Roster.css";
 
 export default function Roster() {
@@ -32,6 +35,9 @@ export default function Roster() {
   const [totalWeeks, setTotalWeeks] = useState(0);
   const [playersLoaded, setPlayersLoaded] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  // Initialize modal hook:
+  const [modalProps, showModal] = useModal();
 
   const { backgroundColor, color, buttonBackground, buttonColor } = getThemeColors(user?.color, isDarkMode);
 
@@ -138,27 +144,43 @@ export default function Roster() {
       lockedPlayerIds,
       saveRoster,
       setPlayers,
-      alert,
-      reload: true,
+      showModal,     
+      navigate,    
     });
   };
 
   const handleCreateTeam = async () => {
     if (!teamName.trim()) {
-      alert("Please enter a team name.");
+      await showModal({
+        title: "Input Required",
+        message: "Please enter a team name.",
+        confirmText: "OK",
+      });
       return;
     }
     try {
       const response = await createTeam(user.id, teamName);
       if (response.status === 200) {
-        alert("Team created successfully!");
-        window.location.reload();
+        await showModal({
+          title: "Success",
+          message: "Team created successfully!",
+          confirmText: "OK",
+        });
+        navigate("/"); // Or wherever appropriate
       } else {
-        alert("Error creating team.");
+        await showModal({
+          title: "Error",
+          message: "Error creating team.",
+          confirmText: "OK",
+        });
       }
     } catch (error) {
       console.error("Create team error:", error);
-      alert("Server error.");
+      await showModal({
+        title: "Server Error",
+        message: "There was a server error. Please try again later.",
+        confirmText: "OK",
+      });
     }
   };
 
@@ -169,12 +191,10 @@ export default function Roster() {
 
   const goToPreviousWeek = () => {
     navigate(`/roster/week/${currentWeek - 1}`);
-    window.location.reload();
   };
 
   const goToNextWeek = () => {
     navigate(`/roster/week/${currentWeek + 1}`);
-    window.location.reload();
   };
 
   if (loading || (players === null && user?.team)) {
@@ -202,14 +222,14 @@ export default function Roster() {
             Roster{user.team ? ` - Week ${currentWeek}` : ""}
           </h1>
           {players.length > 0 && (
-                <button
-                  style={buttonStyle}
-                  className="rosterButton"
-                  onClick={() => navigate("/regular-roster")}
-                >
-                  Regular Roster
-                </button>
-              )}
+            <button
+              style={buttonStyle}
+              className="rosterButton"
+              onClick={() => navigate("/regular-roster")}
+            >
+              Regular Roster
+            </button>
+          )}
         </div>
         {!user.team && (
           <>
@@ -239,15 +259,15 @@ export default function Roster() {
         {user.team && (
           <>
             <div className="weekSelectorContainer">
-            <WeekSelector
-              weekNumber={currentWeek?.toString()}
-              totalWeeks={totalWeeks}
-              firstWeek={firstWeek}
-              onWeekChange={handleWeekChange}
-              onPreviousWeek={goToPreviousWeek}
-              onNextWeek={goToNextWeek}
-              buttonStyle={buttonStyle}
-            />
+              <WeekSelector
+                weekNumber={currentWeek?.toString()}
+                totalWeeks={totalWeeks}
+                firstWeek={firstWeek}
+                onWeekChange={handleWeekChange}
+                onPreviousWeek={goToPreviousWeek}
+                onNextWeek={goToNextWeek}
+                buttonStyle={buttonStyle}
+              />
             </div>
             <PlayerRosterGrid
               players={players}
@@ -270,6 +290,8 @@ export default function Roster() {
         )}
       </div>
       <Footer />
+
+      {modalProps && <Modal {...modalProps} />}
     </div>
   );
 }

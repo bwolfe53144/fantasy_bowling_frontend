@@ -10,6 +10,8 @@ import Navbar from "../../components/Navbar.jsx";
 import Footer from "../../components/Footer.jsx";
 import BaseFilters from "../../components/BaseFilters.jsx";
 import LoadingScreen from "../../components/LoadingScreen";
+import { useModal } from "../../hooks/useModal.js";     // <-- import useModal
+import Modal from "../../components/Modal.jsx";         // <-- import Modal
 import '../styles/Players.css';
 
 const Players = () => {
@@ -30,6 +32,9 @@ const Players = () => {
   const [claimedPlayers, setClaimedPlayers] = useState([]);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
+
+  // Modal hook:
+  const [modalProps, showModal] = useModal();
 
   // Define fantasy leagues to filter by
   const fantasyLeagues = [
@@ -156,17 +161,32 @@ const Players = () => {
     cursor: "pointer",
   };
 
+  // Updated with modal confirmation + alert replacements
   const handleRemoveClaim = async (playerId) => {
-    const confirmed = window.confirm("Are you sure you want to remove this claim?");
+    const confirmed = await showModal({
+      title: "Confirm Remove Claim",
+      message: "Are you sure you want to remove this claim?",
+      confirmText: "Yes",
+      cancelText: "No",
+      showCancel: true,
+    });
     if (!confirmed) return;
-  
+
     try {
-      await deleteClaim(playerId, user.id, user.token); 
+      await deleteClaim(playerId, user.id, user.token);
       setClaimedPlayers(prev => prev.filter(id => id !== playerId));
-      alert("Claim removed.");
+      await showModal({
+        title: "Success",
+        message: "Claim removed.",
+        confirmText: "OK",
+      });
     } catch (error) {
       console.error("Error removing claim:", error);
-      alert("Failed to remove claim.");
+      await showModal({
+        title: "Error",
+        message: "Failed to remove claim.",
+        confirmText: "OK",
+      });
     }
   };
 
@@ -334,11 +354,13 @@ const Players = () => {
   
         <div>
           <Link to="/all-claims">
-            <button style={claimButtonStyle}>View Claimed Players</button>
+            <button style={buttonStyle}>View Claimed Players</button>
           </Link>
         </div>
       </div>
   
+      {modalProps && <Modal {...modalProps} />} {/* Modal render */}
+
       <Footer />
     </div>
   );

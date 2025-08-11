@@ -1,5 +1,5 @@
 import { useEffect, useState, useContext } from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom"; // <-- import useNavigate
 import { AuthContext } from "../utils/AuthContext";
 import Header from "../../components/Header";
 import Navbar from "../../components/Navbar";
@@ -10,6 +10,8 @@ import { handleSaveRegularRoster } from "../utils/handleSaveRegularRoster";
 import { getThemeColors } from "../utils/themeColors";
 import { ThemeContext } from "../utils/ThemeContext";
 import { processPlayerStats } from "../utils/ProcessPlayerStats";
+import { useModal } from "../../hooks/useModal.js";  // <-- import useModal
+import Modal from "../../components/Modal.jsx";      // <-- import Modal
 import "../styles/RegularRoster.css";
 
 function capitalizePosition(pos) {
@@ -27,6 +29,12 @@ export default function RegularRoster() {
   const [currentWeek, setCurrentWeek] = useState(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [teamWithScores, setTeamWithScores] = useState(null);
+
+  // Modal hook:
+  const [modalProps, showModal] = useModal();
+
+  // React Router navigate hook:
+  const navigate = useNavigate();
 
   const flexBenchPool = Array.from({ length: 9 }, (_, i) => `Flex Bench ${i + 1}`);
 
@@ -49,7 +57,6 @@ export default function RegularRoster() {
     return () => document.body.classList.remove("menuOpen");
   }, [isMenuOpen]);
 
-  // === Fetch Current Week & All Weeks ===
   useEffect(() => {
     const fetchCurrentWeekAndWeeks = async () => {
       try {
@@ -87,7 +94,6 @@ export default function RegularRoster() {
     fetchTeamData();
   }, [user]);
 
-  // === Initialize Players When Team Data Loads ===
   useEffect(() => {
     if (teamWithScores?.players?.length) {
       const usedPositions = new Set();
@@ -130,7 +136,6 @@ export default function RegularRoster() {
     }
   }, [teamWithScores]);
 
-  // === Update Position Handler ===
   const updatePosition = (id, newPosition) => {
     newPosition = capitalizePosition(newPosition);
 
@@ -157,30 +162,54 @@ export default function RegularRoster() {
   };
 
   const dropMyPlayer = async (playerId) => {
-    if (!window.confirm("Are you sure you want to drop this player?")) return;
+    const confirmed = await showModal({
+      title: "Confirm Drop Player",
+      message: "Are you sure you want to drop this player?",
+      confirmText: "Yes",
+      cancelText: "No",
+      showCancel: true,
+    });
+
+    if (!confirmed) return;
 
     try {
       const player = players.find(p => p.id === playerId);
-      if (!player) return alert("Player not found.");
+      if (!player) {
+        await showModal({ title: "Error", message: "Player not found.", confirmText: "OK" });
+        return;
+      }
 
       await dropPlayer(playerId, user.team.id);
       setPlayers(prev => prev.filter(p => p.id !== playerId));
-      alert(`${player.name} has been dropped from the roster.`);
+      await showModal({ title: "Success", message: `${player.name} has been dropped from the roster.`, confirmText: "OK" });
     } catch (err) {
       console.error("Error dropping player:", err);
-      alert("Failed to drop player.");
+      await showModal({ title: "Error", message: "Failed to drop player.", confirmText: "OK" });
     }
+  };
+
+  // New async wrapper to handle save + pass navigate & showModal
+  const onSaveRegularRoster = async () => {
+    await handleSaveRegularRoster({
+      players,
+      user,
+      currentWeek,
+      flexBenchPool,
+      setIsSaving,
+      showModal,
+      navigate,   // pass navigate here
+    });
   };
 
   if (loading) {
     return <LoadingScreen />;
   }
-  
+
   if (!user) {
     console.log("🚨 Redirecting because no user or bad role", user);
     return <Navigate to="/signin" replace />;
   }
-  
+
   if (players === null && user.team) {
     return <LoadingScreen />;
   }
@@ -191,7 +220,6 @@ export default function RegularRoster() {
       <Navbar />
       <div className="mainPage">
         <div className="roster-content">
-
           <h1 style={{ fontSize: "20px", fontWeight: "bold" }}>Set Your Regular Roster</h1>
           <p>This is your default lineup for all weeks that haven't started. You can edit week-by-week later.</p>
 
@@ -244,15 +272,7 @@ export default function RegularRoster() {
           <button
             className="submitLineupButton"
             style={buttonStyle}
-            onClick={() =>
-              handleSaveRegularRoster({
-                players,
-                user,
-                currentWeek,
-                flexBenchPool,
-                setIsSaving,
-              })
-            }
+            onClick={onSaveRegularRoster} 
             disabled={isSaving}
           >
             {isSaving ? "Saving..." : "Save Regular Roster"}
@@ -260,6 +280,8 @@ export default function RegularRoster() {
         </div>
       </div>
       <Footer />
+
+      {modalProps && <Modal {...modalProps} />}
     </div>
   );
 }

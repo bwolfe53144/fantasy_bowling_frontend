@@ -6,6 +6,8 @@ export const handleSaveRegularRoster = async ({
   currentWeek,
   flexBenchPool,
   setIsSaving,
+  navigate,    
+  showModal,   
 }) => {
   setIsSaving(true);
 
@@ -14,7 +16,11 @@ export const handleSaveRegularRoster = async ({
   const missing = requiredPositions.filter((pos) => !currentPositions.includes(pos));
 
   if (missing.length > 0) {
-    alert(`You're missing required positions: ${missing.join(", ")}`);
+    await showModal({
+      title: "Missing Positions",
+      message: `You're missing required positions: ${missing.join(", ")}`,
+      confirmText: "OK",
+    });
     setIsSaving(false);
     return;
   }
@@ -47,11 +53,21 @@ export const handleSaveRegularRoster = async ({
 
   try {
     await submitRegularRoster(payload);
-    alert("Regular Roster saved!");
-    window.location.href = `/roster/week/${currentWeek}`;
+
+    await showModal({
+      title: "Success",
+      message: "Regular Roster saved!",
+      confirmText: "OK",
+    });
+
+    navigate(`/roster/week/${currentWeek}`);
   } catch (err) {
     console.error("Error saving regular roster:", err);
-    alert("Failed to save. Please try again.");
+    await showModal({
+      title: "Error",
+      message: "Failed to save. Please try again.",
+      confirmText: "OK",
+    });
   } finally {
     setIsSaving(false);
   }
