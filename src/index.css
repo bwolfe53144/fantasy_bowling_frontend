@@ -107,8 +107,6 @@ button:focus-visible {
   border: none;
   cursor: pointer;
   color: white;
-  position: relative;
-  top: .6rem;
 }
 
 .footer {
