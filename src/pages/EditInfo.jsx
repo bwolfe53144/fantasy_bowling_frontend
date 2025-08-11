@@ -150,6 +150,8 @@ export default function EditInfo() {
     return <LoadingScreen />;
   }
 
+  if (!user) return <Navigate to="/signin" replace />;
+
   return (
     <div className="pageContainer">
       <Header onToggleMenu={setIsMenuOpen} isMenuOpen={isMenuOpen} />
