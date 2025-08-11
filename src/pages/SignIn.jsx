@@ -12,6 +12,7 @@ const Signin = () => {
   const [forgotEmail, setForgotEmail] = useState("");
   const [forgotSuccess, setForgotSuccess] = useState("");
   const [showForgotForm, setShowForgotForm] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -72,14 +73,36 @@ const Signin = () => {
                 onChange={handleChange}
                 required
               />
-              <input
-                type="password"
-                name="password"
-                placeholder="Password"
-                value={form.password}
-                onChange={handleChange}
-                required
-              />
+              <div style={{ position: "relative" }}>
+                <input
+                  type={showPassword ? "text" : "password"}
+                  name="password"
+                  placeholder="Password"
+                  value={form.password}
+                  onChange={handleChange}
+                  required
+                  style={{ paddingRight: "60px" }}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  style={{
+                    position: "absolute",
+                    right: "10px",
+                    top: "50%",
+                    transform: "translateY(-50%)",
+                    background: "none",
+                    border: "none",
+                    cursor: "pointer",
+                    color: "#007bff",
+                    fontSize: "0.9rem",
+                    padding: 0,
+                  }}
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                >
+                  {showPassword ? "Hide" : "Show"}
+                </button>
+              </div>
               <button type="submit">Sign In</button>
             </form>
             <p>
@@ -95,7 +118,9 @@ const Signin = () => {
                 Forgot Password?
               </button>
             </p>
-            <a className="home-link" href="/">← Back to Home</a>
+            <a className="home-link" href="/">
+              ← Back to Home
+            </a>
           </>
         ) : (
           <form className="signin-form" onSubmit={handleForgotSubmit}>
