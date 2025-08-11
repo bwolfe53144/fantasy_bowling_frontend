@@ -39,7 +39,7 @@ const LoadingScreen = () => {
   return (
     <div className="loadImgContainer">
       <img className="loadImg" src={selectedImage} alt="bowling ball" />
-      <div style={{ marginTop: '30px' }}>Loading ...</div>
+      <div className="loading-text">Loading ...</div>
     </div>
   );
 };
