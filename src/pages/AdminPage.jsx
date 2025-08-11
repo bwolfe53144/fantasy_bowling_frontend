@@ -1,14 +1,14 @@
 import { useEffect, useContext, useState } from "react";
-import { AuthContext } from "../src/utils/AuthContext.jsx";
-import {
-  clearWeekscores,
-  clearPlayerTransactions,
-  deleteTeamByName,
-  sendStatsUpdateEmails,
-  resetSurvivorLeague,
+import { AuthContext } from "../utils/AuthContext.jsx";
+import { 
+  clearWeekscores, 
+  clearPlayerTransactions, 
+  deleteTeamByName, 
+  sendStatsUpdateEmails, 
+  resetSurvivorLeague, 
   getTotalLeagues,
   getUsers,
-} from "../src/utils/api.js";
+} from "../utils/api.js";
 import { Navigate } from "react-router-dom";
 import Header from "../../components/Header.jsx";
 import Navbar from "../../components/Navbar.jsx";
@@ -23,8 +23,8 @@ import AdminClaims from "../../components/AdminClaims.jsx";
 import AdminAssignPlayer from "../../components/AdminManageRosters.jsx";
 import AdminRoleChange from "../../components/AdminRoleChange.jsx";
 import AdminHandleWeek from "../../components/AdminHandleWeek.jsx";
-
-import { useModal } from "../../hooks/useModal"; // Your custom hook providing modal control
+import Modal from "../../components/Modal.jsx";
+import { useModal } from "../../hooks/useModal.js";
 import '../styles/Admin.css';
 
 const AdminPage = () => {
@@ -39,8 +39,8 @@ const AdminPage = () => {
   const [availableLeagues, setAvailableLeagues] = useState([]);
   const [users, setUsers] = useState([]);
 
-  // Use your modal hook
-  const [showModal, modalElement] = useModal();
+  // useModal hook returns modalProps and a showModal function
+  const [modalProps, showModal] = useModal();
 
   useEffect(() => {
     document.body.classList.toggle("menuOpen", isMenuOpen);
@@ -77,6 +77,8 @@ const AdminPage = () => {
     fetchUsers();
   }, []);
 
+  // All handlers updated to use showModal instead of alert/confirm
+
   const handleRemoveTeam = async () => {
     if (!removeTeamName) {
       await showModal({ title: "Error", message: "Select a team to remove", confirmText: "OK" });
@@ -110,7 +112,6 @@ const AdminPage = () => {
       cancelText: "No",
       showCancel: true,
     });
-
     if (!confirmed) return;
 
     try {
@@ -130,7 +131,6 @@ const AdminPage = () => {
       cancelText: "No",
       showCancel: true,
     });
-
     if (!confirmed) return;
 
     try {
@@ -150,7 +150,6 @@ const AdminPage = () => {
       cancelText: "No",
       showCancel: true,
     });
-
     if (!confirmed) return;
 
     try {
@@ -174,7 +173,6 @@ const AdminPage = () => {
       cancelText: "No",
       showCancel: true,
     });
-
     if (!confirmed) return;
 
     try {
@@ -276,8 +274,8 @@ const AdminPage = () => {
       </div>
       <Footer />
 
-      {/* Modal */}
-      {modalElement}
+      {/* Render the modal when modalProps is set */}
+      {modalProps && <Modal {...modalProps} />}
     </div>
   );
 };
