@@ -92,7 +92,7 @@ const DropClaimPlayer = () => {
     <div className="modalOverlay">
       <div className="modalContent">
         <h2>{claimResult === "success" ? "Success!" : "Error"}</h2>
-        <p>
+        <p className="modal-p">
           {claimResult === "success"
             ? "Claim successful!"
             : "Failed to claim and drop player."}
