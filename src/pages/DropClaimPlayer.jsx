@@ -8,6 +8,8 @@ import Header from "../../components/Header";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 import LoadingScreen from "../../components/LoadingScreen";
+import Modal from "../../components/Modal";    
+import { useModal } from "../../hooks/useModal";
 import "../styles/DropClaimPlayer.css";
 
 const DropClaimPlayer = () => {
@@ -16,18 +18,14 @@ const DropClaimPlayer = () => {
   const { playerId, playerName, playerLeague, playerPosition } = useParams();
   const navigate = useNavigate();
 
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [playerToDrop, setPlayerToDrop] = useState(null);
   const [roster, setRoster] = useState([]);
-  const [showConfirmModal, setShowConfirmModal] = useState(false);
-  const [showResultModal, setShowResultModal] = useState(false);
-  const [claimResult, setClaimResult] = useState(null); // 'success' or 'error'
   const [isClaiming, setIsClaiming] = useState(false);
+  const [claimResult, setClaimResult] = useState(null); // 'success' or 'error'
 
-  useEffect(() => {
-    document.body.classList.toggle("menuOpen", isMenuOpen);
-    return () => document.body.classList.remove("menuOpen");
-  }, [isMenuOpen]);
+  // useModal returns [modalProps, showModal]
+  const [confirmModalProps, showConfirmModal] = useModal();
+  const [resultModalProps, showResultModal] = useModal();
 
   useEffect(() => {
     if (user && user.team) {
@@ -37,86 +35,54 @@ const DropClaimPlayer = () => {
 
   const { buttonBackground, buttonColor } = getThemeColors(user?.color, isDarkMode);
 
-  const buttonStyle = {
-    backgroundColor: buttonBackground,
-    padding: "1rem",
-    color: buttonColor,
-    marginTop: "1.5rem",
-    borderRadius: "10px",
-    minWidth: "90px",
-    border: "none",
-    cursor: "pointer",
-  };
+  // Start claim process: show confirm modal, wait for user to confirm/cancel
+  const handleStartClaim = async () => {
+    const confirmed = await showConfirmModal({
+      title: "Confirm Claim",
+      message: playerToDrop
+        ? `Add: ${playerName}, Drop: ${playerToDrop.name}`
+        : `Add: ${playerName}`,
+      confirmText: "Confirm",
+      cancelText: "Cancel",
+      showCancel: true,
+    });
 
-  const handleStartClaim = () => {
-    setShowConfirmModal(true);
+    if (confirmed) {
+      await handleConfirmClaim();
+    }
   };
 
   const handleConfirmClaim = async () => {
-    setShowConfirmModal(false);
     setIsClaiming(true);
     try {
       await claimWithDrop(playerId, playerToDrop?.id, user.id);
       setClaimResult("success");
+      await showResultModal({
+        title: "Success!",
+        message: "Claim successful!",
+        confirmText: "OK",
+        showCancel: false,
+      });
+      navigate("/players");
     } catch (error) {
       console.error("Error claiming player and dropping another:", error);
       setClaimResult("error");
+      await showResultModal({
+        title: "Error",
+        message: "Failed to claim and drop player.",
+        confirmText: "OK",
+        showCancel: false,
+      });
     } finally {
       setIsClaiming(false);
-      setShowResultModal(true);
     }
   };
-
-  const renderConfirmModal = () => (
-    <div className="modalOverlay">
-      <div className="modalContent">
-        <h2>Confirm Claim</h2>
-        <p className="modal-p">
-          {playerToDrop?.name
-            ? `Add: ${playerName}, Drop: ${playerToDrop.name}`
-            : `Add: ${playerName}`}
-        </p>
-        <div className="modalActions">
-          <button onClick={handleConfirmClaim} style={buttonStyle}>
-            Confirm
-          </button>
-          <button onClick={() => setShowConfirmModal(false)} className="modal-cancel-button">
-            Cancel
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-
-  const renderResultModal = () => (
-    <div className="modalOverlay">
-      <div className="modalContent">
-        <h2>{claimResult === "success" ? "Success!" : "Error"}</h2>
-        <p className="modal-p">
-          {claimResult === "success"
-            ? "Claim successful!"
-            : "Failed to claim and drop player."}
-        </p>
-        <div className="modalActions">
-          <button
-            onClick={() => {
-              setShowResultModal(false);
-              if (claimResult === "success") navigate("/players");
-            }}
-            style={buttonStyle}
-          >
-            OK
-          </button>
-        </div>
-      </div>
-    </div>
-  );
 
   if (loading) return <LoadingScreen />;
 
   return (
     <div className="pageContainer dropClaimPage">
-      <Header onToggleMenu={setIsMenuOpen} isMenuOpen={isMenuOpen} />
+      <Header onToggleMenu={() => {}} isMenuOpen={false} />
       <Navbar />
       <div className="mainPage">
         <h1>Claim and Drop Player</h1>
@@ -161,7 +127,16 @@ const DropClaimPlayer = () => {
             <button
               onClick={handleStartClaim}
               disabled={roster.length === 15 && !playerToDrop}
-              style={buttonStyle}
+              style={{
+                backgroundColor: buttonBackground,
+                padding: "1rem",
+                color: buttonColor,
+                marginTop: "1.5rem",
+                borderRadius: "10px",
+                minWidth: "90px",
+                border: "none",
+                cursor: "pointer",
+              }}
             >
               {isClaiming ? "Claiming..." : "Confirm Claim"}
             </button>
@@ -172,9 +147,16 @@ const DropClaimPlayer = () => {
       </div>
       <Footer />
 
-      {/* Custom modals */}
-      {showConfirmModal && renderConfirmModal()}
-      {showResultModal && renderResultModal()}
+      {confirmModalProps && (
+        <Modal
+          {...confirmModalProps}
+        />
+      )}
+      {resultModalProps && (
+        <Modal
+          {...resultModalProps}
+        />
+      )}
     </div>
   );
 };
