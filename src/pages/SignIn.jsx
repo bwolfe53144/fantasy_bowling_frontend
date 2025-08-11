@@ -81,7 +81,8 @@ const Signin = () => {
                 onChange={handleChange}
                 required
               />
-              <div style={{ position: "relative" }}>
+
+              <div className="password-input-wrapper">
                 <input
                   type={showPassword ? "text" : "password"}
                   name="password"
@@ -89,28 +90,17 @@ const Signin = () => {
                   value={form.password}
                   onChange={handleChange}
                   required
-                  style={{ paddingRight: "60px" }}
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  style={{
-                    position: "absolute",
-                    right: "10px",
-                    top: "50%",
-                    transform: "translateY(-50%)",
-                    background: "none",
-                    border: "none",
-                    cursor: "pointer",
-                    color: "#007bff",
-                    fontSize: "0.9rem",
-                    padding: 0,
-                  }}
+                  className="password-toggle-btn"
                   aria-label={showPassword ? "Hide password" : "Show password"}
                 >
                   {showPassword ? "Hide" : "Show"}
                 </button>
               </div>
+
               <button type="submit">Sign In</button>
             </form>
             <p>
