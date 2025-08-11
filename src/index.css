@@ -96,16 +96,19 @@ button:focus-visible {
 .modalActions {
   display: flex;
   justify-content: space-around;
+  align-items: center;
   margin-top: 1.5rem;
 }
 
-.cancelBtn {
-  background: #999;
-  padding: .2 rem 1rem;
+.modal-cancel-button {
+  background: #c21414;
+  padding: 1rem;
   border-radius: 10px;
   border: none;
   cursor: pointer;
   color: white;
+  position: relative;
+  top: .6rem;
 }
 
 .footer {
@@ -479,5 +482,9 @@ body.dark .standingsContainer td {
 
 body.dark .mainPage {
   background-color: black;
+}
+
+body.dark .modalContent {
+  color: black !important;
 }
 
