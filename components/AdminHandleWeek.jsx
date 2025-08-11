@@ -7,6 +7,11 @@ const AdminHandleWeek = () => {
   const [selectedWeek, setSelectedWeek] = useState(null);
   const { updateTeamRecordsAfterUpload } = useTeamRecords();
 
+  // Modal state
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [showErrorModal, setShowErrorModal] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+
   useEffect(() => {
     const fetchIncompleteWeeks = async () => {
       try {
@@ -14,6 +19,8 @@ const AdminHandleWeek = () => {
         setIncompleteWeeks(res.data);
       } catch (err) {
         console.error("Failed to fetch incomplete weeks", err);
+        setErrorMessage("Failed to fetch incomplete weeks");
+        setShowErrorModal(true);
       }
     };
     fetchIncompleteWeeks();
@@ -34,7 +41,7 @@ const AdminHandleWeek = () => {
         week: selectedWeek.week,
       });
 
-      alert(`Marked ${selectedWeek.league} Week ${selectedWeek.week} as complete.`);
+      setShowSuccessModal(true);
 
       // Remove the completed week from the incompleteWeeks list
       setIncompleteWeeks((prev) =>
@@ -53,7 +60,8 @@ const AdminHandleWeek = () => {
       setSelectedWeek(null);
     } catch (err) {
       console.error("Error completing week:", err);
-      alert("Failed to complete week.");
+      setErrorMessage("Failed to complete week.");
+      setShowErrorModal(true);
     }
   };
 
@@ -85,6 +93,44 @@ const AdminHandleWeek = () => {
       >
         Complete Week
       </button>
+
+      {/* Success Modal */}
+      {showSuccessModal && (
+        <div className="modalOverlay">
+          <div className="modalContent">
+            <h2>Success!</h2>
+            <p>
+              Marked {selectedWeek?.league} Week {selectedWeek?.week} as complete.
+            </p>
+            <div className="modalActions">
+              <button
+                onClick={() => setShowSuccessModal(false)}
+                className="modal-cancel-button"
+              >
+                OK
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Error Modal */}
+      {showErrorModal && (
+        <div className="modalOverlay">
+          <div className="modalContent">
+            <h2>Error</h2>
+            <p>{errorMessage}</p>
+            <div className="modalActions">
+              <button
+                onClick={() => setShowErrorModal(false)}
+                className="modal-cancel-button"
+              >
+                OK
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

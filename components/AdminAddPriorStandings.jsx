@@ -17,6 +17,9 @@ const AdminAddPriorStandings = ({ teams, users }) => {
     teamId: "",
     teamName: "",
   });
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [showErrorModal, setShowErrorModal] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -34,17 +37,28 @@ const AdminAddPriorStandings = ({ teams, users }) => {
   };
 
   const handleSubmit = async () => {
-    const required = ["year", "place", "wins", "losses", "ties", "pointsFor", "pointsAgainst", "captainName", "teamName"];
+    const required = [
+      "year",
+      "place",
+      "wins",
+      "losses",
+      "ties",
+      "pointsFor",
+      "pointsAgainst",
+      "captainName",
+      "teamName",
+    ];
     const missing = required.filter((f) => !form[f]);
     if (missing.length) {
-      alert(`Missing fields: ${missing.join(", ")}`);
+      setErrorMessage(`Missing fields: ${missing.join(", ")}`);
+      setShowErrorModal(true);
       return;
     }
 
     try {
       const res = await addPriorYearStanding(form);
       if (res.status === 201) {
-        alert("Prior year standing added!");
+        setShowSuccessModal(true);
         setForm({
           ...form,
           place: "",
@@ -59,7 +73,8 @@ const AdminAddPriorStandings = ({ teams, users }) => {
         throw new Error("Unexpected response");
       }
     } catch (err) {
-      alert("Error submitting prior year standing");
+      setErrorMessage("Error submitting prior year standing");
+      setShowErrorModal(true);
       console.error(err);
     }
   };
@@ -76,16 +91,76 @@ const AdminAddPriorStandings = ({ teams, users }) => {
 
       {showForm && (
         <div className="admin-form">
-          <input type="number" name="year" placeholder="Year" value={form.year} onChange={handleChange} />
-          <input type="number" name="place" placeholder="Place" value={form.place} onChange={handleChange} />
-          <input type="number" name="wins" placeholder="Wins" value={form.wins} onChange={handleChange} />
-          <input type="number" name="losses" placeholder="Losses" value={form.losses} onChange={handleChange} />
-          <input type="number" name="ties" placeholder="Ties" value={form.ties} onChange={handleChange} />
-          <input type="number" name="pointsFor" placeholder="Points For" value={form.pointsFor} onChange={handleChange} />
-          <input type="number" name="pointsAgainst" placeholder="Points Against" value={form.pointsAgainst} onChange={handleChange} />
-          <input type="text" name="streak" placeholder="Streak (optional)" value={form.streak} onChange={handleChange} />
-          <input type="text" name="captainName" placeholder="Captain Name" value={form.captainName} onChange={handleChange} />
-          <input type="text" name="teamName" placeholder="Team Name" value={form.teamName} onChange={handleChange} />
+          <input
+            type="number"
+            name="year"
+            placeholder="Year"
+            value={form.year}
+            onChange={handleChange}
+          />
+          <input
+            type="number"
+            name="place"
+            placeholder="Place"
+            value={form.place}
+            onChange={handleChange}
+          />
+          <input
+            type="number"
+            name="wins"
+            placeholder="Wins"
+            value={form.wins}
+            onChange={handleChange}
+          />
+          <input
+            type="number"
+            name="losses"
+            placeholder="Losses"
+            value={form.losses}
+            onChange={handleChange}
+          />
+          <input
+            type="number"
+            name="ties"
+            placeholder="Ties"
+            value={form.ties}
+            onChange={handleChange}
+          />
+          <input
+            type="number"
+            name="pointsFor"
+            placeholder="Points For"
+            value={form.pointsFor}
+            onChange={handleChange}
+          />
+          <input
+            type="number"
+            name="pointsAgainst"
+            placeholder="Points Against"
+            value={form.pointsAgainst}
+            onChange={handleChange}
+          />
+          <input
+            type="text"
+            name="streak"
+            placeholder="Streak (optional)"
+            value={form.streak}
+            onChange={handleChange}
+          />
+          <input
+            type="text"
+            name="captainName"
+            placeholder="Captain Name"
+            value={form.captainName}
+            onChange={handleChange}
+          />
+          <input
+            type="text"
+            name="teamName"
+            placeholder="Team Name"
+            value={form.teamName}
+            onChange={handleChange}
+          />
 
           <select name="teamId" value={form.teamId} onChange={handleChange}>
             <option value="">(Optional) Link to Team</option>
@@ -96,7 +171,11 @@ const AdminAddPriorStandings = ({ teams, users }) => {
             ))}
           </select>
 
-          <select name="captainUserId" value={form.captainUserId} onChange={handleChange}>
+          <select
+            name="captainUserId"
+            value={form.captainUserId}
+            onChange={handleChange}
+          >
             <option value="">(Optional) Link to Captain User</option>
             {users.map((u) => (
               <option key={u.id} value={u.id}>
@@ -108,6 +187,42 @@ const AdminAddPriorStandings = ({ teams, users }) => {
           <button className="admin-button" onClick={handleSubmit}>
             Submit
           </button>
+        </div>
+      )}
+
+      {/* Success Modal */}
+      {showSuccessModal && (
+        <div className="modalOverlay">
+          <div className="modalContent">
+            <h2>Success!</h2>
+            <p>Prior year standing added successfully.</p>
+            <div className="modalActions">
+              <button
+                onClick={() => setShowSuccessModal(false)}
+                className="modal-cancel-button"
+              >
+                OK
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Error Modal */}
+      {showErrorModal && (
+        <div className="modalOverlay">
+          <div className="modalContent">
+            <h2>Error</h2>
+            <p>{errorMessage}</p>
+            <div className="modalActions">
+              <button
+                onClick={() => setShowErrorModal(false)}
+                className="modal-cancel-button"
+              >
+                OK
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>

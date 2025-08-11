@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { fetchAllClaims, processClaim } from '../src/utils/api';  
+import { fetchAllClaims, processClaim } from '../src/utils/api';
 
 const AdminClaims = () => {
   const [claims, setClaims] = useState([]);
@@ -8,22 +8,30 @@ const AdminClaims = () => {
   const [teamsToChoose, setTeamsToChoose] = useState([]);
   const [showClaimsDropdown, setShowClaimsDropdown] = useState(false);
 
+  // Modal state
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [showErrorModal, setShowErrorModal] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+
   const fetchClaims = async () => {
     try {
       const res = await fetchAllClaims();
       if (res.status === 200) {
         setClaims(res.data.allClaimedPlayers);
       } else {
-        alert('Failed to fetch claims');
+        setErrorMessage('Failed to fetch claims');
+        setShowErrorModal(true);
       }
     } catch (error) {
-      alert(`Error fetching claims: ${error.response?.data?.message || error.message}`);
+      setErrorMessage(`Error fetching claims: ${error.response?.data?.message || error.message}`);
+      setShowErrorModal(true);
     }
   };
 
   const handleProcessClaim = async () => {
     if (!selectedClaimId || (teamsToChoose.length > 1 && !selectedTeamId)) {
-      alert('Please select a claim and a team to process.');
+      setErrorMessage('Please select a claim and a team to process.');
+      setShowErrorModal(true);
       return;
     }
 
@@ -34,17 +42,19 @@ const AdminClaims = () => {
       };
       const res = await processClaim(payload);
       if (res.status === 200) {
-        alert('Claim processed successfully!');
+        setShowSuccessModal(true);
         setSelectedClaimId('');
         setSelectedTeamId('');
         setTeamsToChoose([]);
         setShowClaimsDropdown(false);
         fetchClaims(); // Reload claims
       } else {
-        alert('Failed to process claim');
+        setErrorMessage('Failed to process claim');
+        setShowErrorModal(true);
       }
     } catch (error) {
-      alert(`Error processing claim: ${error.response?.data?.message || error.message}`);
+      setErrorMessage(`Error processing claim: ${error.response?.data?.message || error.message}`);
+      setShowErrorModal(true);
     }
   };
 
@@ -55,7 +65,7 @@ const AdminClaims = () => {
   return (
     <div className="admin-section">
       <button
-        onClick={() => setShowClaimsDropdown(!showClaimsDropdown)}
+        onClick={() => setShowClaimsDropdown((prev) => !prev)}
         className="admin-button success"
       >
         Process Claims
@@ -120,6 +130,42 @@ const AdminClaims = () => {
               Process Claim
             </button>
           )}
+        </div>
+      )}
+
+      {/* Success Modal */}
+      {showSuccessModal && (
+        <div className="modalOverlay">
+          <div className="modalContent">
+            <h2>Success!</h2>
+            <p>Claim processed successfully.</p>
+            <div className="modalActions">
+              <button
+                onClick={() => setShowSuccessModal(false)}
+                className="modal-cancel-button"
+              >
+                OK
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Error Modal */}
+      {showErrorModal && (
+        <div className="modalOverlay">
+          <div className="modalContent">
+            <h2>Error</h2>
+            <p>{errorMessage}</p>
+            <div className="modalActions">
+              <button
+                onClick={() => setShowErrorModal(false)}
+                className="modal-cancel-button"
+              >
+                OK
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>

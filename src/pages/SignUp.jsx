@@ -1,63 +1,118 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../utils/AuthContext";
-import { loginUser } from "../utils/api";
+import { AuthContext } from "../utils/AuthContext";
+import { signUp } from "../utils/api";
+import LoadingScreen from "../../components/LoadingScreen";
+import "../styles/Signup.css";
 
-export default function SignIn() {
-  const { setUser } = useAuth();
+const Signup = () => {
+  const { loading } = useContext(AuthContext);
+  const [form, setForm] = useState({
+    firstname: "",
+    lastname: "",
+    username: "",
+    email: "",
+    password: "",
+    confPassword: "",
+  });
+  const [errors, setErrors] = useState([]);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
   const navigate = useNavigate();
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [modalOpen, setModalOpen] = useState(false);
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+    setErrors([]);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     try {
-      const userData = await loginUser({ email, password });
-      setUser(userData);
-      setModalOpen(true); // show modal instead of alert
-    } catch (error) {
-      console.error("Login failed:", error);
-      // Optionally: show an error modal or toast here
+      await signUp(form);
+      setShowSuccessModal(true);
+    } catch (err) {
+      if (err.response?.data?.errors) {
+        setErrors(err.response.data.errors.map((error) => error.msg));
+      } else {
+        setErrors([err.response?.data?.error || "An error occurred"]);
+      }
     }
   };
 
-  const closeModal = () => {
-    setModalOpen(false);
-    navigate("/"); // go to home after closing modal
+  const handleSuccessModalClose = () => {
+    setShowSuccessModal(false);
+    navigate("/signin");
   };
 
+  if (loading) {
+    return <LoadingScreen />;
+  }
+
   return (
-    <div className="signInPage">
-      <h2>Sign In</h2>
-      <form onSubmit={handleSubmit}>
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-        <button type="submit">Sign In</button>
-      </form>
+    <div className="signup-page">
+      <div className="signup-container">
+        <form className="signup-form" onSubmit={handleSubmit}>
+          <h2>Sign Up</h2>
+          {errors.length > 0 && (
+            <ul className="error-list">
+              {errors.map((error, index) => (
+                <li key={index}>{error}</li>
+              ))}
+            </ul>
+          )}
+          <input
+            name="firstname"
+            placeholder="First Name"
+            onChange={handleChange}
+            required
+          />
+          <input
+            name="lastname"
+            placeholder="Last Name"
+            onChange={handleChange}
+            required
+          />
+          <input
+            name="username"
+            placeholder="Username"
+            onChange={handleChange}
+            required
+          />
+          <input
+            type="email"
+            name="email"
+            placeholder="Email"
+            onChange={handleChange}
+          />
+          <input
+            type="password"
+            name="password"
+            placeholder="Password"
+            onChange={handleChange}
+            required
+          />
+          <input
+            type="password"
+            name="confPassword"
+            placeholder="Confirm Password"
+            onChange={handleChange}
+            required
+          />
+          <button type="submit">Sign Up</button>
+          <a className="home-link" href="/">
+            ← Back to Home
+          </a>
+        </form>
+      </div>
 
       {/* Success Modal */}
-      {modalOpen && (
+      {showSuccessModal && (
         <div className="modalOverlay">
           <div className="modalContent">
-            <p className="modal-p">Sign in successful!</p>
+            <h2>Signup Successful!</h2>
+            <p>Welcome, {form.firstname}!</p>
             <div className="modalActions">
               <button
-                onClick={closeModal}
+                onClick={handleSuccessModalClose}
                 className="modal-cancel-button"
               >
                 OK
@@ -68,4 +123,6 @@ export default function SignIn() {
       )}
     </div>
   );
-}
+};
+
+export default Signup;

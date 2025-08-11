@@ -4,7 +4,8 @@ import {
   clearPlayersFromTeams, 
   getUnassignedPlayers, 
   assignPlayerToTeam, 
-  removePlayerFromTeam, updatePlayerPosition 
+  removePlayerFromTeam, 
+  updatePlayerPosition 
 } from "../src/utils/api.js";
 
 const AdminManageRosters = ({ teams }) => {
@@ -18,16 +19,22 @@ const AdminManageRosters = ({ teams }) => {
   const [positionPlayerId, setPositionPlayerId] = useState("");
   const [newPosition, setNewPosition] = useState("");
 
+  // Modal state
+  const [showAlertModal, setShowAlertModal] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [confirmCallback, setConfirmCallback] = useState(null);
+
   const fetchUnassignedPlayers = async () => {
     try {
       const res = await getUnassignedPlayers();
       setUnassignedPlayers(res.data);
     } catch (error) {
       console.error("Error fetching unassigned players:", error);
+      openAlert(`Error fetching unassigned players: ${error.message || error}`);
     }
   };
 
-  // Update teamPlayers when removeTeamId changes
   useEffect(() => {
     if (!removeTeamId) {
       setTeamPlayers([]);
@@ -39,79 +46,97 @@ const AdminManageRosters = ({ teams }) => {
     setRemovePlayerId("");
   }, [removeTeamId, players]);
 
-  // Load unassigned players on mount
   useEffect(() => {
     fetchUnassignedPlayers();
   }, []);
 
-  // Handlers
+  // Modal helpers
+  const openAlert = (msg) => {
+    setAlertMessage(msg);
+    setShowAlertModal(true);
+  };
 
-  const handleClearPlayers = async () => {
-    if (!window.confirm("Are you sure you want to delete ALL team rosters? This action cannot be undone.")) return;
-    try {
-      const res = await clearPlayersFromTeams();
-      if (res.status !== 200) throw new Error("Failed to clear players from teams");
-      alert("All players removed from teams!");
-      await fetchUnassignedPlayers(); // refresh after clearing
-    } catch (error) {
-      alert(`Error: ${error.response?.data?.message || error.message}`);
-    }
+  const openConfirm = (msg, onConfirm) => {
+    setAlertMessage(msg);
+    setConfirmCallback(() => onConfirm);
+    setShowConfirmModal(true);
+  };
+
+  // Handlers
+  const handleClearPlayers = () => {
+    openConfirm(
+      "Are you sure you want to delete ALL team rosters? This action cannot be undone.",
+      async () => {
+        setShowConfirmModal(false);
+        try {
+          const res = await clearPlayersFromTeams();
+          if (res.status !== 200) throw new Error("Failed to clear players from teams");
+          openAlert("All players removed from teams!");
+          await fetchUnassignedPlayers();
+        } catch (error) {
+          openAlert(`Error: ${error.response?.data?.message || error.message}`);
+        }
+      }
+    );
   };
 
   const handleAssignPlayer = async () => {
     if (!assignPlayerId || !assignTeamId) {
-      alert("Please select both a player and a team to assign.");
+      openAlert("Please select both a player and a team to assign.");
       return;
     }
     try {
       const res = await assignPlayerToTeam({ playerId: assignPlayerId, teamId: assignTeamId });
       if (res.status !== 200) throw new Error("Failed to assign player");
-      alert("Player assigned successfully!");
+      openAlert("Player assigned successfully!");
       setAssignPlayerId("");
       setAssignTeamId("");
       fetchUnassignedPlayers();
     } catch (error) {
-      alert("Error assigning player to team");
+      openAlert("Error assigning player to team");
       console.error(error);
     }
   };
 
-  const handleRemovePlayer = async () => {
+  const handleRemovePlayer = () => {
     if (!removeTeamId || !removePlayerId) {
-      alert("Please select both a team and a player to remove.");
+      openAlert("Please select both a team and a player to remove.");
       return;
     }
-    if (!window.confirm("Are you sure you want to remove this player from the team?")) return;
-
-    try {
-      const res = await removePlayerFromTeam(removePlayerId);
-      if (res.status !== 200) throw new Error("Failed to remove player");
-      alert("Player removed successfully!");
-      // Refresh team players list after removal
-      const updatedPlayers = players.filter(p => p.id !== removePlayerId);
-      setTeamPlayers(updatedPlayers.filter(p => p.teamId === removeTeamId));
-      setRemovePlayerId("");
-      await fetchUnassignedPlayers(); // update unassigned list as well
-    } catch (error) {
-      alert("Error removing player from team");
-      console.error(error);
-    }
+    openConfirm(
+      "Are you sure you want to remove this player from the team?",
+      async () => {
+        setShowConfirmModal(false);
+        try {
+          const res = await removePlayerFromTeam(removePlayerId);
+          if (res.status !== 200) throw new Error("Failed to remove player");
+          openAlert("Player removed successfully!");
+          const updatedPlayers = players.filter(p => p.id !== removePlayerId);
+          setTeamPlayers(updatedPlayers.filter(p => p.teamId === removeTeamId));
+          setRemovePlayerId("");
+          await fetchUnassignedPlayers();
+        } catch (error) {
+          openAlert("Error removing player from team");
+          console.error(error);
+        }
+      }
+    );
   };
 
   const handleChangePlayerPosition = async () => {
     if (!positionPlayerId || !newPosition) {
-      alert("Select both player and new position");
+      openAlert("Select both player and new position");
       return;
     }
-  
+
     try {
       const res = await updatePlayerPosition(positionPlayerId, newPosition);
       if (res.status !== 200) throw new Error("Failed to update position");
-      alert("Player position updated!");
+      openAlert("Player position updated!");
       setPositionPlayerId("");
       setNewPosition("");
     } catch (error) {
-      alert("Error updating player position");
+      openAlert("Error updating player position");
       console.error(error);
     }
   };
@@ -131,124 +156,170 @@ const AdminManageRosters = ({ teams }) => {
       <div>
         <h3>Assign Player to Team</h3>
         <div className="admin-column">
-        <label>Select Player:</label>
-        <select
-          value={assignPlayerId}
-          onChange={(e) => setAssignPlayerId(e.target.value)}
-          className="admin-input"
-        >
-          <option value="">-- Select Player --</option>
-          {unassignedPlayers.map(p => (
-            <option key={p.id} value={p.id}>{p.name} - {p.league}</option>
-          ))}
-        </select>
+          <label>Select Player:</label>
+          <select
+            value={assignPlayerId}
+            onChange={(e) => setAssignPlayerId(e.target.value)}
+            className="admin-input"
+          >
+            <option value="">-- Select Player --</option>
+            {unassignedPlayers.map(p => (
+              <option key={p.id} value={p.id}>{p.name} - {p.league}</option>
+            ))}
+          </select>
 
-        <label>Select Team:</label>
-        <select
-          value={assignTeamId}
-          onChange={(e) => setAssignTeamId(e.target.value)}
-          className="admin-input"
-        >
-          <option value="">-- Select Team --</option>
-          {teams.map(t => (
-            <option key={t.id} value={t.id}>{t.name}</option>
-          ))}
-        </select>
+          <label>Select Team:</label>
+          <select
+            value={assignTeamId}
+            onChange={(e) => setAssignTeamId(e.target.value)}
+            className="admin-input"
+          >
+            <option value="">-- Select Team --</option>
+            {teams.map(t => (
+              <option key={t.id} value={t.id}>{t.name}</option>
+            ))}
+          </select>
 
-        <button
-          onClick={handleAssignPlayer}
-          disabled={!assignPlayerId || !assignTeamId}
-          className="admin-button"
-          style={{ marginTop: "1rem" }}
-        >
-          Assign Player to Team
-        </button>
+          <button
+            onClick={handleAssignPlayer}
+            disabled={!assignPlayerId || !assignTeamId}
+            className="admin-button"
+            style={{ marginTop: "1rem" }}
+          >
+            Assign Player to Team
+          </button>
         </div>
       </div>
 
       {/* Remove Player from Team */}
       <div>
         <div className="admin-column">
-        <h3>Remove Player from Team</h3>
-        <label>Select Team:</label>
-        <select
-          value={removeTeamId}
-          onChange={(e) => setRemoveTeamId(e.target.value)}
-          className="admin-input"
-        >
-          <option value="">-- Select Team --</option>
-          {teams.map(t => (
-            <option key={t.id} value={t.id}>{t.name}</option>
-          ))}
-        </select>
+          <h3>Remove Player from Team</h3>
+          <label>Select Team:</label>
+          <select
+            value={removeTeamId}
+            onChange={(e) => setRemoveTeamId(e.target.value)}
+            className="admin-input"
+          >
+            <option value="">-- Select Team --</option>
+            {teams.map(t => (
+              <option key={t.id} value={t.id}>{t.name}</option>
+            ))}
+          </select>
 
-        {teamPlayers.length > 0 && (
-          <>
+          {teamPlayers.length > 0 && (
+            <>
+              <label>Select Player:</label>
+              <select
+                value={removePlayerId}
+                onChange={(e) => setRemovePlayerId(e.target.value)}
+                className="admin-input"
+              >
+                <option value="">-- Select Player --</option>
+                {teamPlayers.map(p => (
+                  <option key={p.id} value={p.id}>{p.name}</option>
+                ))}
+              </select>
+            </>
+          )}
+
+          <button
+            onClick={handleRemovePlayer}
+            disabled={!removeTeamId || !removePlayerId}
+            className="admin-button danger"
+            style={{ marginTop: "1rem" }}
+          >
+            Remove Player from Team
+          </button>
+        </div>
+
+        {/* Change Player Position */}
+        <div>
+          <h3>Change Player Position</h3>
+          <div className="admin-column">
             <label>Select Player:</label>
             <select
-              value={removePlayerId}
-              onChange={(e) => setRemovePlayerId(e.target.value)}
+              value={positionPlayerId}
+              onChange={(e) => setPositionPlayerId(e.target.value)}
               className="admin-input"
             >
               <option value="">-- Select Player --</option>
-              {teamPlayers.map(p => (
-                <option key={p.id} value={p.id}>{p.name}</option>
+              {[...players]
+                .sort((a, b) => a.name.localeCompare(b.name))
+                .map((p) => (
+                  <option key={p.id} value={p.id}>
+                    {p.name} - {p.league} - {p.position}
+                  </option>
+                ))}
+            </select>
+
+            <label>Select New Position:</label>
+            <select
+              value={newPosition}
+              onChange={(e) => setNewPosition(e.target.value)}
+              className="admin-input"
+            >
+              <option value="">-- Select Position --</option>
+              {[1, 2, 3, 4, 5, "flex"].map((pos) => (
+                <option key={pos} value={pos}>{pos}</option>
               ))}
             </select>
-          </>
-        )}
 
-        <button
-          onClick={handleRemovePlayer}
-          disabled={!removeTeamId || !removePlayerId}
-          className="admin-button danger"
-          style={{ marginTop: "1rem" }}
-        >
-          Remove Player from Team
-        </button>
+            <button
+              onClick={handleChangePlayerPosition}
+              disabled={!positionPlayerId || !newPosition}
+              className="admin-button success"
+              style={{ marginTop: "1rem" }}
+            >
+              Update Position
+            </button>
+          </div>
         </div>
-        <div>
-  <h3>Change Player Position</h3>
-    <div className="admin-column">
-      <label>Select Player:</label>
-      <select
-        value={positionPlayerId}
-        onChange={(e) => setPositionPlayerId(e.target.value)}
-        className="admin-input"
-      >
-        <option value="">-- Select Player --</option>
-        {[...players]
-  .sort((a, b) => a.name.localeCompare(b.name))
-  .map((p) => (
-    <option key={p.id} value={p.id}>
-      {p.name} - {p.league} - {p.position}
-    </option>
-))}
-      </select>
-
-      <label>Select New Position:</label>
-      <select
-        value={newPosition}
-        onChange={(e) => setNewPosition(e.target.value)}
-        className="admin-input"
-      >
-        <option value="">-- Select Position --</option>
-        {[1, 2, 3, 4, 5, "flex"].map((pos) => (
-          <option key={pos} value={pos}>{pos}</option>
-        ))}
-      </select>
-
-      <button
-        onClick={handleChangePlayerPosition}
-        disabled={!positionPlayerId || !newPosition}
-        className="admin-button success"
-        style={{ marginTop: "1rem" }}
-      >
-        Update Position
-      </button>
-    </div>
-  </div>
       </div>
+
+      {/* Alert Modal */}
+      {showAlertModal && (
+        <div className="modalOverlay">
+          <div className="modalContent">
+            <h2>Notice</h2>
+            <p>{alertMessage}</p>
+            <div className="modalActions">
+              <button
+                onClick={() => setShowAlertModal(false)}
+                className="modal-cancel-button"
+              >
+                OK
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Confirm Modal */}
+      {showConfirmModal && (
+        <div className="modalOverlay">
+          <div className="modalContent">
+            <h2>Confirm Action</h2>
+            <p>{alertMessage}</p>
+            <div className="modalActions">
+              <button
+                onClick={() => setShowConfirmModal(false)}
+                className="modal-cancel-button"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => {
+                  if (confirmCallback) confirmCallback();
+                }}
+                className="modal-confirm-button"
+              >
+                Yes
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

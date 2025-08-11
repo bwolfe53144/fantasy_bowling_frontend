@@ -8,11 +8,16 @@ export default function AdminAssignBadge({ players }) {
   const [description, setDescription] = useState("");
   const [iconUrl, setIconUrl] = useState("");
   const [year, setYear] = useState(new Date().getFullYear());
-  const [rank, setRank] = useState("");  
+  const [rank, setRank] = useState("");
+
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [showErrorModal, setShowErrorModal] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleAssignBadge = async () => {
     if (!selectedPlayer || !name || !year || !iconUrl) {
-      alert("Player, badge name, year, and icon are required.");
+      setErrorMessage("Player, badge name, year, and icon are required.");
+      setShowErrorModal(true);
       return;
     }
 
@@ -23,16 +28,19 @@ export default function AdminAssignBadge({ players }) {
         description,
         iconUrl,
         year: parseInt(year),
-        rank,  
+        rank,
       });
-      alert("Badge assigned!");
+      setShowSuccessModal(true);
       setName("");
       setDescription("");
       setIconUrl("");
-      setRank("");  
+      setRank("");
+      setSelectedPlayer("");
+      setYear(new Date().getFullYear());
     } catch (err) {
       console.error("Failed to assign badge:", err);
-      alert("Failed to assign badge");
+      setErrorMessage("Failed to assign badge.");
+      setShowErrorModal(true);
     }
   };
 
@@ -124,6 +132,42 @@ export default function AdminAssignBadge({ players }) {
           <button className="admin-button" onClick={handleAssignBadge}>
             Assign Badge
           </button>
+        </div>
+      )}
+
+      {/* Success Modal */}
+      {showSuccessModal && (
+        <div className="modalOverlay">
+          <div className="modalContent">
+            <h2>Success!</h2>
+            <p>Badge assigned successfully.</p>
+            <div className="modalActions">
+              <button
+                onClick={() => setShowSuccessModal(false)}
+                className="modal-cancel-button"
+              >
+                OK
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Error Modal */}
+      {showErrorModal && (
+        <div className="modalOverlay">
+          <div className="modalContent">
+            <h2>Error</h2>
+            <p>{errorMessage}</p>
+            <div className="modalActions">
+              <button
+                onClick={() => setShowErrorModal(false)}
+                className="modal-cancel-button"
+              >
+                OK
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>

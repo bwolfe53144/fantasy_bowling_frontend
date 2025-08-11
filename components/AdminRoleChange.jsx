@@ -5,16 +5,25 @@ const AdminRoleChange = ({ users }) => {
   const [selectedUserId, setSelectedUserId] = useState('');
   const [selectedRole, setSelectedRole] = useState('');
 
+  // Modal state
+  const [showAlertModal, setShowAlertModal] = useState(false);
+  const [alertMessage, setAlertMessage] = useState('');
+
+  const openAlert = (msg) => {
+    setAlertMessage(msg);
+    setShowAlertModal(true);
+  };
+
   const handleChangeRole = async () => {
     try {
       await changeUserRole({
         userId: selectedUserId,
         role: selectedRole,
       });
-      alert('Role updated successfully!');
+      openAlert('Role updated successfully!');
     } catch (error) {
       console.error('Error changing role:', error);
-      alert('Error changing role. See console for details.');
+      openAlert('Error changing role. See console for details.');
     }
   };
 
@@ -56,6 +65,24 @@ const AdminRoleChange = ({ users }) => {
       >
         Change Role
       </button>
+
+      {/* Alert Modal */}
+      {showAlertModal && (
+        <div className="modalOverlay">
+          <div className="modalContent">
+            <h2>Notice</h2>
+            <p>{alertMessage}</p>
+            <div className="modalActions">
+              <button
+                onClick={() => setShowAlertModal(false)}
+                className="modal-cancel-button"
+              >
+                OK
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

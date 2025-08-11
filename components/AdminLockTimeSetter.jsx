@@ -11,6 +11,10 @@ const holidays = [
 const AdminLockTimeSetter = ({ playerList }) => {
   const [leagueStartTimes, setLeagueStartTimes] = useState({});
   const [resetting, setResetting] = useState(false);
+  const [showAlertModal, setShowAlertModal] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [confirmCallback, setConfirmCallback] = useState(null);
   const totalWeeks = 34;
   const currentYear = new Date().getFullYear();
 
@@ -18,6 +22,11 @@ const AdminLockTimeSetter = ({ playerList }) => {
 
   const handleLeagueStartChange = (league, value) => {
     setLeagueStartTimes((prev) => ({ ...prev, [league]: value }));
+  };
+
+  const openAlert = (msg) => {
+    setAlertMessage(msg);
+    setShowAlertModal(true);
   };
 
   const submitLocktimes = async () => {
@@ -49,33 +58,35 @@ const AdminLockTimeSetter = ({ playerList }) => {
     });
 
     if (payload.length === 0) {
-      alert("Please enter at least one valid league start time before submitting.");
+      openAlert("Please enter at least one valid league start time before submitting.");
       return;
     }
 
     try {
       await setLocktimes(payload);
-      alert("Selected lock times submitted!");
+      openAlert("Selected lock times submitted!");
     } catch (err) {
       console.error(err);
-      alert("Failed to set lock times.");
+      openAlert("Failed to set lock times.");
     }
   };
 
-  const handleReset = async () => {
-    if (!window.confirm("Are you sure you want to reset all rosters and positions?")) return;
-
-    setResetting(true);
-    try {
-      await resetRosters(currentYear);
-      await resetPositions();
-      alert("Rosters and positions have been reset.");
-    } catch (err) {
-      console.error(err);
-      alert("Failed to reset rosters or positions.");
-    } finally {
-      setResetting(false);
-    }
+  const handleReset = () => {
+    setConfirmCallback(() => async () => {
+      setShowConfirmModal(false);
+      setResetting(true);
+      try {
+        await resetRosters(currentYear);
+        await resetPositions();
+        openAlert("Rosters and positions have been reset.");
+      } catch (err) {
+        console.error(err);
+        openAlert("Failed to reset rosters or positions.");
+      } finally {
+        setResetting(false);
+      }
+    });
+    setShowConfirmModal(true);
   };
 
   return (
@@ -103,6 +114,52 @@ const AdminLockTimeSetter = ({ playerList }) => {
       >
         {resetting ? "Resetting..." : "Reset Rosters & Positions"}
       </button>
+
+      {/* Alert Modal */}
+      {showAlertModal && (
+        <div className="modalOverlay">
+          <div className="modalContent">
+            <h2>Notice</h2>
+            <p>{alertMessage}</p>
+            <div className="modalActions">
+              <button
+                onClick={() => setShowAlertModal(false)}
+                className="modal-cancel-button"
+              >
+                OK
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Confirm Modal */}
+      {showConfirmModal && (
+        <div className="modalOverlay">
+          <div className="modalContent">
+            <h2>Confirm Reset</h2>
+            <p>Are you sure you want to reset all rosters and positions?</p>
+            <div className="modalActions">
+              <button
+                onClick={() => {
+                  setShowConfirmModal(false);
+                }}
+                className="modal-cancel-button"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => {
+                  if (confirmCallback) confirmCallback();
+                }}
+                className="modal-confirm-button"
+              >
+                Yes, Reset
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
