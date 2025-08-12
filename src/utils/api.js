@@ -1,7 +1,9 @@
 import axios from "axios";
 
-const API = axios.create({ baseURL: "https://fantasybowlingbackend.onrender.com" });
-
+const API = axios.create({
+    baseURL: process.env.REACT_APP_BACKEND_URL || "http://localhost:5000"
+  });
+  
 // GET requests
 export const checkHasRegular = (teamId) => API.get(`/roster/has-regular/${teamId}`);
 export const fetchAllClaims = () => API.get('/api/claims/all');
