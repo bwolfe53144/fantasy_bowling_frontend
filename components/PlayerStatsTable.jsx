@@ -82,52 +82,51 @@ export default function PlayerStatsTable({ players, isSinglePlayerPage = false, 
               </tr>
             </thead>
             <tbody>
-              {[...players]
-                .sort((a, b) => {
-                  const posA = parseInt(a.position) || 99;
-                  const posB = parseInt(b.position) || 99;
-                  return posA - posB;
-                })
-                .map((player) => {
-                  const thisWeekScore = player.weekScores?.find((ws) => ws.week === selectedWeek);
-                  const prevScores = player.weekScores?.filter((ws) => ws.week < selectedWeek) || [];
-                  const fantasyPoints = thisWeekScore ? calculateFantasyPoints([thisWeekScore]) : null;
+            {[...players]
+            .sort((a, b) => {
+              const posA = parseInt(a.position) || 99;
+              const posB = parseInt(b.position) || 99;
+              return posA - posB;
+            })
+            .map((player) => {
+              // combine previous weeks + current week for accurate averages
+              const thisWeekScore = player.weekScores?.find((ws) => ws.week === selectedWeek);
+              const relevantScores = [
+                ...(player.weekScores?.filter((ws) => ws.week < selectedWeek) || []),
+                ...(thisWeekScore ? [thisWeekScore] : []),
+              ];
 
-                  const g1 = thisWeekScore?.game1 ?? "-";
-                  const g2 = thisWeekScore?.game2 ?? "-";
-                  const g3 = thisWeekScore?.game3 ?? "-";
+              // compute stats with processPlayerStats to get decimal averages
+              const stats = processPlayerStats({ ...player, weekScores: relevantScores });
 
-                  const avg = (() => {
-                    if (thisWeekScore?.average) return thisWeekScore.average;
-                    if (!prevScores.length) return 0;
-                    const pseudoPlayer = { ...player, weekScores: prevScores };
-                    const stats = processPlayerStats(pseudoPlayer);
-                    return stats.average || 0;
-                  })();
+              const fantasyPoints = thisWeekScore ? calculateFantasyPoints([thisWeekScore]) : null;
 
-                  const series = [g1, g2, g3].every((val) => typeof val === "number") ? g1 + g2 + g3 : "-";
+              const g1 = thisWeekScore?.game1 ?? "-";
+              const g2 = thisWeekScore?.game2 ?? "-";
+              const g3 = thisWeekScore?.game3 ?? "-";
+              const series = [g1, g2, g3].every((val) => typeof val === "number") ? g1 + g2 + g3 : "-";
 
-                  return (
-                    <tr key={`${player.name}-${player.league}`}>
-                      <td className="sticky-col">
-                        {isSinglePlayerPage ? (
-                          player.league
-                        ) : (
-                          <Link to={`/player/${encodeURIComponent(player.name)}`}>
-                            {renderPlayerLabel(player)}
-                          </Link>
-                        )}
-                      </td>
-                      {showPosition && <td>{player.position || "-"}</td>}
-                      <td>{typeof fantasyPoints === "number" ? fantasyPoints.toFixed(2) : "-"}</td>
-                      <td>{avg.toFixed(2)}</td>
-                      <td>{g1}</td>
-                      <td>{g2}</td>
-                      <td>{g3}</td>
-                      <td>{series}</td>
-                    </tr>
-                  );
-                })}
+              return (
+                <tr key={`${player.name}-${player.league}`}>
+                  <td className="sticky-col">
+                    {isSinglePlayerPage ? (
+                      player.league
+                    ) : (
+                      <Link to={`/player/${encodeURIComponent(player.name)}`}>
+                        {renderPlayerLabel(player)}
+                      </Link>
+                    )}
+                  </td>
+                  {showPosition && <td>{player.position || "-"}</td>}
+                  <td>{typeof fantasyPoints === "number" ? fantasyPoints.toFixed(2) : "-"}</td>
+                  <td>{stats.average?.toFixed(2) ?? "-"}</td> {/* Decimal average */}
+                  <td>{g1}</td>
+                  <td>{g2}</td>
+                  <td>{g3}</td>
+                  <td>{series}</td>
+                </tr>
+              );
+            })}
             </tbody>
           </table>
         </div>
