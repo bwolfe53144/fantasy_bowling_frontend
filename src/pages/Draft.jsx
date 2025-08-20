@@ -22,7 +22,7 @@ const fantasyLeagues = [
   "Sunday AM",
 ];
 const totalRounds = 15;
-const SOCKET_SERVER_URL = "http://localhost:5000"; 
+const SOCKET_SERVER_URL = "https://fantasybowlingbackend.onrender.com"; 
 const DEFAULT_TIMER = 10;
 
 const Draft = () => {
