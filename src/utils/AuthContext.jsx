@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect } from "react";
+import React, { createContext, useState, useEffect, useCallback } from "react";
 import { getUser, getTeams, getPlayers, getWeeks } from "./api";
 
 export const AuthContext = createContext();
@@ -16,7 +16,7 @@ const AuthProvider = ({ children }) => {
   const isAndroidApp = /fantasybowling\/android/i.test(navigator.userAgent);
   const storage = isAndroidApp ? localStorage : sessionStorage;
 
-  const fetchUser = async () => {
+  const fetchUser = useCallback(async () => {
     const token = storage.getItem("token");
     if (!token || token === "undefined" || token === "null") {
       setUser(null);
@@ -33,15 +33,15 @@ const AuthProvider = ({ children }) => {
     } finally {
       setLoadingUser(false);
     }
-  };
+  }, [storage]);
 
-  const refreshUser = async () => {
+  const refreshUser = useCallback(async () => {
     setLoadingUser(true);
     await fetchUser();
     setLoadingUser(false);
-  };
+  }, [fetchUser]);
 
-  const fetchTeams = async () => {
+  const fetchTeams = useCallback(async () => {
     try {
       const res = await getTeams();
       setTeams(res.data);
@@ -51,21 +51,24 @@ const AuthProvider = ({ children }) => {
     } finally {
       setLoadingTeams(false);
     }
-  };
+  }, []);
 
-  const fetchPlayers = async () => {
+  const fetchPlayers = useCallback(async () => {
+    setLoadingPlayers(true);
     try {
       const res = await getPlayers();
       setPlayers(res.data);
+      return res.data;  // Return players for caller
     } catch (error) {
       console.error("Error fetching players", error);
       setPlayers([]);
+      return [];
     } finally {
       setLoadingPlayers(false);
     }
-  };
+  }, []);
 
-  const fetchWeekScores = async () => {
+  const fetchWeekScores = useCallback(async () => {
     try {
       const res = await getWeeks();
       setWeekScores(res.data);
@@ -75,14 +78,14 @@ const AuthProvider = ({ children }) => {
     } finally {
       setLoadingWeekScores(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     fetchUser();
     fetchTeams();
     fetchPlayers();
     fetchWeekScores();
-  }, []);
+  }, [fetchUser, fetchTeams, fetchPlayers, fetchWeekScores]);
 
   const loading = loadingUser || loadingTeams || loadingPlayers || loadingWeekScores;
 
@@ -108,6 +111,7 @@ const AuthProvider = ({ children }) => {
         weekScores,
         login,
         logout,
+        loadPlayers: fetchPlayers,
       }}
     >
       {children}

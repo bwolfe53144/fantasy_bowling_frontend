@@ -20,6 +20,7 @@ const BaseFilters = ({
   uniqueTeams = [],
   showLastYear,
   setShowLastYear,
+  hideLastYearToggle,
 }) => {
   const { user } = useContext(AuthContext);
   const { buttonBackground, buttonColor } = getThemeColors(user?.color);
@@ -168,7 +169,7 @@ const BaseFilters = ({
         </div>
       )}
 
-      {showLastYear !== undefined && setShowLastYear && (
+      {showLastYear !== undefined && setShowLastYear && !hideLastYearToggle && (
         <div className="filterItem">
           <button
             className="lastYearButton"

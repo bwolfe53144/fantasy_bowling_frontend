@@ -1,0 +1,267 @@
+.pageContainer.player-page.dark {
+    background-color: #121212;
+    color: #f0f0f0;
+  }
+  
+  .pageContainer.player-page.light {
+    background-color: #fff;
+    color: #000;
+  }
+  
+  .draftTitle {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+  }
+
+  .draftButton {
+    padding: .8rem;
+    max-width: 140px;
+    margin: 1rem 0;
+    margin-right: 1rem;
+  }
+
+  .pick-text {
+    font-weight: bold;
+    color: green;
+  }
+
+  .draftedTeamBox.activeDrafting {
+    background-color: #fff3b0; 
+    transition: background-color 0.3s;
+  }
+
+  .inactive-button {
+    padding: 11px;
+    color: white;
+    max-width: 160px;
+    background-color: red;
+  }
+  
+  .currentPickInfo {
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+  }
+  
+  .inactiveLabel {
+    color: orange;
+    font-weight: bold;
+    margin-left: 8px;
+  }
+  
+  .removeInactivityBtn {
+    margin-left: 10px;
+    padding: 0.3rem 0.5rem;
+    cursor: pointer;
+    background-color: #d9534f;
+    color: white;
+    border: none;
+    border-radius: 4px;
+  }
+  
+  .draftedTeamsContainer {
+    display: flex;
+    gap: 1.5rem;
+    margin-bottom: 1rem;
+    overflow-x: auto;
+    padding-bottom: 10px;
+  }
+  
+  .draftedTeamBox {
+    min-width: 150px;
+    border: 1px solid currentColor;
+    border-radius: 8px;
+    padding: 0.5rem;
+    background-color: var(--draft-team-bg, #eee);
+  }
+
+  .yourDraftedPlayersContainer {
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #f9f9f9; /* subtle highlight */
+    border-radius: 8px;
+  }
+  
+  .yourDraftedPlayersContainer h2 {
+    margin-bottom: 10px;
+  }
+  
+  .yourDraftedPlayersList {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  
+  /* Each player "card" */
+  .draftedPlayerCard {
+    padding: 6px 12px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+    white-space: nowrap; /* keep name + position on one line */
+  }
+  
+  .pageContainer.player-page.dark .draftedTeamBox {
+    background-color: #222;
+  }
+  
+  .draftedTeamName {
+    margin: 0 0 0.5rem 0;
+  }
+  
+  .draftedPlayerItem {
+    font-size: 0.9rem;
+    line-height: 1.3rem;
+  }
+  
+  .noPicksYet {
+    font-style: italic;
+    color: #888;
+  }
+  
+  .horizontalScrollArea {
+    overflow-x: auto;
+    margin-top: 10px;
+  }
+  
+  .playerStatsTable {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .statsHeader {
+    font-weight: bold;
+    user-select: none;
+  }
+  
+  .sortableHeader {
+    cursor: pointer;
+    user-select: none;
+    padding: 0.5rem;
+  }
+  
+  .playerStatsTable th,
+  .playerStatsTable td {
+    padding: 0.5rem 0.75rem;
+    text-align: left;
+    border: 1px solid #ccc;
+  }
+  
+  .pageContainer.player-page.dark .playerStatsTable th,
+  .pageContainer.player-page.dark .playerStatsTable td {
+    border-color: #555;
+  }
+  
+  .noPlayersCell {
+    text-align: center;
+    padding: 1rem;
+    font-style: italic;
+  }
+  
+  .playerLink {
+    color: inherit;
+    text-decoration: none;
+  }
+  
+  .playerLink:hover {
+    text-decoration: underline;
+  }
+  
+  .pickButton {
+    cursor: pointer;
+    padding: 0.3rem 0.6rem;
+    border: none;
+    background-color: #007bff;
+    color: white;
+    border-radius: 6px;
+    font-weight: 600;
+  }
+  
+  .pickButton:hover {
+    background-color: #0056b3;
+  }
+  
+  .paginationButtons {
+    margin-top: 10px;
+  }
+  
+  .pageBtn {
+    padding: 0.4rem 0.8rem;
+    margin-right: 10px;
+    cursor: pointer;
+    border-radius: 4px;
+    border: 1px solid #007bff;
+    background-color: #fff;
+    color: #007bff;
+    font-weight: 600;
+  }
+  
+  .pageBtn:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+    border-color: #ccc;
+    color: #ccc;
+  }
+
+  .teamsGrid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 10px;
+    overflow-y: auto;
+    padding: 5px;
+    margin: 1rem 0;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+  }
+  
+  .teamBox {
+    text-align: center;
+    font-weight: bold;
+    padding: 6px 4px;
+    border-radius: 4px;
+    background-color: #f0f0f0;
+  }
+  
+  /* Optional: keep remove inactivity button nicely above teams */
+  .removeInactivityTop {
+    margin-bottom: 8px;
+    text-align: center;
+  }
+  
+  .currentPickInfo {
+    margin-top: 15px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background-color: #fafafa;
+  }
+
+  .pageContainer.player-page.dark .yourDraftedPlayersContainer {
+    background-color: #1e1e1e;
+    color: #f0f0f0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  }
+  
+  .pageContainer.player-page.dark .yourDraftedPlayersList .draftedPlayerCard {
+    background-color: #2a2a2a;
+    border-color: #444;
+    color: #f0f0f0;
+  }
+  
+  .pageContainer.player-page.dark .currentPickInfo {
+    background-color: #1e1e1e;
+    color: #f0f0f0;
+    border-color: #444;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  }
+
+  .pageContainer.player-page.dark .teamBox {
+    background-color: #2a2a2a;
+    color: #f0f0f0;
+    border: 1px solid #555;
+  }
+
+  .pageContainer.player-page.dark .draftedTeamBox.activeDrafting {
+    background-color: gold; 
+    color: black;
+  }

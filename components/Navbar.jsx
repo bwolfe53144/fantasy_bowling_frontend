@@ -31,6 +31,7 @@ const Navbar = () => {
 
   const navItems = [
     { to: "/", label: "Home", icon: HomeIcon },
+    ...(user ? [{ to: "/draft", label: "Draft", icon: DraftIcon }] : []),
     ...(user?.role ? [{ to: "/profile", label: "Profile", icon: AccountIcon }] : []),
     ...(user?.role === "MANAGER" || user?.role === "ADMIN" || user?.role === "SUPERADMIN"
       ? [{ to: `/roster/week/${currentWeek}`, label: "Roster", icon: RosterIcon }]
@@ -69,6 +70,12 @@ const svgProps = {
 
 const HomeIcon = ({ fill }) => (
   <svg {...svgProps} fill={fill}><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+);
+
+const DraftIcon = ({ fill }) => (
+  <svg {...svgProps} fill={fill}>
+    <path d="M10,17L6,13L7.41,11.59L10,14.17L16.59,7.58L18,9M12,3A1,1 0 0,1 13,4A1,1 0 0,1 12,5A1,1 0 0,1 11,4A1,1 0 0,1 12,3M19,3H14.82C14.4,1.84 13.3,1 12,1C10.7,1 9.6,1.84 9.18,3H5A2,2 0 0,0 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5A2,2 0 0,0 19,3Z" />
+  </svg>
 );
 
 const AccountIcon = ({ fill }) => (

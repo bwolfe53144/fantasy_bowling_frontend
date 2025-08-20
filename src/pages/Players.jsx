@@ -43,6 +43,7 @@ const Players = () => {
     "Cheris Night Out",
     "Ren Faire",
     "Inner City",
+    "Sunday AM"
   ];
 
   useEffect(() => {
@@ -138,27 +139,11 @@ const Players = () => {
     return claimedTeamNames.length > 0 && !claimedTeamNames.includes(myTeamName);
   };
 
-  const { backgroundColor, color, buttonBackground } = getThemeColors(user?.color, isDarkMode);
+  const { backgroundColor, color, buttonBackground, buttonColor } = getThemeColors(user?.color, isDarkMode);
   
   const buttonStyle = {
     backgroundColor: buttonBackground,
-    color: "white",
-    minWidth: "90px",
-    border: "none",
-    borderRadius: "10px",
-    fontWeight: "bold",
-    cursor: "pointer",
-  };
-
-  const claimButtonStyle = {
-    backgroundColor: backgroundColor,
-    color: "white",
-    minWidth: "90px",
-    border: "none",
-    padding: "1rem 1.4rem",
-    borderRadius: "10px",
-    fontWeight: "bold",
-    cursor: "pointer",
+    color: buttonColor,
   };
 
   // Updated with modal confirmation + alert replacements
@@ -280,7 +265,7 @@ const Players = () => {
         )}
   
         <div className="horizontalScrollArea">
-          <table className="playerStatsTable" border="1">
+          <table className="playerStatsTable">
             <thead className="statsHeader">
               <tr>
                 {renderSortableHeader("Name", "name", { backgroundColor, color })}

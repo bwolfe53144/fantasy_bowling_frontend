@@ -34,6 +34,7 @@ import PreviousYears from "./pages/PreviousYears";
 import PreviousYearStandings from "./pages/PreviousYearStandings";
 import OwnerDetail from "./pages/OwnerDetail";
 import AllOwners from "./pages/AllOwners";
+import Draft from "./pages/Draft";
 import Other from "./Other";
 import ErrorPage from "./pages/ErrorPage";
 import "./index.css";
@@ -74,6 +75,7 @@ function App() {
           <Route path="/about" element={<About />} />
           <Route path="/rules" element={<Rules />} />
           <Route path="/other" element={<Other />} />
+          <Route path="/draft" element={<Draft />} />
           <Route path="/previous-standings" element={<PreviousYears />} />
           <Route path="/previous-standings/:year" element={<PreviousYearStandings />} />
           <Route path="/owner/:ownerName" element={<OwnerDetail />} />
