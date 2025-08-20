@@ -12,7 +12,7 @@ import { io } from "socket.io-client";
 import '../styles/Draft.css';
 import '../styles/Players.css';
 
-const draftOrderBase = ["Bowling Stones", "Lisa's Team", "The Underdogs", "Gutter Control", "Go Packers Go", "Bergernation", "Joel Jr's Team", "The Takeover", "The Wolf Pack", "Scott's Team", "Will's Team", "Greg's Team", "My Drinking Team", "Pinsanity", "Shirts Off", "Bowlyfans", "My Imaginary Friends", "Erik B's Team", "Poblo", "TSAO" ];
+const draftOrderBase = ["Bowling Stones", "Lisa's Team", "The Underdogs", "Gutter Control", "Go Packers Go", "Bergernation", "Joel Jr's Team", "The Takeover", "The Wolf Pack", "Scott's Team", "Will's Team", "Greg's Team", "My Drinking Team", "Dewbertz", "Pinsanity", "Shirts Off", "Bowlyfans", "My Imaginary Friends", "Erik B's Team", "Poblo", "TSAO" ];
 const fantasyLeagues = [
   "Andys Classic",
   "Beavers Latestarters",
@@ -22,7 +22,7 @@ const fantasyLeagues = [
   "Sunday AM",
 ];
 const totalRounds = 15;
-const SOCKET_SERVER_URL = "https://fantasybowlingbackend.onrender.com"; 
+const SOCKET_SERVER_URL = "http://localhost:5000"; 
 const DEFAULT_TIMER = 10;
 
 const Draft = () => {
