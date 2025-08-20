@@ -12,7 +12,7 @@ import { io } from "socket.io-client";
 import '../styles/Draft.css';
 import '../styles/Players.css';
 
-const draftOrderBase = [/*"Action Territory", "Lisa's Team", "The Underdogs", "Gutter Control", "Go Packers Go", "Bergernation",*/ "Joel Jr's Team", "The Takeover", "The Wolf Pack",/* "Scott's Team", "Will's Team", "Greg's Team", "My Drinking Team", "Pinsanity", "Shirts Off", "Bowlyfans", "My Imaginary Friends", "Erik B's Team", "Poblo", "TSAO"*/ ];
+const draftOrderBase = ["Action Territory", "Lisa's Team", "The Underdogs", "Gutter Control", "Go Packers Go", "Bergernation", "Joel Jr's Team", "The Takeover", "The Wolf Pack", "Scott's Team", "Will's Team", "Greg's Team", "My Drinking Team", "Pinsanity", "Shirts Off", "Bowlyfans", "My Imaginary Friends", "Erik B's Team", "Poblo", "TSAO" ];
 const fantasyLeagues = [
   "Andys Classic",
   "Beavers Latestarters",
