@@ -8,6 +8,8 @@ import Header from "../../components/Header.jsx";
 import Navbar from "../../components/Navbar.jsx";
 import BaseFilters from "../../components/BaseFilters.jsx";
 import LoadingScreen from "../../components/LoadingScreen";
+import Modal from "../../components/Modal.jsx";
+import { useModal } from "../../hooks/useModal.js";
 import { io } from "socket.io-client";
 import '../styles/Draft.css';
 import '../styles/Players.css';
@@ -23,7 +25,7 @@ const fantasyLeagues = [
 ];
 const totalRounds = 15;
 const SOCKET_SERVER_URL = "https://fantasybowlingbackend.onrender.com"; 
-const DEFAULT_TIMER = 10;
+const DEFAULT_TIMER = 15;
 
 const Draft = () => {
   const { user, loading, players, loadPlayers } = useContext(AuthContext);
@@ -47,13 +49,15 @@ const Draft = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredData, setFilteredData] = useState([]);
   const [sortedData, setSortedData] = useState([]);
-
+  const [modalProps, showModal] = useModal();
   const socketRef = useRef(null);
   const draftedPlayersRef = useRef(draftedPlayers);
   const playersRef = useRef(players);
   const userRef = useRef(user);
   const availablePlayersRef = useRef([]);
   const autoPickInProgressRef = useRef(false);
+  const beepSound = useRef(new Audio("/sounds/beep.mp3"));
+  const turnSound = useRef(new Audio("/sounds/turn.mp3"));
   
   useEffect(() => { draftedPlayersRef.current = draftedPlayers; }, [draftedPlayers]);
   useEffect(() => { playersRef.current = players; }, [players]);
@@ -130,6 +134,40 @@ const Draft = () => {
       document.body.classList.toggle("menuOpen", isMenuOpen);
       return () => document.body.classList.remove("menuOpen");
     }, [isMenuOpen]);
+
+    const lastBeepRef = useRef(null);
+
+// Draft countdown sound
+useEffect(() => {
+  if (!user?.team?.name) return;
+
+  // Stop the beep immediately if not your turn or inactive
+  if (user.team.name !== currentTeamOnClock || inactiveTeams.has(currentTeamOnClock)) {
+    beepSound.current.pause();
+    beepSound.current.currentTime = 0;
+    lastBeepRef.current = null;
+    return;
+  }
+
+  // Only start beep once at exactly 10 seconds
+  if (currentTimer === 10 && lastBeepRef.current !== 10) {
+    lastBeepRef.current = 10;
+    beepSound.current.currentTime = 0;
+    beepSound.current.play().catch(err => console.warn("Sound blocked:", err));
+  }
+}, [currentTimer, user, currentTeamOnClock, inactiveTeams]);
+    
+    // Play a one-time "your turn" sound when it switches to your team
+    const previousTeamRef = useRef(null);
+    useEffect(() => {
+      if (!user?.team?.name) return;
+    
+      if (user.team.name === currentTeamOnClock && previousTeamRef.current !== currentTeamOnClock) {
+        turnSound.current.currentTime = 0;
+        turnSound.current.play().catch(err => console.warn("Sound blocked:", err));
+      }
+      previousTeamRef.current = currentTeamOnClock;
+    }, [currentTeamOnClock, user]);
 
   useEffect(() => {
     let data = allAvailablePlayers;
@@ -211,13 +249,25 @@ const Draft = () => {
   }, [user]);
 
   const handlePickPlayer = (player) => {
-    if (user?.team?.name !== currentTeamOnClock) { alert("It's not your team's turn."); return; }
-    if (!socketRef.current) { alert("Socket disconnected."); return; }
+    if (user?.team?.name !== currentTeamOnClock) {
+      alert("It's not your team's turn.");
+      return;
+    }
+    if (!socketRef.current) {
+      alert("Socket disconnected.");
+      return;
+    }
+  
     socketRef.current.emit("pickPlayer", {
       playerId: player.id,
       teamName: currentTeamOnClock,
-      playerData: { ...player }
+      playerData: { ...player },
     });
+  
+    // Create a brand new Audio instance each time for immediate playback
+    const ding = new Audio("/sounds/ding.mp3");
+    ding.volume = 0.6; // optional, adjust volume
+    ding.play().catch(err => console.warn("Pick sound blocked:", err));
   };
 
   const removeInactivity = (teamName) => {
@@ -225,9 +275,19 @@ const Draft = () => {
     socketRef.current.emit("removeInactivity", { teamName });
   };
 
-  const handleStartDraft = () => {
+  const handleStartDraft = async () => {
     if (!socketRef.current) return;
-    if (!window.confirm("Are you sure you want to start/reset the draft?")) return;
+  
+    const confirmed = await showModal({
+      title: "Start Draft",
+      message: "Are you sure you want to start/reset the draft?",
+      confirmText: "Yes, Start Draft",
+      cancelText: "Cancel",
+      showCancel: true,
+    });
+  
+    if (!confirmed) return;
+  
     socketRef.current.emit("startDraft", { timer: DEFAULT_TIMER });
   };
 
@@ -451,6 +511,8 @@ const Draft = () => {
       ))}
     </div>
   </div>
+  {modalProps && <Modal {...modalProps} />}
+
       </div>
     </div>
   );
