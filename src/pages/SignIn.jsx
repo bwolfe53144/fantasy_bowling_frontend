@@ -1,8 +1,10 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../utils/AuthContext";
-import { signIn, forgotPassword } from "../utils/api"; 
+import { signIn, forgotPassword } from "../utils/api";
 import LoadingScreen from "../../components/LoadingScreen";
+import Modal from "../../components/Modal";
+import { useModal } from "../../hooks/useModal";
 import "../styles/Signin.css";
 
 const Signin = () => {
@@ -13,10 +15,10 @@ const Signin = () => {
   const [forgotSuccess, setForgotSuccess] = useState("");
   const [showForgotForm, setShowForgotForm] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-
-  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [animationPaused, setAnimationPaused] = useState(false);
 
   const navigate = useNavigate();
+  const [modalProps, showModal] = useModal();
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -26,24 +28,35 @@ const Signin = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+
     try {
       const { data } = await signIn(form);
       login(data.token);
-      setShowSuccessModal(true); // Show modal on success
+
+      // Pause animation when modal shows
+      setAnimationPaused(true);
+
+      await showModal({
+        title: "Sign In Successful!",
+        message: `Welcome back, ${form.username}.`,
+        confirmText: "OK",
+      });
+
+      // Resume animation if staying on page (optional)
+      setAnimationPaused(false);
+
+      navigate("/profile");
     } catch (err) {
       setError(err.response?.data?.error || "An unexpected error occurred.");
+      setAnimationPaused(false);
     }
-  };
-
-  const handleSuccessModalClose = () => {
-    setShowSuccessModal(false);
-    navigate("/profile");
   };
 
   const handleForgotSubmit = async (e) => {
     e.preventDefault();
     setForgotSuccess("");
     setError("");
+
     try {
       await forgotPassword({ email: forgotEmail });
       setForgotSuccess("Check your email for password reset instructions.");
@@ -52,13 +65,12 @@ const Signin = () => {
     }
   };
 
-  if (loading) {
-    return <LoadingScreen />;
-  }
+  if (loading) return <LoadingScreen />;
 
   return (
     <div className="signin-page">
-      <div className="bowling-alley">
+      {/* Bowling animation */}
+      <div className={`bowling-alley ${animationPaused ? "paused" : ""}`}>
         <div className="ball"></div>
         <div className="fantasy-title fade-in-title">Fantasy Bowling</div>
         <div className="pins">
@@ -74,6 +86,7 @@ const Signin = () => {
             <form className="signin-form" onSubmit={handleSubmit}>
               <h2>Sign In</h2>
               {error && <p className="error">{error}</p>}
+
               <input
                 name="username"
                 placeholder="Username"
@@ -103,19 +116,21 @@ const Signin = () => {
 
               <button type="submit">Sign In</button>
             </form>
+
             <p>
               <button
                 className="link-button"
+                type="button"
                 onClick={() => {
                   setShowForgotForm(true);
                   setError("");
                   setForgotSuccess("");
                 }}
-                type="button"
               >
                 Forgot Password?
               </button>
             </p>
+
             <a className="home-link" href="/">
               ← Back to Home
             </a>
@@ -125,6 +140,7 @@ const Signin = () => {
             <h2>Reset Password</h2>
             {error && <p className="error">{error}</p>}
             {forgotSuccess && <p className="success">{forgotSuccess}</p>}
+
             <input
               type="email"
               placeholder="Enter your email"
@@ -132,6 +148,7 @@ const Signin = () => {
               onChange={(e) => setForgotEmail(e.target.value)}
               required
             />
+
             <button type="submit">Send Reset Email</button>
             <button
               className="link-button"
@@ -148,20 +165,8 @@ const Signin = () => {
         )}
       </div>
 
-      {/* Success Modal */}
-      {showSuccessModal && (
-        <div className="modalOverlay">
-          <div className="modalContent">
-            <h2>Sign In Successful!</h2>
-            <p>Welcome back, {form.username}.</p>
-            <div className="modalActions">
-              <button onClick={handleSuccessModalClose} className="modal-cancel-button">
-                OK
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Modal */}
+      {modalProps && <Modal {...modalProps} />}
     </div>
   );
 };

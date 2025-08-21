@@ -201,6 +201,13 @@
   border-radius: 6px;
 }
 
+.bowling-alley.paused .ball,
+.bowling-alley.paused .pin,
+.bowling-alley.paused .fantasy-title {
+  animation-play-state: paused !important;
+  animation-fill-mode: forwards !important; /* keeps the last frame */
+}
+
 /* Pin placements in a triangular layout */
 #pin1 {
   top: 80px;
