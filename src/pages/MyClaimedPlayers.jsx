@@ -4,6 +4,8 @@ import Footer from "../../components/Footer";
 import Header from "../../components/Header";
 import Navbar from "../../components/Navbar";
 import LoadingScreen from "../../components/LoadingScreen";
+import Modal from "../../components/Modal.jsx";
+import { useModal } from "../../hooks/useModal.js";
 import { AuthContext } from "../utils/AuthContext";
 import { deleteClaim, getMyClaims } from "../utils/api";
 import "../styles/MyClaimedPlayers.css";
@@ -14,6 +16,7 @@ const MyClaimedPlayers = () => {
   const [myClaims, setMyClaims] = useState([]);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [fadingOutIds, setFadingOutIds] = useState([]);
+  const [modalProps, showModal] = useModal();
 
 
   useEffect(() => {
@@ -46,23 +49,39 @@ const MyClaimedPlayers = () => {
   };
 
   const handleRemoveClaim = async (playerId) => {
-    const confirmed = window.confirm("Are you sure you want to remove this claim?");
+    const confirmed = await showModal({
+      title: "Remove Claim",
+      message: "Are you sure you want to remove this claim?",
+      confirmText: "Remove",
+      cancelText: "Cancel",
+      showCancel: true,
+    });
+  
     if (!confirmed) return;
-
+  
     try {
       setFadingOutIds((prev) => [...prev, playerId]);
-
+  
       setTimeout(async () => {
         await deleteClaim(playerId, user.id, user.token);
         setMyClaims((prevClaims) =>
           prevClaims.filter((claim) => claim.playerId !== playerId)
         );
         setFadingOutIds((prev) => prev.filter((id) => id !== playerId));
-        alert("Claim removed.");
+  
+        await showModal({
+          title: "Success",
+          message: "Claim removed.",
+          confirmText: "OK",
+        });
       }, 300);
     } catch (error) {
       console.error("Error removing claim:", error);
-      alert("Failed to remove claim.");
+      await showModal({
+        title: "Error",
+        message: "Failed to remove claim.",
+        confirmText: "OK",
+      });
     }
   };
 
@@ -112,6 +131,8 @@ const MyClaimedPlayers = () => {
             ))}
           </ul>
         )}
+        {modalProps && <Modal {...modalProps} />}
+
       </div>
   
       <Footer page={myClaims} />
