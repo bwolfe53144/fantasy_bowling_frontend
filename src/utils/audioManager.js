@@ -10,6 +10,20 @@ export function initAudio() {
 export function unlockAudio() {
   const ctx = initAudio();
   if (ctx.state === "suspended") {
-    ctx.resume();
+    ctx.resume().catch((err) => {
+      console.warn("AudioContext resume failed:", err);
+    });
   }
+  return ctx;
+}
+
+// Always call this before playing any sound
+export function getAudioContext() {
+  const ctx = initAudio();
+  if (ctx.state === "suspended") {
+    ctx.resume().catch((err) => {
+      console.warn("AudioContext resume failed:", err);
+    });
+  }
+  return ctx;
 }

@@ -11,6 +11,7 @@ import LoadingScreen from "../../components/LoadingScreen";
 import Modal from "../../components/Modal.jsx";
 import { useModal } from "../../hooks/useModal.js";
 import { io } from "socket.io-client";
+import { getAudioContext } from "../utils/audioManager.js";
 import '../styles/Draft.css';
 import '../styles/Players.css';
 
@@ -152,22 +153,29 @@ useEffect(() => {
   // Only start beep once at exactly 10 seconds
   if (currentTimer === 10 && lastBeepRef.current !== 10) {
     lastBeepRef.current = 10;
-    beepSound.current.currentTime = 0;
-    beepSound.current.play().catch(err => console.warn("Sound blocked:", err));
+
+    const ctx = getAudioContext();
+    ctx.resume().then(() => {
+      beepSound.current.currentTime = 0;
+      beepSound.current.play().catch(err => console.warn("Sound blocked:", err));
+    });
   }
 }, [currentTimer, user, currentTeamOnClock, inactiveTeams]);
-    
-    // Play a one-time "your turn" sound when it switches to your team
-    const previousTeamRef = useRef(null);
-    useEffect(() => {
-      if (!user?.team?.name) return;
-    
-      if (user.team.name === currentTeamOnClock && previousTeamRef.current !== currentTeamOnClock) {
-        turnSound.current.currentTime = 0;
-        turnSound.current.play().catch(err => console.warn("Sound blocked:", err));
-      }
-      previousTeamRef.current = currentTeamOnClock;
-    }, [currentTeamOnClock, user]);
+
+// Play a one-time "your turn" sound when it switches to your team
+const previousTeamRef = useRef(null);
+useEffect(() => {
+  if (!user?.team?.name) return;
+
+  if (user.team.name === currentTeamOnClock && previousTeamRef.current !== currentTeamOnClock) {
+    const ctx = getAudioContext();
+    ctx.resume().then(() => {
+      turnSound.current.currentTime = 0;
+      turnSound.current.play().catch(err => console.warn("Sound blocked:", err));
+    });
+  }
+  previousTeamRef.current = currentTeamOnClock;
+}, [currentTeamOnClock, user]);
 
   useEffect(() => {
     let data = allAvailablePlayers;
