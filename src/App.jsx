@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "./utils/ThemeContext";
 import ScrollToTop from "../components/ScrollToTop";
@@ -37,14 +38,31 @@ import AllOwners from "./pages/AllOwners";
 import Draft from "./pages/Draft";
 import Other from "./Other";
 import ErrorPage from "./pages/ErrorPage";
+import { unlockAudio } from "./utils/audioManager";
 import "./index.css";
 
 function App() {
+
+    useEffect(() => {
+      const unlock = () => {
+        unlockAudio();
+        document.removeEventListener("touchstart", unlock);
+        document.removeEventListener("click", unlock);
+      };
+  
+      document.addEventListener("touchstart", unlock, false);
+      document.addEventListener("click", unlock, false);
+  
+      return () => {
+        document.removeEventListener("touchstart", unlock);
+        document.removeEventListener("click", unlock);
+      };
+    }, []);
+
   return (
     <ThemeProvider>
       <BrowserRouter>
         <ScrollToTop />
-
         <Routes>
           <Route path="/signup" element={<Signup />} />
           <Route path="/signin" element={<SignIn />} />
