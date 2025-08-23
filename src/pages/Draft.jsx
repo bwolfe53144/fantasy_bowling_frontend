@@ -86,6 +86,10 @@ const Draft = () => {
 
   const currentTeamOnClock = draftOrder[currentPickIndex] || "";
 
+  const lastPick = draftedPlayers.length > 0 
+  ? draftedPlayers[draftedPlayers.length - 1] 
+  : null;
+
   const processedPlayers = useMemo(() => {
     if (!Array.isArray(players)) return [];
     return players.map(p => processPlayerStats(p));
@@ -369,6 +373,13 @@ useEffect(() => {
         {user?.team?.name && inactiveTeams.has(user.team.name) && (
               <button className="inactive-button" onClick={() => removeInactivity(user.team.name)}>Remove Inactivity</button>
           )}
+        {/* --- Last Pick --- */}
+        {lastPick && (
+          <div className="lastPickInfo">
+            <strong>Last Pick:</strong> {lastPick.playerData?.name} ({lastPick.playerData?.position}) 
+            by {lastPick.teamName}
+          </div>
+        )}
         {/* --- Current Pick --- */}
         <div className="currentPickInfo">
           <strong>Current Pick:</strong>
