@@ -66,33 +66,11 @@ const About = () => {
         </section>
 
         <section>
-          <h2>Lineups & Roster Management</h2>
-          <p>
-            The <strong>Regular Roster</strong> page lets you set your lineup for the entire season in advance for any weeks that haven't
-            started yet. If you prefer to manage week-to-week, the <strong>Roster</strong> page allows you to update your lineup
-            each week individually. This flexibility gives you full control over how you manage your team strategy.
-          </p>
-        </section>
-
-        <section>
           <h2>Leaderboard</h2>
           <p>
             On the <strong>Leaderboard</strong> page, you can view season high scores and top performances. You can filter by a range
             of weeks and by league to see who's leading at any point in the season. It’s a great way to track big
             games and standout players.
-          </p>
-        </section>
-
-        <section>
-          <h2>Survivor League</h2>
-          <p>
-            The <strong>Survivor League</strong> is a special game mode where you build a "survivor" team by picking 5 bowlers from a league each week and ranking them from 1 to 5. Your top-ranked bowler (who bowled that week) will count as your active score.
-          </p>
-          <p>
-            To advance each week, your chosen bowler must finish in the top 30–40% of all scores in that league. Once you use a bowler, they cannot be used again for the rest of the season. If your top bowler doesn’t qualify, you're eliminated!
-          </p>
-          <p>
-            The rest of your bowlers (who weren’t used that week) remain eligible and can be used in future weeks. The game continues until only one team remains — the last team standing wins.
           </p>
         </section>
         
