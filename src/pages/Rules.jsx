@@ -192,7 +192,7 @@ const Rules = () => {
 
         <h2>More Information</h2>
         <p>
-          For any other questions, please check the <strong>About</strong> page at the bottom of the site for additional details
+          For any other questions, please check the <strong>About</strong> page (link at the bottom of the site) for additional details
           about fantasy bowling and how it works.
         </p>
       </div>
