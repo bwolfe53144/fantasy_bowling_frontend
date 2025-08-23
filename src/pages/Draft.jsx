@@ -15,7 +15,7 @@ import { getAudioContext } from "../utils/audioManager.js";
 import '../styles/Draft.css';
 import '../styles/Players.css';
 
-const draftOrderBase = ["Bowling Stones", "Lisa's Team", "The Underdogs", "Gutter Control", "Go Packers Go", "Bergernation", "Joel Jr's Team", "The Takeover", "The Wolf Pack", "Scott's Team", "Will's Team", "Greg's Team", "My Drinking Team", "Dewbertz", "Pinsanity", "Shirts Off", "Bowlyfans", "My Imaginary Friends", "Erik B's Team", "TSAO", "Poblo" ];
+const draftOrderBase = ["Bowling Stones", "Lisa's Team", "The Underdogs", "Gutter Control", "Go Packers Go", "Bergernation", "Joel Jr's Team", "The Takeover", "The Wolf Pack", "Scott's Team", "Will's Team", "Greg's Team", "My Drinking Team", "Dewbertz", "Pinsanity", "Shirts Off", "Bowlyfans", "My Imaginary Friends", "Erik B's Team", "Waddle You Doing Step Burrow", "Poblo" ];
 const fantasyLeagues = [
   "Andys Classic",
   "Beavers Latestarters",
@@ -329,7 +329,7 @@ useEffect(() => {
             onClick={handleStartDraft}
             style={{ backgroundColor: buttonBackground, color: buttonColor }}
           >
-            Mock Draft
+            Start Mock Draft
           </button>
 
         {/* Drafted Players */}
