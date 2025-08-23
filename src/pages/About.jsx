@@ -93,6 +93,9 @@ const About = () => {
             <li><strong>Orange bowling ball with pins</strong> — Photo by Michelle McEwen on Unsplash</li>
             <li><strong>Blue bowling ball with pins</strong> — Photo by Ella Christenson on Unsplash</li>
             <li><strong>Bowling lane picture</strong> — Photo by Pavel Danilyuk</li>
+            <li><strong>Start bell</strong> sound effect — by freesound_community on Pixabay</li>
+            <li><strong>Countdown</strong> sound effect — by u_lfmkadc0ha on Pixabay</li>
+            <li><strong>Pick ding</strong> sound effect — by kave msri on Pixabay</li>
           </ul>
         </section>
       </main>
