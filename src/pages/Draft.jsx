@@ -373,15 +373,15 @@ useEffect(() => {
         {user?.team?.name && inactiveTeams.has(user.team.name) && (
               <button className="inactive-button" onClick={() => removeInactivity(user.team.name)}>Remove Inactivity</button>
           )}
-        {/* --- Last Pick --- */}
-        {lastPick && (
-          <div className="lastPickInfo">
-            <strong>Last Pick:</strong> {lastPick.playerData?.name} ({lastPick.playerData?.position}) 
-            by {lastPick.teamName}
-          </div>
-        )}
-        {/* --- Current Pick --- */}
-        <div className="currentPickInfo">
+        <div className="pickInfo">
+          {/* --- Last Pick --- */}
+          {lastPick && (
+            <div className="lastPickInfo">
+              <strong>Last Pick:</strong> {lastPick.playerData?.name} ({lastPick.playerData?.position}) 
+              by {lastPick.teamName}
+            </div>
+          )}
+          {/* --- Current Pick --- */}
           <strong>Current Pick:</strong>
           {currentPickIndex >= draftOrder.length
             ? (

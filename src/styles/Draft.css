@@ -37,7 +37,7 @@
     background-color: red;
   }
   
-  .currentPickInfo {
+  .pickInfo {
     margin-bottom: 1rem;
     font-size: 1.1rem;
   }
@@ -228,7 +228,7 @@
     text-align: center;
   }
   
-  .currentPickInfo {
+  .pickInfo {
     margin-top: 15px;
     padding: 8px;
     border: 1px solid #ccc;
@@ -248,7 +248,7 @@
     color: #f0f0f0;
   }
   
-  .pageContainer.player-page.dark .currentPickInfo {
+  .pageContainer.player-page.dark .pickInfo {
     background-color: #1e1e1e;
     color: #f0f0f0;
     border-color: #444;
