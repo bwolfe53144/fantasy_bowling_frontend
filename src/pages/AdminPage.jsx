@@ -38,6 +38,7 @@ const AdminPage = () => {
   const [selectedLeague, setSelectedLeague] = useState("");
   const [availableLeagues, setAvailableLeagues] = useState([]);
   const [users, setUsers] = useState([]);
+  const [clearLeague, setClearLeague] = useState("");
 
   // useModal hook returns modalProps and a showModal function
   const [modalProps, showModal] = useModal();
@@ -124,19 +125,24 @@ const AdminPage = () => {
   };
 
   const handleClearWeekScores = async () => {
+    if (!clearLeague) {
+      await showModal({ title: "Error", message: "Please select a league", confirmText: "OK" });
+      return;
+    }
+  
     const confirmed = await showModal({
-      title: "Clear All WeekScores",
-      message: "Are you sure you want to delete ALL weekscores? This action cannot be undone.",
+      title: "Clear WeekScores",
+      message: `Are you sure you want to delete ALL weekscores for ${clearLeague}? This action cannot be undone.`,
       confirmText: "Yes",
       cancelText: "No",
       showCancel: true,
     });
     if (!confirmed) return;
-
+  
     try {
-      const res = await clearWeekscores();
-      if (res.status !== 200) throw new Error('Failed to clear weekscores');
-      await showModal({ title: "Success", message: "All team weekscores cleared successfully!", confirmText: "OK" });
+      const res = await clearWeekscores(clearLeague); // pass selected league
+      if (res.status !== 200) throw new Error("Failed to clear weekscores");
+      await showModal({ title: "Success", message: `All weekscores for ${clearLeague} cleared successfully!`, confirmText: "OK" });
     } catch (error) {
       await showModal({ title: "Error", message: `Error: ${error.response?.data?.message || error.message}`, confirmText: "OK" });
     }
@@ -240,9 +246,25 @@ const AdminPage = () => {
                 </select>
                 <button onClick={handleRemoveTeam} className="admin-button danger">Remove Team</button>
               </div>
-              <div>
-                <button onClick={handleClearWeekScores} className="admin-button danger">
-                  Clear All WeekScores
+              <div className="admin-section">
+                <h3>Clear WeekScores</h3>
+                <select 
+                  value={clearLeague} 
+                  onChange={(e) => setClearLeague(e.target.value)}
+                >
+                  <option value="">Select League</option>
+                  {availableLeagues.map((league) => (
+                    <option key={league.league} value={league.league}>
+                      {league.league}
+                    </option>
+                  ))}
+                </select>
+                <button 
+                  onClick={handleClearWeekScores} 
+                  className="admin-button danger" 
+                  style={{ marginTop: "0.5rem" }}
+                >
+                  Clear WeekScores
                 </button>
               </div>
               <div>
