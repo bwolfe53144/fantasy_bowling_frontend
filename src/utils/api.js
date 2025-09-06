@@ -13,6 +13,7 @@ export const getAvailablePriorYears = () => API.get("/prior-years");
 export const getCompletedLeagues = (week) => API.get(`/findCompletedLeagues/${week}`);
 export const getCompletedWeekLocks = () => API.get("/api/weeklocks/completed");
 export const getCurrentWeek = () => API.get('/getCurrentWeek');
+export const getDraftState = () => API.get('/api/draft');
 export const getEligibleSurvivorPlayers = (league, teamName) => API.get(`/api/survivor-eligible-players/${encodeURIComponent(league)}/${encodeURIComponent(teamName)}`);
 export const getIncompleteWeekLocks = () => API.get('/api/weeklocks/incomplete');
 export const getMatchById = (id) => API.get(`/api/match/${id}`);
@@ -56,7 +57,7 @@ export const assignPlayerToTeam = (data) => API.post('/api/assign-player-to-team
 export const changeUserRole = (data) => API.post('/api/change-role', data);
 export const claimWithDrop = (claimPlayerId, dropPlayerId, userId) => API.post("/api/claims/with-drop", { claimPlayerId, dropPlayerId: dropPlayerId || null, userId });
 export const clearPlayersFromTeams = () => API.post('/clear-players');
-export const clearWeekscores = () => API.post('/api/clear-weekscores');
+export const clearWeekscores = (league) => API.post('/api/clear-weekscores', { league });
 export const completeWeekLock = (data) => API.post('/api/weeklocks/complete', data);
 export const completeSurvivorWeek = (data) => API.post('/api/survivor/complete-week', data);
 export const createPlayer = (newPlayer) => API.post(`/api/player`, newPlayer);
@@ -68,6 +69,7 @@ export const generatePlayoffs = (data) => API.post('/api/playoffs/generate', dat
 export const generateRoster = (teamId, week) => API.post('/generate-roster', { teamId, week });
 export const generateTheSchedule = (data) => API.post('/generate-schedule', data);
 export const globalStarMessage = (messageId) => API.post(`/api/messages/${messageId}/global-star`);
+export const pickPlayer = (data) => API.post('/api/draft/pick', data);
 export const postMessage = ({ title, content, authorId }) => API.post(`/messages`, { title, content, authorId });
 export const postRoster = (teamId, week, players) => API.post(`/roster`, { teamId, week, players });
 export const processClaim = (payload) => API.post('/api/admin-process-claim', payload);
