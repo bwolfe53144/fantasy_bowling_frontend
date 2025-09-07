@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "./utils/ThemeContext";
 import ScrollToTop from "../components/ScrollToTop";
 import Home from "./pages/Home";
@@ -39,87 +39,71 @@ import Draft from "./pages/Draft";
 import Other from "./Other";
 import ErrorPage from "./pages/ErrorPage";
 import { unlockAudio } from "./utils/audioManager";
-import { fetchLatestStats } from "./utils/api"; // make sure this exists
 import "./index.css";
 
-// Wrapper to use location hook inside BrowserRouter
-function AppWrapper() {
-  const location = useLocation();
+function App() {
 
-  useEffect(() => {
-    // Auto-refresh global stats on every route change
-    fetchLatestStats();
-  }, [location.pathname]);
-
-  return <AppContent />;
-}
-
-function AppContent() {
-  useEffect(() => {
-    const unlock = () => {
-      unlockAudio();
-      document.removeEventListener("touchstart", unlock);
-      document.removeEventListener("click", unlock);
-    };
-
-    document.addEventListener("touchstart", unlock, false);
-    document.addEventListener("click", unlock, false);
-
-    return () => {
-      document.removeEventListener("touchstart", unlock);
-      document.removeEventListener("click", unlock);
-    };
-  }, []);
+    useEffect(() => {
+      const unlock = () => {
+        unlockAudio();
+        document.removeEventListener("touchstart", unlock);
+        document.removeEventListener("click", unlock);
+      };
+  
+      document.addEventListener("touchstart", unlock, false);
+      document.addEventListener("click", unlock, false);
+  
+      return () => {
+        document.removeEventListener("touchstart", unlock);
+        document.removeEventListener("click", unlock);
+      };
+    }, []);
 
   return (
     <ThemeProvider>
-      <ScrollToTop />
-      <Routes>
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/signin" element={<SignIn />} />
-        <Route path="/reset-password/:token" element={<ResetPassword />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/edit-team" element={<EditInfo />} />
-        <Route path="/team/:teamName" element={<TeamDetail />} />
-        <Route path="/player/:playerName" element={<PlayerDetail />} />
-        <Route path="/players" element={<Players />} />
-        <Route path="/bowling-team/:teamName/:league" element={<BowlingTeamPage />} />
-        <Route path="/fantasy-stats/:teamName" element={<TeamFantasyStats />} />
-        <Route path="/schedule/:week" element={<Schedule />} />
-        <Route path="/matchup/:id" element={<MatchupPage />} />
-        <Route path="/survivor" element={<Survivor />} />
-        <Route path="/survivor/:league" element={<SurvivorLeaguePage />} />
-        <Route path="/survivor/:league/:teamname" element={<SurvivorTeamPage />} />
-        <Route path="/roster/week/:weekNumber" element={<Roster />} />
-        <Route path="/regular-roster" element={<RegularRoster />} />
-        <Route path="/stats" element={<Stats />} />
-        <Route path="/leaderboard" element={<Leaderboard />} />
-        <Route path="/all-claims" element={<ClaimedPlayers />} />
-        <Route path="/my-claims" element={<MyClaimedPlayers />} />
-        <Route path="/drop-player/:playerId/:playerName/:playerLeague/:playerPosition" element={<DropClaimPlayer />} />
-        <Route path="/forum" element={<Forum />} />
-        <Route path="/new-message" element={<NewMessageForm />} />
-        <Route path="/message/:id" element={<ViewMessage />} />
-        <Route path="/admin" element={<AdminPage />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/rules" element={<Rules />} />
-        <Route path="/other" element={<Other />} />
-        <Route path="/draft" element={<Draft />} />
-        <Route path="/previous-standings" element={<PreviousYears />} />
-        <Route path="/previous-standings/:year" element={<PreviousYearStandings />} />
-        <Route path="/owner/:ownerName" element={<OwnerDetail />} />
-        <Route path="/owners" element={<AllOwners />} />
-        <Route path="/" element={<Home />} />
-        <Route path="*" element={<ErrorPage />} />
-      </Routes>
+      <BrowserRouter>
+        <ScrollToTop />
+        <Routes>
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/signin" element={<SignIn />} />
+          <Route path="/reset-password/:token" element={<ResetPassword />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/edit-team" element={<EditInfo />} />
+          <Route path="/team/:teamName" element={<TeamDetail />} />
+          <Route path="/player/:playerName" element={<PlayerDetail />} />
+          <Route path="/players" element={<Players />} />
+          <Route path="/bowling-team/:teamName/:league" element={<BowlingTeamPage />} />
+          <Route path="/fantasy-stats/:teamName" element={<TeamFantasyStats />} />
+          <Route path="/schedule/:week" element={<Schedule />} />
+          <Route path="/matchup/:id" element={<MatchupPage />} />
+          <Route path="/survivor" element={<Survivor />} />
+          <Route path="/survivor/:league" element={<SurvivorLeaguePage />} />
+          <Route path="/survivor/:league/:teamname" element={<SurvivorTeamPage />} />
+          <Route path="/roster/week/:weekNumber" element={<Roster />} />
+          <Route path="/regular-roster" element={<RegularRoster />} />
+          <Route path="/stats" element={<Stats />} />
+          <Route path="/leaderboard" element={<Leaderboard />} />
+          <Route path="/all-claims" element={<ClaimedPlayers />} />
+          <Route path="/my-claims" element={<MyClaimedPlayers />} />
+          <Route path="/drop-player/:playerId/:playerName/:playerLeague/:playerPosition" element={<DropClaimPlayer />} />
+          <Route path="/forum" element={<Forum />} />
+          <Route path="/new-message" element={<NewMessageForm />} />
+          <Route path="/message/:id" element={<ViewMessage />} />
+          <Route path="/admin" element={<AdminPage />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/rules" element={<Rules />} />
+          <Route path="/other" element={<Other />} />
+          <Route path="/draft" element={<Draft />} />
+          <Route path="/previous-standings" element={<PreviousYears />} />
+          <Route path="/previous-standings/:year" element={<PreviousYearStandings />} />
+          <Route path="/owner/:ownerName" element={<OwnerDetail />} />
+          <Route path="/owners" element={<AllOwners />} />
+          <Route path="/" element={<Home />} />
+          <Route path="*" element={<ErrorPage />} />
+        </Routes>
+      </BrowserRouter>
     </ThemeProvider>
   );
 }
 
-export default function App() {
-  return (
-    <BrowserRouter>
-      <AppWrapper />
-    </BrowserRouter>
-  );
-}
+export default App;
