@@ -194,6 +194,7 @@
   left: 0;
   opacity: 0.5; 
   z-index: 1;
+  image-orientation: none;
 }
 
 .badge-circle .badge-text {
