@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API = axios.create({ baseURL: "https://fantasybowlingbackend.onrender.com" });
+const API = axios.create({ baseURL: import.meta.env.VITE_API_URL,});
 
 // GET requests
 export const checkHasRegular = (teamId) => API.get(`/roster/has-regular/${teamId}`);
