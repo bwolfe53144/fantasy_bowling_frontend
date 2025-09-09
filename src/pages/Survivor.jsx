@@ -26,6 +26,7 @@ const Survivor = () => {
 
   const [activeLeagueForSignup, setActiveLeagueForSignup] = useState(null);
   const [teamNameInput, setTeamNameInput] = useState("");
+  const [showRules, setShowRules] = useState(false); // dropdown toggle
 
   const { buttonBackground, buttonColor } = getThemeColors(user?.color, isDarkMode);
   const buttonStyle = { backgroundColor: buttonBackground, color: buttonColor };
@@ -52,7 +53,6 @@ const Survivor = () => {
         setIsLoadingLeagues(false);
       }
     };
-
     fetchData();
   }, [user]);
 
@@ -86,9 +86,7 @@ const Survivor = () => {
   const now = new Date();
   const openLeagues = leagues.filter((leagueObj) => {
     const leagueName = leagueObj.league;
-    const week3Lock = locks.find(
-      (lock) => lock.league === leagueName && lock.week === 3
-    );
+    const week3Lock = locks.find((lock) => lock.league === leagueName && lock.week === 3);
     if (!week3Lock?.lockTime) return false;
     return now < new Date(week3Lock.lockTime);
   });
@@ -109,6 +107,32 @@ const Survivor = () => {
       <Navbar />
       <div className="mainPage survivor">
         <h1>Survivor Bowling</h1>
+
+        {/* Rules dropdown for all users */}
+        {user && (
+          <div className="rulesSection">
+            <button
+              className="toggleRulesButton"
+              onClick={() => setShowRules((prev) => !prev)}
+              style={buttonStyle}
+            >
+              {showRules ? "Hide Rules" : "Show Rules"}
+            </button>
+            {showRules && (
+              <div className="rulesContent">
+                <p>
+                  In Fantasy Bowling Survivor, you pick 5 bowlers from your league each week and rank them 1–5. Your top-ranked bowler is your active score.
+                </p>
+                <p>
+                  To survive each week, your top bowler must finish in the top 30–40% of scores in that league. Once a bowler is used, they cannot be picked again.
+                </p>
+                <p>
+                  The last team standing wins. Remaining bowlers not used in a week are eligible for later weeks.
+                </p>
+              </div>
+            )}
+          </div>
+        )}
 
         {!user ? (
           <>
@@ -171,7 +195,7 @@ const Survivor = () => {
                   return (
                     <div key={league}>
                       <h3>{league}</h3>
-                      <p>Sign up before week 3!</p>
+                      <p>Sign up before week 6!</p>
 
                       {!isActive ? (
                         <button style={buttonStyle} onClick={() => handleStartSignup(league)}>
@@ -179,14 +203,20 @@ const Survivor = () => {
                         </button>
                       ) : (
                         <>
-                          <input className="survivorInput"
+                          <input
+                            className="survivorInput"
                             type="text"
                             placeholder="Enter your Survivor team name"
                             value={teamNameInput}
                             onChange={(e) => setTeamNameInput(e.target.value)}
                           />
-                          <button className="survivorButton" onClick={handleSubmitSignup}>Submit</button>
-                          <button className="survivorButton" onClick={() => setActiveLeagueForSignup(null)}>
+                          <button className="survivorButton" onClick={handleSubmitSignup}>
+                            Submit
+                          </button>
+                          <button
+                            className="survivorButton"
+                            onClick={() => setActiveLeagueForSignup(null)}
+                          >
                             Cancel
                           </button>
                         </>
@@ -202,8 +232,9 @@ const Survivor = () => {
                 <h2>Past Survivor Leagues</h2>
                 <ul>
                   {expiredLeagues
-                    .filter((leagueObj) =>
-                      !survivorEntries.find((entry) => entry.league === leagueObj.league)
+                    .filter(
+                      (leagueObj) =>
+                        !survivorEntries.find((entry) => entry.league === leagueObj.league)
                     )
                     .map((leagueObj) => {
                       const league = leagueObj.league;
