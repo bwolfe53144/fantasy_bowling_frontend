@@ -14,7 +14,7 @@ import '../styles/Players.css';
 import '../styles/Stats.css';
 
 const Stats = () => {
-  const { user, teams, players, loading } = useContext(AuthContext);
+  const { user, teams, players, loading, loadPlayers} = useContext(AuthContext);
   const { isDarkMode } = useContext(ThemeContext);
   const [currentPage, setCurrentPage] = useState(0);
   const playersPerPage = 50;
@@ -30,6 +30,10 @@ const Stats = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
   const [showLastYear, setShowLastYear] = useState(false);
+
+  useEffect(() => {
+    loadPlayers(); 
+  }, []);
 
   useEffect(() => {
     document.body.classList.toggle("menuOpen", isMenuOpen);
