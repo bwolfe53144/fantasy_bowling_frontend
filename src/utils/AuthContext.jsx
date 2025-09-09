@@ -1,7 +1,12 @@
 import React, { createContext, useState, useEffect, useCallback } from "react";
+import { io } from "socket.io-client";
 import { getUser, getTeams, getPlayers, getWeeks } from "./api";
 
 export const AuthContext = createContext();
+
+const socket = io(import.meta.env.VITE_API_URL, {
+  transports: ["websocket"], // helps avoid polling issues
+});
 
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
@@ -58,7 +63,7 @@ const AuthProvider = ({ children }) => {
     try {
       const res = await getPlayers();
       setPlayers(res.data);
-      return res.data;  // Return players for caller
+      return res.data; // Return players for caller
     } catch (error) {
       console.error("Error fetching players", error);
       setPlayers([]);
@@ -69,6 +74,7 @@ const AuthProvider = ({ children }) => {
   }, []);
 
   const fetchWeekScores = useCallback(async () => {
+    setLoadingWeekScores(true);
     try {
       const res = await getWeeks();
       setWeekScores(res.data);
@@ -86,6 +92,19 @@ const AuthProvider = ({ children }) => {
     fetchPlayers();
     fetchWeekScores();
   }, [fetchUser, fetchTeams, fetchPlayers, fetchWeekScores]);
+
+  // 🔥 Listen for server broadcasts and refresh data
+  useEffect(() => {
+    socket.on("statsUpdated", () => {
+      console.log("📊 Stats updated, refreshing players and weekScores...");
+      fetchPlayers();
+      fetchWeekScores();
+    });
+
+    return () => {
+      socket.off("statsUpdated");
+    };
+  }, [fetchPlayers, fetchWeekScores]);
 
   const loading = loadingUser || loadingTeams || loadingPlayers || loadingWeekScores;
 
@@ -112,6 +131,7 @@ const AuthProvider = ({ children }) => {
         login,
         logout,
         loadPlayers: fetchPlayers,
+        refreshWeekScores: fetchWeekScores, // expose this too
       }}
     >
       {children}
