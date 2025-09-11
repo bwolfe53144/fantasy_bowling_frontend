@@ -9,6 +9,12 @@ import Navbar from "../../components/Navbar.jsx";
 import BaseFilters from "../../components/BaseFilters.jsx";
 import LoadingScreen from "../../components/LoadingScreen";
 import Modal from "../../components/Modal.jsx";
+import {
+  DraftedTeamsContainer,
+  YourDraftedPlayers,
+  PickInfo,
+  PlayersTable,
+} from "../../components/DraftRoomComponents";
 import { useModal } from "../../hooks/useModal.js";
 import { io } from "socket.io-client";
 import { getAudioContext } from "../utils/audioManager.js";
@@ -25,8 +31,8 @@ const fantasyLeagues = [
   "Sunday AM",
 ];
 const totalRounds = 15;
-const SOCKET_SERVER_URL = "https://fantasybowlingbackend.onrender.com"; 
-const DEFAULT_TIMER = 15;
+const SOCKET_SERVER_URL = import.meta.env.VITE_API_URL;
+const DEFAULT_TIMER = 5;
 
 const Draft = () => {
   const { user, loading, players, loadPlayers } = useContext(AuthContext);
@@ -34,9 +40,8 @@ const Draft = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [currentPickIndex, setCurrentPickIndex] = useState(0);
   const [draftedPlayers, setDraftedPlayers] = useState([]);
-  const [inactiveTeams, setInactiveTeams] = useState(new Set());
+  const [inactiveTeams, setInactiveTeams] = useState(() => new Set());
   const [currentTimer, setCurrentTimer] = useState(DEFAULT_TIMER);
-  const [teamStatus, setTeamStatus] = useState({}); // Online status map
   const [showFilters, setShowFilters] = useState(true);
   const [currentPage, setCurrentPage] = useState(0);
   const playersPerPage = 50;
@@ -98,12 +103,14 @@ const Draft = () => {
   const allAvailablePlayers = useMemo(() => {
     const draftedIds = new Set(draftedPlayers.map(d => d.playerId));
     return processedPlayers
-      .filter(p =>
-        fantasyLeagues.includes(p.league) &&
-        !draftedIds.has(p.id) &&
-        !p.teamId &&
-        p.lyAverage !== undefined
-      );
+    .filter(p =>
+      fantasyLeagues.includes(p.league) &&       
+      !draftedIds.has(p.id) &&                   
+      !p.teamId &&                               
+      p.lyAverage !== undefined &&               
+      Number(p.lyGames ?? 0) >= lyGamesFilter && 
+      Number(p.games ?? 0) >= gamesFilter       
+    );
   }, [processedPlayers, draftedPlayers]);
 
   const applySort = useCallback((arr, field = sortField, order = sortOrder) => {
@@ -190,7 +197,6 @@ useEffect(() => {
     if (searchQuery) data = data.filter(p => p.name.toLowerCase().includes(searchQuery.toLowerCase()));
     setFilteredData(data);
     setSortedData(applySort(data, sortField, sortOrder));
-    setCurrentPage(0);
   }, [allAvailablePlayers, gamesFilter, lyGamesFilter, leagueFilter, sortPosition, searchQuery, applySort, sortField, sortOrder]);
 
   const handleSort = (field) => {
@@ -214,42 +220,52 @@ useEffect(() => {
   useEffect(() => {
     const socket = io(SOCKET_SERVER_URL, { transports: ["websocket"] });
     socketRef.current = socket;
-
-    // Draft updates
+  
+    // --- Draft updates ---
     socket.on("draftUpdate", (draftState) => {
       setCurrentPickIndex(draftState.currentPickIndex || 0);
       setDraftedPlayers(draftState.draftedPlayers || []);
-      setInactiveTeams(new Set(draftState.inactiveTeams || []));
+  
+      // ⚡ Only merge if server sends new inactive teams
+      if (draftState.inactiveTeams && draftState.inactiveTeams.length > 0) {
+        setInactiveTeams(prev => {
+          const merged = new Set(prev);
+          draftState.inactiveTeams.forEach(team => merged.add(team));
+          return merged;
+        });
+      }
+  
       if (typeof draftState.timer === "number") setCurrentTimer(draftState.timer);
       autoPickInProgressRef.current = false;
     });
-
-    socket.on("timerUpdate", (timeLeft) => {
-      if (typeof timeLeft === "number") setCurrentTimer(timeLeft);
-    });
-
+  
+    // --- Draft start / restart ---
     socket.on("draftStarted", (draftState) => {
       setCurrentPickIndex(draftState.currentPickIndex || 0);
       setDraftedPlayers(draftState.draftedPlayers || []);
-      setInactiveTeams(new Set(draftState.inactiveTeams || []));
       if (typeof draftState.timer === "number") setCurrentTimer(draftState.timer);
       autoPickInProgressRef.current = false;
     });
-
-    // Team online/offline updates
-    socket.on("teamStatusUpdate", (status) => {
-      setTeamStatus(status); // e.g., { "The Wolf Pack": true, "Poblo": false }
+  
+    // --- Timer updates ---
+    socket.on("timerUpdate", (timeLeft) => {
+      if (typeof timeLeft === "number") setCurrentTimer(timeLeft);
     });
-
+  
+    // --- Error logging ---
     socket.on("error", (msg) => console.warn("Server error:", msg));
-
-    return () => { socket.disconnect(); socketRef.current = null; };
+  
+    // --- Cleanup ---
+    return () => {
+      socket.disconnect();
+      socketRef.current = null;
+    };
   }, []);
 
   useEffect(() => {
     if (!socketRef.current || players.length === 0) return;
     const sendPlayers = () => {
-      socketRef.current.emit("setAllPlayers", players);
+      socketRef.current.emit("setAllPlayers", processedPlayers);
     };
     if (socketRef.current.connected) sendPlayers();
     else socketRef.current.once("connect", sendPlayers);
@@ -285,6 +301,11 @@ useEffect(() => {
   const removeInactivity = (teamName) => {
     if (!socketRef.current) return;
     socketRef.current.emit("removeInactivity", { teamName });
+    setInactiveTeams(prev => {
+      const copy = new Set(prev);
+      copy.delete(teamName);
+      return copy;
+    });
   };
 
   const handleStartDraft = async () => {
@@ -300,7 +321,7 @@ useEffect(() => {
   
     if (!confirmed) return;
   
-    socketRef.current.emit("startDraft", { timer: DEFAULT_TIMER });
+    socketRef.current.emit("startDraft"); // ✅ no timer sent, backend decides
   };
 
   const draftedByTeam = useMemo(() => {
@@ -324,214 +345,114 @@ useEffect(() => {
   
       <div className="mainPage player-page">
         <h1 className="draftTitle">Draft Room</h1>
-          <button
-            className="draftButton"
-            onClick={handleStartDraft}
-            style={{ backgroundColor: buttonBackground, color: buttonColor }}
-          >
-            Start Mock Draft
-          </button>
-
+        <button
+          className="draftButton"
+          onClick={handleStartDraft}
+          style={{ backgroundColor: buttonBackground, color: buttonColor }}
+        >
+          Start Mock Draft
+        </button>
+  
         {/* Drafted Players */}
-        <div className="draftedTeamsContainer">
-          {draftOrderBase.map(teamName => (
-            <div
-            key={teamName}
-            className={`draftedTeamBox ${teamName === currentTeamOnClock ? "activeDrafting" : ""}`}
-          >
-            <h3 className="draftedTeamName">{teamName}</h3>
-            {draftedByTeam[teamName]?.length ? (
-              draftedByTeam[teamName].map((player, idx) => (
-                <div key={player.id ?? `${teamName}-${idx}`} className="draftedPlayerItem">
-                  {player.name} ({player.position})
-                </div>
-              ))
-            ) : (
-              <p className="noPicksYet">No picks yet</p>
-            )}
-          </div>
-          ))}
-        </div>
+        <DraftedTeamsContainer
+          draftOrderBase={draftOrderBase}
+          draftedByTeam={draftedByTeam}
+          currentTeamOnClock={currentTeamOnClock}
+        />
+  
         {/* Your Team Drafted Players */}
-        {user?.team?.name && (
-          <div className="yourDraftedPlayersContainer">
-            <h2>Your Drafted Players</h2>
-            {draftedByTeam[user.team.name]?.length ? (
-              <div className="yourDraftedPlayersList">
-                {draftedByTeam[user.team.name].map((player, idx) => (
-                  <div key={player.id ?? `${user.team.name}-${idx}`} className="draftedPlayerCard">
-                    {player.name} ({player.position})
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <p>No picks yet</p>
-            )}
-          </div>
-        )}
+        <YourDraftedPlayers user={user} draftedByTeam={draftedByTeam} />
+  
         {/* Remove Inactivity button */}
         {user?.team?.name && inactiveTeams.has(user.team.name) && (
-              <button className="inactive-button" onClick={() => removeInactivity(user.team.name)}>Remove Inactivity</button>
-          )}
-        <div className="pickInfo">
-          {/* --- Last Pick --- */}
-          {lastPick && (
-            <div className="lastPickInfo">
-              <strong>Last Pick:</strong> {lastPick.playerData?.name} ({lastPick.playerData?.position}) 
-              by {lastPick.teamName}
-            </div>
-          )}
-          {/* --- Current Pick --- */}
-          <strong>Current Pick:</strong>
-          {currentPickIndex >= draftOrder.length
-            ? (
-              <>
-                Draft Completed
-                {user?.role === "SUPERADMIN" && (
-                  <button
-                    className="inactive-button"
-                    style={{ marginLeft: "1rem", backgroundColor: buttonBackground, color: buttonColor }}
-                    onClick={() => {
-                      if (!socketRef.current) return;
-                      if (!window.confirm("Assign all drafted players to their teams?")) return;
-                      socketRef.current.emit("assignDraftedPlayersToTeams");
-                    }}
-                  >
-                    Assign Drafted Players
-                  </button>
-                )}
-              </>
-            )
-            : ` ${currentTeamOnClock} (Pick ${currentPickIndex + 1} of ${draftOrder.length})`}
-          
-          {currentPickIndex < draftOrder.length && inactiveTeams.has(currentTeamOnClock) && (
-            <span className="inactiveLabel">(Inactive - auto drafting)</span>
-          )}
-
-          {currentPickIndex < draftOrder.length && (
-            <div><strong>Time Remaining: {currentTimer} seconds</strong></div>
-          )}
-
-          {picksUntilYourTurn !== null && picksUntilYourTurn > 0 && (
-            <div className="pick-text">
-              Your team drafts in {picksUntilYourTurn} pick{picksUntilYourTurn > 1 ? "s" : ""}
-            </div>
-          )}
-        </div>
-        <button
-        onClick={() => setShowFilters((prev) => !prev)}
-        className="draftButton"
-        style={{color: buttonColor , backgroundColor: buttonBackground}}>
-        {showFilters ? "Hide Filters" : "Show Filters"}
-      </button>
-      {showFilters && (
-        <BaseFilters
-          sortPosition={sortPosition} setSortPosition={setSortPosition}
-          leagueFilter={leagueFilter} setLeagueFilter={setLeagueFilter}
-          uniqueLeagues={fantasyLeagues}
-          gamesFilter={gamesFilter} setGamesFilter={setGamesFilter}
-          lyGamesFilter={lyGamesFilter} setLyGamesFilter={setLyGamesFilter}
-          showLastYear={showLastYear} setShowLastYear={setShowLastYear}
-          searchQuery={searchQuery} setSearchQuery={setSearchQuery}
-          hideLastYearToggle={true}
-        />
-      )}
-        {/* Players Table */}
-        <div className="horizontalScrollArea">
-          <table className="playerStatsTable">
-            <thead className="statsHeader" >
-              <tr>
-                <th style={{ backgroundColor, color }} className="sortableHeader" onClick={() => handleSort("name")}>
-                  Name {sortField === "name" ? (sortOrder === "asc" ? "▲" : "▼") : "●"}
-                </th>
-                <th style={{ backgroundColor, color }} className="sortableHeader" onClick={() => handleSort("league")}>
-                  League {sortField === "league" ? (sortOrder === "asc" ? "▲" : "▼") : "●"}
-                </th>
-                <th style={{ backgroundColor, color }} className="sortableHeader" onClick={() => handleSort("position")}>
-                  Position {sortField === "position" ? (sortOrder === "asc" ? "▲" : "▼") : "●"}
-                </th>
-                <th style={{ backgroundColor, color }} className="sortableHeader" onClick={() => handleSort("games")}>
-                  Games {sortField === "games" ? (sortOrder === "asc" ? "▲" : "▼") : "●"}
-                </th>
-                <th style={{ backgroundColor, color }} className="sortableHeader" onClick={() => handleSort("lyGames")}>
-                  Games (LY) {sortField === "lyGames" ? (sortOrder === "asc" ? "▲" : "▼") : "●"}
-                </th>
-                <th style={{ backgroundColor, color }} className="sortableHeader" onClick={() => handleSort("average")}>
-                  Average {sortField === "average" ? (sortOrder === "asc" ? "▲" : "▼") : "●"}
-                </th>
-                <th style={{ backgroundColor, color }} className="sortableHeader" onClick={() => handleSort("lyAverage")}>
-                  Last Year Average {sortField === "lyAverage" ? (sortOrder === "asc" ? "▲" : "▼") : "●"}
-                </th>
-                <th style={{ backgroundColor, color }} className="sortableHeader" onClick={() => handleSort("totalPoints")}>
-                  Total Fantasy Points {sortField === "totalPoints" ? (sortOrder === "asc" ? "▲" : "▼") : "●"}
-                </th>
-                <th style={{ backgroundColor, color }} className="sortableHeader" onClick={() => handleSort("avgFanppg")}>
-                  Avg Fan Ppg {sortField === "avgFanppg" ? (sortOrder === "asc" ? "▲" : "▼") : "●"}
-                </th>
-                <th style={{ backgroundColor, color }}>Pick</th>
-              </tr>
-            </thead>
-            <tbody>
-              {sortedData.length === 0 ? (
-                <tr>
-                  <td colSpan="10" className="noPlayersCell">No players found.</td>
-                </tr>
-              ) : (
-                sortedData
-                  .slice(currentPage * playersPerPage, (currentPage + 1) * playersPerPage)
-                  .map(player => (
-                    <tr key={player.id}>
-                      <td>
-                        <Link to={`/player/${encodeURIComponent(player.name)}`} className="playerLink">
-                          {player.name}
-                        </Link>
-                      </td>
-                      <td>{player.league}</td>
-                      <td>{player.position}</td>
-                      <td>{player.games}</td>
-                      <td>{player.lyGames}</td>
-                      <td>{typeof player.average === "number" ? player.average.toFixed(2) : "-"}</td>
-                      <td>{player.lyAverage ? Number(player.lyAverage).toFixed(2) : "-"}</td>
-                      <td>{player.totalPoints}</td>
-                      <td>{typeof player.avgFanppg === "number" ? player.avgFanppg.toFixed(2) : "-"}</td>
-                      <td>
-                        {user?.team?.name === currentTeamOnClock && (
-                          <button className="pickButton" onClick={() => handlePickPlayer(player)}>Pick</button>
-                        )}
-                      </td>
-                    </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
-  
-        {sortedData.length > playersPerPage && (
-          <div className="pagination-buttons">
-            <button className="playerButton playerPageButton" style={{ backgroundColor: buttonBackground, color: buttonColor }} onClick={handlePrevPage} disabled={currentPage === 0}>Prev</button>
-            <span className="page-number">Page {currentPage + 1} / {Math.ceil(sortedData.length / playersPerPage)}</span>
-            <button className="playerButton playerPageButton" style={{ backgroundColor: buttonBackground, color: buttonColor }} onClick={handleNextPage} disabled={(currentPage + 1) * playersPerPage >= sortedData.length}>Next</button>
-          </div>
+          <button
+            className="inactive-button"
+            onClick={() => removeInactivity(user.team.name)}
+          >
+            Remove Inactivity
+          </button>
         )}
-        {/* --- Teams Online / Inactive Panel --- */}
-      <div className="teamStatusContainer">
-    
-
-    <h2>Teams</h2>
-    <div className="teamsGrid">
-      {draftOrderBase.map(team => (
-        <div
-          key={team}
-          className="teamBox"
-          style={{ color: teamStatus[team] ? "green" : "red" }}
+  
+        {/* Pick Info */}
+        <PickInfo
+          lastPick={lastPick}
+          currentPickIndex={currentPickIndex}
+          draftOrder={draftOrder}
+          currentTeamOnClock={currentTeamOnClock}
+          inactiveTeams={inactiveTeams}
+          currentTimer={currentTimer}
+          picksUntilYourTurn={picksUntilYourTurn}
+          user={user}
+          buttonBackground={buttonBackground}
+          buttonColor={buttonColor}
+          socketRef={socketRef}
+        />
+  
+        {/* Filters Toggle */}
+        <button
+          onClick={() => setShowFilters((prev) => !prev)}
+          className="draftButton"
+          style={{ color: buttonColor, backgroundColor: buttonBackground }}
         >
-          {team} {teamStatus[team] ? "(Online)" : "(Offline)"}
-        </div>
-      ))}
-    </div>
-  </div>
-  {modalProps && <Modal {...modalProps} />}
-
+          {showFilters ? "Hide Filters" : "Show Filters"}
+        </button>
+        {showFilters && (
+          <BaseFilters
+            sortPosition={sortPosition}
+            setSortPosition={setSortPosition}
+            leagueFilter={leagueFilter}
+            setLeagueFilter={setLeagueFilter}
+            uniqueLeagues={fantasyLeagues}
+            gamesFilter={gamesFilter}
+            setGamesFilter={setGamesFilter}
+            lyGamesFilter={lyGamesFilter}
+            setLyGamesFilter={setLyGamesFilter}
+            showLastYear={showLastYear}
+            setShowLastYear={setShowLastYear}
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+            hideLastYearToggle={true}
+          />
+        )}
+  
+        {/* Players Table */}
+        <PlayersTable
+          sortedData={sortedData}
+          sortField={sortField}
+          sortOrder={sortOrder}
+          handleSort={handleSort}
+          backgroundColor={backgroundColor}
+          color={color}
+          currentPage={currentPage}
+          playersPerPage={playersPerPage}
+          user={user}
+          currentTeamOnClock={currentTeamOnClock}
+          handlePickPlayer={handlePickPlayer}
+          handlePrevPage={handlePrevPage}
+          handleNextPage={handleNextPage}
+          buttonBackground={buttonBackground}
+          buttonColor={buttonColor}
+        />
+  
+        {/* Teams Online / Inactive Panel */}
+        <div className="teamStatusContainer">
+          <h2>Teams</h2>
+          <div className="teamsGrid">
+            {draftOrderBase.map((teamName) => (
+              <div
+                key={teamName}
+                className="teamBox"
+                style={{
+                  color: inactiveTeams.has(teamName) ? "red" : "green",
+                  fontWeight: currentTeamOnClock === teamName ? "bold" : "normal",
+                }}
+              >
+                {teamName} {inactiveTeams.has(teamName) ? "(Inactive)" : "(Active)"}
+              </div>
+            ))}
+          </div>
+        </div>  
+        {modalProps && <Modal {...modalProps} />}
       </div>
     </div>
   );
