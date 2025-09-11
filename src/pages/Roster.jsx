@@ -206,9 +206,12 @@ export default function Roster() {
     return <Navigate to="/signin" replace />;
   }
   
-  if (!["ADMIN", "MANAGER", "SUPERADMIN"].includes(user.role)) {
+  /*if (!["ADMIN", "MANAGER", "SUPERADMIN"].includes(user.role)) {
     return <Navigate to="/signin" replace />;
-  }
+  }*/
+    if (!user) {
+      return <Navigate to="/signin" replace />;
+    }
 
   if (checkingRegularRoster) return null;
 
