@@ -7,6 +7,8 @@ import Header from "../../components/Header";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 import LoadingScreen from "../../components/LoadingScreen";
+import Modal from "../../components/Modal";
+import { useModal } from "../../hooks/useModal";
 import {
   getSurvivorEntriesForLeague,
   getSurvivorUserPicks,
@@ -23,7 +25,7 @@ const SurvivorLeaguePage = () => {
   const [entries, setEntries] = useState([]);
   const [loadingEntries, setLoadingEntries] = useState(true);
   const [currentWeek, setCurrentWeek] = useState(null);
-
+  const [modalProps, showModal] = useModal();
   const [eligiblePlayers, setEligiblePlayers] = useState([]);
   const [selectedPlayers, setSelectedPlayers] = useState(["", "", "", "", ""]);
   const [showPickSection, setShowPickSection] = useState(false);
@@ -132,25 +134,43 @@ const SurvivorLeaguePage = () => {
 
   const handleSubmitPick = async () => {
     if (selectedPlayers.includes("") || new Set(selectedPlayers).size < 5) {
-      alert("Please select 5 unique players before submitting.");
+      await showModal({
+        title: "Incomplete Picks",
+        message: "Please select 5 unique players before submitting.",
+        confirmText: "OK",
+        showCancel: false,
+      });
       return;
     }
-
+  
     const picks = selectedPlayers.map((playerId, i) => ({
       playerId,
       rank: i + 1,
     }));
-
+  
     try {
       await submitSurvivorPicks(league, userEntry.teamName, picks);
-      alert("Picks submitted successfully!");
+  
+      await showModal({
+        title: "Success!",
+        message: "Picks submitted successfully!",
+        confirmText: "OK",
+        showCancel: false,
+      });
+  
       setShowPickSection(false);
       setSelectedPlayers(["", "", "", "", ""]);
+  
       const response = await getSurvivorEntriesForLeague(league);
       setEntries(response.data.entries || []);
     } catch (error) {
       console.error("Failed to submit picks:", error);
-      alert("Failed to submit picks. Please try again.");
+      await showModal({
+        title: "Error",
+        message: "Failed to submit picks. Please try again.",
+        confirmText: "OK",
+        showCancel: false,
+      });
     }
   };
 
@@ -276,6 +296,7 @@ const SurvivorLeaguePage = () => {
         </div>
       </div>
       <Footer />
+      {modalProps && <Modal {...modalProps} />}
     </div>
   );
 };
