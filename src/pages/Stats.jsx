@@ -291,8 +291,7 @@ const Stats = () => {
                         {showLastYear && <td>{lyGames}</td>}
                         {showLastYear && <td>{lyAvg.toFixed(2)}</td>}
                         {showLastYear && <td>{lyPoints}</td>}
-                        {showLastYear && <td>{item.lyFppg?.toFixed(2) ?? "0.00"}</td>}
-                        {!showLastYear && (
+                        {showLastYear && <td>{lyFppg}</td>}                        {!showLastYear && (
                           <td>
                             {item.team && item.teamId ? (
                               <Link to={`/team/${encodeURIComponent(item.teamId)}`}>{item.team}</Link>
