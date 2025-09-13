@@ -34,8 +34,8 @@ export const processPlayerStats = (player) => {
 
     // Stored LY stats
     lyAverage: player.lyAverage ?? null,
-    lyGames: player.lyGames ?? null,
-    lyPoints: player.lyPoints ?? null,
-    lyFppg:player.lyGames > 0 ? player.lyPoints / player.lyGames : 0,
+    lyGames: lyGames,
+    lyPoints: lyPoints,
+    lyFppg: lyGames > 0 ? lyPoints / lyGames : 0,
   };
 };
