@@ -190,7 +190,7 @@ useEffect(() => {
 
   useEffect(() => {
     let data = allAvailablePlayers;
-    if (gamesFilter !== null) data = data.filter(p => p.lyGames >= gamesFilter);
+    if (gamesFilter !== null) data = data.filter(p => p.games >= gamesFilter);
     if (lyGamesFilter !== null) data = data.filter(p => p.lyGames >= lyGamesFilter);
     if (leagueFilter.length > 0) data = data.filter(p => leagueFilter.includes(p.league));
     if (sortPosition) data = data.filter(p => String(p.position).toLowerCase() === sortPosition.toLowerCase());
