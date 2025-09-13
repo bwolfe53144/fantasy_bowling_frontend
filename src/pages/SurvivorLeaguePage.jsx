@@ -12,6 +12,7 @@ import {
   getSurvivorUserPicks,
   getEligibleSurvivorPlayers,
   submitSurvivorPicks,
+  getLeagueCurrentWeek,
 } from "../utils/api";
 import "../styles/Survivor.css";
 
@@ -21,6 +22,7 @@ const SurvivorLeaguePage = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [entries, setEntries] = useState([]);
   const [loadingEntries, setLoadingEntries] = useState(true);
+  const [currentWeek, setCurrentWeek] = useState(null);
 
   const [eligiblePlayers, setEligiblePlayers] = useState([]);
   const [selectedPlayers, setSelectedPlayers] = useState(["", "", "", "", ""]);
@@ -36,6 +38,20 @@ const SurvivorLeaguePage = () => {
     maxWidth: "220px"
   };
   const headerStyle = { color, backgroundColor };
+
+  useEffect(() => {
+    const fetchCurrentWeek = async () => {
+      try {
+        const res = await getLeagueCurrentWeek(league);
+        console.log(res.data.currentWeek);
+        setCurrentWeek(res.data.currentWeek);
+      } catch (err) {
+        console.error("Failed to fetch current week:", err);
+      }
+    };
+  
+    fetchCurrentWeek();
+  }, [league]);
 
   useEffect(() => {
     document.body.classList.toggle("menuOpen", isMenuOpen);
@@ -64,10 +80,10 @@ const SurvivorLeaguePage = () => {
     "Beavers Latestarters": 0.3,
     "Andys Classic": 0.25,
     "Heyden Classic": 0.4,
+    "Inner City" : .3,
   };
 
   const cutoff = leagueCutoffs[league];
-  const cutoffText = `Each week, your chosen bowler must finish in the top ${Math.round(cutoff * 100)}% of scores in this league to advance.`;
 
   const userEntry = entries.find((entry) => entry.userId === user?.id);
   const winnerEntry = entries.find((entry) => entry.winnerStatus === "winner");
@@ -148,6 +164,7 @@ const SurvivorLeaguePage = () => {
       <Navbar />
       <div className="mainPage survivor">
         <h1>Survivor League: {league}</h1>
+        {currentWeek && <h2>Current Week: {currentWeek}</h2>}
 
         {winnerEntry && (
           <div className="winnerBanner">
@@ -198,7 +215,9 @@ const SurvivorLeaguePage = () => {
         {userEntry && !userEntry.eliminated && !winnerEntry && (
           <>
             <button style={buttonStyle} className="survivorAction" onClick={handleOpenPickSection}>
-              Make your picks
+              {currentWeek && currentWeek >= 6
+                ? `Make Week ${currentWeek} picks`
+                : "Make Week 6 picks"}
             </button>
 
             {showPickSection && (
@@ -238,13 +257,23 @@ const SurvivorLeaguePage = () => {
           </>
         )}
         <h2>Rules</h2>
-        <p>{cutoffText}</p>
-
-        {!userEntry && (
-          <p className="noEntryNotice">
-            You don't have an entry in this league.
+        <div className="rulesSection">
+          <p>
+            In Fantasy Bowling Survivor, you pick 5 bowlers from your league each week and rank them 1–5. 
+            Your top-ranked bowler is your active score.
           </p>
-        )}
+          <p>
+            To survive each week, your top bowler must finish in the top{" "}
+            {Math.round(cutoff * 100)}% of scores in that league. Once a bowler is used, 
+            they cannot be picked again.
+          </p>
+          {(!currentWeek || currentWeek < 7) && (
+            <p>Survivor leagues start week 6.</p>
+          )}
+          <p>
+            The last team standing wins. Remaining bowlers not used in a week are eligible for later weeks.
+          </p>
+        </div>
       </div>
       <Footer />
     </div>

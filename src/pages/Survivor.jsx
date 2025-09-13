@@ -127,6 +127,9 @@ const Survivor = () => {
                   To survive each week, your top bowler must finish in the top 30–40% of scores in that league. Once a bowler is used, they cannot be picked again.
                 </p>
                 <p>
+                  Survivor leagues will start week 6.
+                </p>
+                <p>
                   The last team standing wins. Remaining bowlers not used in a week are eligible for later weeks.
                 </p>
               </div>
@@ -144,6 +147,9 @@ const Survivor = () => {
             </p>
             <p>
               The last team standing wins. The rest of your bowlers who are not used for the week are eligible to use later.
+            </p>
+            <p>
+              Survivor leagues will start week 6.
             </p>
             <p style={{ fontStyle: "italic" }}>
               Sign up or log in to create your Survivor team and join the fun!

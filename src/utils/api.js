@@ -16,6 +16,7 @@ export const getCurrentWeek = () => API.get('/getCurrentWeek');
 export const getDraftState = () => API.get('/api/draft');
 export const getEligibleSurvivorPlayers = (league, teamName) => API.get(`/api/survivor-eligible-players/${encodeURIComponent(league)}/${encodeURIComponent(teamName)}`);
 export const getIncompleteWeekLocks = () => API.get('/api/weeklocks/incomplete');
+export const getLeagueCurrentWeek = (league) => { return API.get(`/getLeagueCurrentWeek/${encodeURIComponent(league)}`); };
 export const getMatchById = (id) => API.get(`/api/match/${id}`);
 export const getMatchupsForWeek = (week) => API.get(`/matchups/week/${week}`);
 export const getMessages = (userId, page, limit) => API.get("/messages", { params: { userId, page, limit } });
