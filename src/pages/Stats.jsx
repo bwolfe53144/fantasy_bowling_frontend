@@ -291,7 +291,14 @@ const Stats = () => {
                         {showLastYear && <td>{lyGames}</td>}
                         {showLastYear && <td>{lyAvg.toFixed(2)}</td>}
                         {showLastYear && <td>{lyPoints}</td>}
-                        {showLastYear && <td>{lyGames > 0 ? (lyPoints / lyGames).toFixed(2) : "0.00"}</td>}                        {!showLastYear && (
+                        {showLastYear && (
+                          <td>
+                            {item.lyGames && item.lyGames > 0
+                              ? (parseFloat(item.lyPoints || 0) / item.lyGames).toFixed(2)
+                              : "0.00"}
+                          </td>
+                        )}                        
+                        {!showLastYear && (
                           <td>
                             {item.team && item.teamId ? (
                               <Link to={`/team/${encodeURIComponent(item.teamId)}`}>{item.team}</Link>
