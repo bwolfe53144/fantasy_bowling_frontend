@@ -17,6 +17,11 @@ export const processPlayerStats = (player) => {
 
   const totalPoints = calculateFantasyPoints(weekScores);
 
+  // ✅ Coerce last year stats to numbers
+  const lyGames = Number(player.lyGames || 0);
+  const lyPoints = Number(player.lyPoints || 0);
+  const lyAverage = Number(player.lyAverage) || 0;
+
   return {
     id: player.id,
     name: player.name ?? `${player.firstname} ${player.lastname}`,
@@ -33,9 +38,9 @@ export const processPlayerStats = (player) => {
     avgFanppg: totalGames > 0 ? totalPoints / totalGames : 0,
 
     // Stored LY stats
-    lyAverage: player.lyAverage ?? null,
-    lyGames: lyGames,
-    lyPoints: lyPoints,
+    lyAverage,
+    lyGames,
+    lyPoints,
     lyFppg: lyGames > 0 ? lyPoints / lyGames : 0,
   };
 };
