@@ -21,7 +21,34 @@ import { getAudioContext } from "../utils/audioManager.js";
 import '../styles/Draft.css';
 import '../styles/Players.css';
 
-const draftOrderBase = ["Bowling Stones", "Lisa's Team", "Hell’s Kitchen", "Gutter Control", "Go Packers Go", "Bergernation", "Joel Jr's Team", "The Takeover", "The Wolf Pack", "Scott's Team", "Iconic Ink", "Greg's Team", "My Drinking Team", "Dewbertz", "Pinsanity", "Shirts Off", "My Imaginary Friends", "Erik B's Team", "Waddle You Doing Step Burrow", "Poblo" ];
+const draftOrderBase = [
+  "Spare No One",
+  "Bowling Stones",
+  "Hell’s Kitchen",
+  "Training Wheels & Strikes",
+  /*"Lisa's Team",*/
+  "Go Packers Go",
+  "Gutter Control",
+  "The Rican Rollers",
+  "Team Thomas",
+  /*"Bergernation",*/
+  "Da Bears",
+  "Down And Dirty",
+  "The Wolf Pack",
+  /*"Scott's Team",*/
+  "Strikes Away",
+  "Iconic Ink",
+  "Rainmaker Fishing",
+  "My Drinking Team Has A Bowling Problem",
+  "Dewbertz",
+  "Pinsanity",
+  /*"Shirts Off",*/
+  "My Imaginary Friends",
+  /*"Erik B's Team",*/
+  "Waddle You Doing Step Burrow",
+  "Poblo"
+];
+
 const fantasyLeagues = [
   "Andys Classic",
   "Beavers Latestarters",
