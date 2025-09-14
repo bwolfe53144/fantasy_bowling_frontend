@@ -35,7 +35,7 @@ const draftOrderBase = [
   "Da Bears",
   "Down And Dirty",
   "The Wolf Pack",
-  /*"Scott's Team",*/
+  "Packer Slayer",
   "Strikes Away",
   "Iconic Ink",
   "Rainmaker Fishing",
