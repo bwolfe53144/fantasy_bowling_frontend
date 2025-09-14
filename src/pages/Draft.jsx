@@ -36,7 +36,7 @@ const draftOrderBase = [
   "Down And Dirty",
   "The Wolf Pack",
   "Packer Slayer",
-  "David's Team",
+  "Split Lickers",
   "Strikes Away",
   "Iconic Ink",
   "Rainmaker Fishing",
