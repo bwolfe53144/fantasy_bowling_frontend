@@ -77,7 +77,7 @@ const getOrCreatePlayer = async (entry, playerList) => {
     name: capitalizeName(normalizeName(Name)),
     league: League,
     teamId: null,
-    position: "flex",
+    position: "Flex",
   };
 
   const res = await createPlayer(newPlayer);
