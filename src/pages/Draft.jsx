@@ -131,7 +131,9 @@ const Draft = () => {
     const draftedIds = new Set(draftedPlayers.map(d => d.playerId));
     return processedPlayers
     .filter(p =>
-      fantasyLeagues.includes(p.league)    
+      fantasyLeagues.includes(p.league) &&       
+      !draftedIds.has(p.id) &&                   
+      !p.teamId                              
     );
   }, [processedPlayers, draftedPlayers]);
 
