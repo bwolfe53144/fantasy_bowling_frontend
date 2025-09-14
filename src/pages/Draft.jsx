@@ -32,7 +32,7 @@ const draftOrderBase = [
   "The Rican Rollers",
   "Team Thomas",
   /*"Bergernation",*/
-  "Da Bears",
+  "The Dude Abides",
   "Down And Dirty",
   "The Wolf Pack",
   "Packer Slayer",
