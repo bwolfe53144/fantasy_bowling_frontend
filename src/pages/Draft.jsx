@@ -369,13 +369,15 @@ useEffect(() => {
   
       <div className="mainPage player-page">
         <h1 className="draftTitle">Draft Room</h1>
-        <button
-          className="draftButton"
-          onClick={handleStartDraft}
-          style={{ backgroundColor: buttonBackground, color: buttonColor }}
-        >
-          Start Mock Draft
-        </button>
+        {user?.role === "SUPERADMIN" && (
+          <button
+            className="draftButton"
+            onClick={handleStartDraft}
+            style={{ backgroundColor: buttonBackground, color: buttonColor }}
+          >
+            Start Draft
+          </button>
+        )}
   
         {/* Drafted Players */}
         <DraftedTeamsContainer
