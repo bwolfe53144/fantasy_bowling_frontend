@@ -133,10 +133,7 @@ const Draft = () => {
     .filter(p =>
       fantasyLeagues.includes(p.league) &&       
       !draftedIds.has(p.id) &&                   
-      !p.teamId &&                               
-      p.lyAverage !== undefined &&               
-      Number(p.lyGames ?? 0) >= lyGamesFilter && 
-      Number(p.games ?? 0) >= gamesFilter       
+      !p.teamId                              
     );
   }, [processedPlayers, draftedPlayers]);
 
