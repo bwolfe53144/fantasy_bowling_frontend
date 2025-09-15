@@ -137,8 +137,10 @@ export default function RegularRoster() {
   }, [teamWithScores]);
 
   const updatePosition = (id, newPosition) => {
-    newPosition = capitalizePosition(newPosition);
-
+    if (!newPosition.startsWith("Flex Bench")) {
+      newPosition = capitalizePosition(newPosition);
+    }
+    
     setPlayers(prev =>
       prev.map(p =>
         p.id === id
