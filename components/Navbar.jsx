@@ -31,7 +31,7 @@ const Navbar = () => {
 
   const navItems = [
     { to: "/", label: "Home", icon: HomeIcon },
-    ...(user ? [{ to: "/draft", label: "Draft", icon: DraftIcon }] : []),
+    /*...(user ? [{ to: "/draft", label: "Draft", icon: DraftIcon }] : []),*/
     ...(user?.role ? [{ to: "/profile", label: "Profile", icon: AccountIcon }] : []),
  /*   ...(user?.role === "MANAGER" || user?.role === "ADMIN" || user?.role === "SUPERADMIN"
       ? [{ to: `/roster/week/${currentWeek}`, label: "Roster", icon: RosterIcon }]
