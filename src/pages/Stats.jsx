@@ -294,7 +294,7 @@ const Stats = () => {
                         {showLastYear && <td>{item.lyFppg?.toFixed(2) ?? "0.00"}</td>}
                         {!showLastYear && (
                           <td>
-                            {item.team ? (
+                            {item.team && item.team !== "Free Agent" ? (
                               <Link to={`/team/${encodeURIComponent(item.team)}`}>
                                 {item.team}
                               </Link>
