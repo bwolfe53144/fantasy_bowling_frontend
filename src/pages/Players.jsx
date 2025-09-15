@@ -244,9 +244,6 @@ const Players = () => {
           <button className="playerButton" style={buttonStyle} onClick={() => setShowFilters(prev => !prev)}>
             {showFilters ? "Hide Filters" : "Show Filters"}
           </button>
-          <button className="playerButton" style={buttonStyle} onClick={() => setShowLYStats(prev => !prev)}>
-            {showLYStats ? "Hide Last Year Stats" : "Show Last Year Stats"}
-          </button>
         </div>
 
         {showFilters && (
