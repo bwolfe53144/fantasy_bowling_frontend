@@ -10,15 +10,26 @@ export async function handleRosterSubmit({
   reload = true,
 }) {
   const requiredPositions = ["1", "2", "3", "4", "5", "Flex"];
+
+  // Helper to normalize positions (capitalizes each word properly)
+  const normalizePosition = (pos) => {
+    if (!pos) return "";
+    return pos
+      .split(" ")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+      .join(" ");
+  };
+
+  // Build assigned map after normalization
   const assigned = players.reduce((acc, player) => {
     if (player.setPosition) {
-      acc[player.setPosition] = player.id;
+      acc[normalizePosition(player.setPosition)] = player.id;
     }
     return acc;
   }, {});
 
+  // Check for missing required positions
   const missingPositions = requiredPositions.filter(pos => !assigned[pos]);
-
   if (missingPositions.length > 0) {
     await showModal({
       title: "Missing Positions",
@@ -28,7 +39,7 @@ export async function handleRosterSubmit({
     return;
   }
 
-  // Fill Flex Bench
+  // Fill Flex Bench for unassigned players
   const usedPositions = new Set(Object.keys(assigned));
   const flexBenchPool = Array.from({ length: 9 }, (_, i) => `Flex Bench ${i + 1}`);
   const updatedPlayers = players.map(player => {
@@ -42,27 +53,29 @@ export async function handleRosterSubmit({
     return player;
   });
 
+  // Prepare payload with normalized positions
   const payload = {
     teamId: user.team.id,
     week: currentWeek,
     players: updatedPlayers
       .map(p => ({
         playerId: p.id,
-        setPosition: p.setPosition || "",
+        setPosition: normalizePosition(p.setPosition || ""),
       }))
       .filter(p => !lockedPlayerIds.includes(p.playerId)),
   };
 
   try {
     const response = await saveRoster(payload);
+    console.log("Submitting payload:", payload);
     if (response.status === 200) {
       await showModal({
         title: "Success",
         message: "Roster submitted successfully!",
         confirmText: "OK",
       });
-      setPlayers(updatedPlayers); // update local state if needed
-      if (reload) navigate(0); // refresh current route programmatically
+      setPlayers(updatedPlayers);
+      if (reload) navigate(0); // refresh page
     } else {
       await showModal({
         title: "Error",
