@@ -26,12 +26,14 @@ const Players = () => {
   const [sortPosition, setSortPosition] = useState("");
   const [leagueFilter, setLeagueFilter] = useState([]);
   const [gamesFilter, setGamesFilter] = useState(null);
+  const [lyGamesFilter, setLyGamesFilter] = useState(null); 
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredData, setFilteredData] = useState([]);
   const [allclaims, setAllClaims] = useState([]);
   const [claimedPlayers, setClaimedPlayers] = useState([]);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
+  const [showLYStats, setShowLYStats] = useState(false);
 
   // Modal hook:
   const [modalProps, showModal] = useModal();
@@ -235,19 +237,18 @@ const Players = () => {
     <div className="pageContainer player-page">
       <Header onToggleMenu={setIsMenuOpen} isMenuOpen={isMenuOpen} />
       <Navbar />
-  
+
       <div className="mainPage player-page">
         <div className="horizontalStickyBar">
           <h1>Available Players</h1>
-          <button
-            className="playerButton"
-            style={buttonStyle}
-            onClick={() => setShowFilters(prev => !prev)}
-          >
+          <button className="playerButton" style={buttonStyle} onClick={() => setShowFilters(prev => !prev)}>
             {showFilters ? "Hide Filters" : "Show Filters"}
           </button>
+          <button className="playerButton" style={buttonStyle} onClick={() => setShowLYStats(prev => !prev)}>
+            {showLYStats ? "Hide Last Year Stats" : "Show Last Year Stats"}
+          </button>
         </div>
-  
+
         {showFilters && (
           <div className="statsFilterContainer baseFilterWrapper">
             <BaseFilters
@@ -258,12 +259,17 @@ const Players = () => {
               uniqueLeagues={uniqueLeagues}
               gamesFilter={gamesFilter}
               setGamesFilter={setGamesFilter}
+              lyGamesFilter={lyGamesFilter}
+              setLyGamesFilter={setLyGamesFilter}
               searchQuery={searchQuery}
               setSearchQuery={setSearchQuery}
+              showLastYear={showLYStats}
+              setShowLastYear={setShowLYStats}
             />
           </div>
         )}
-  
+
+        {/* Table and pagination remain unchanged */}
         <div className="horizontalScrollArea">
           <table className="playerStatsTable">
             <thead className="statsHeader">
@@ -276,6 +282,14 @@ const Players = () => {
                 {renderSortableHeader("Average", "average", { backgroundColor, color })}
                 {renderSortableHeader("Total Fantasy Points", "totalPoints", { backgroundColor, color })}
                 {renderSortableHeader("Avg Fan Ppg", "avgFanppg", { backgroundColor, color })}
+                {showLYStats && (
+                  <>
+                    {renderSortableHeader("LY Games", "lyGames", { backgroundColor, color })}
+                    {renderSortableHeader("LY Average", "lyAverage", { backgroundColor, color })}
+                    {renderSortableHeader("LY Total Points", "lyPoints", { backgroundColor, color })}
+                    {renderSortableHeader("LY Avg Fan PPG", "lyFppg", { backgroundColor, color })}
+                  </>
+                )}
                 {(user?.role === "ADMIN" || user?.role === "MANAGER" || user?.role === "SUPERADMIN") && (
                   <th style={{ backgroundColor, color }}>Actions</th>
                 )}
@@ -283,69 +297,64 @@ const Players = () => {
             </thead>
             <tbody>
               {sortedData.length > 0 ? (
-                sortedData
-                  .slice(currentPage * playersPerPage, (currentPage + 1) * playersPerPage)
-                  .map((item, index) => {
-                    const isClaimedOther = isClaimedByOthers(item.id);
-                    return (
-                      <tr key={index} className={isClaimedOther ? "claimed-by-other" : ""}>
+                sortedData.slice(currentPage * playersPerPage, (currentPage + 1) * playersPerPage).map((item, index) => {
+                  const isClaimedOther = isClaimedByOthers(item.id);
+                  return (
+                    <tr key={index} className={isClaimedOther ? "claimed-by-other" : ""}>
+                      <td>
+                        <Link to={`/player/${encodeURIComponent(item.name)}`}>{item.name}</Link>
+                        {isClaimedOther && <span className="claimed-label">Claimed by another team</span>}
+                      </td>
+                      <td>{item.league}</td>
+                      <td>{item.position}</td>
+                      <td>{item.games}</td>
+                      <td>{item.totalPins}</td>
+                      <td>{item.average.toFixed(2)}</td>
+                      <td>{item.totalPoints}</td>
+                      <td>{item.avgFanppg.toFixed(2)}</td>
+                      {showLYStats && (
+                        <>
+                          <td>{item.lyGames}</td>
+                          <td>{item.lyAverage.toFixed(2)}</td>
+                          <td>{item.lyPoints}</td>
+                          <td>{item.lyFppg.toFixed(2)}</td>
+                        </>
+                      )}
+                      {(user?.role === "ADMIN" || user?.role === "MANAGER" || user?.role === "SUPERADMIN") && (
                         <td>
-                          <Link to={`/player/${encodeURIComponent(item.name)}`}>
-                            {item.name}
-                          </Link>
-                          {isClaimedOther && (
-                            <span className="claimed-label">Claimed by another team</span>
+                          {claimedPlayers.includes(item.id) ? (
+                            <button className="claimButton" style={buttonStyle} onClick={() => handleRemoveClaim(item.id)}>Remove Claim</button>
+                          ) : (
+                            <button className="claimButton" style={buttonStyle} onClick={() => handleAddPlayer(item)}>Add Player</button>
                           )}
                         </td>
-                        <td>{item.league}</td>
-                        <td>{item.position}</td>
-                        <td>{item.games}</td>
-                        <td>{item.totalPins}</td>
-                        <td>{item.average.toFixed(2)}</td>
-                        <td>{item.totalPoints}</td>
-                        <td>{item.avgFanppg.toFixed(2)}</td>
-                        {(user?.role === "ADMIN" || user?.role === "MANAGER" || user?.role === "SUPERADMIN") && (
-                          <td>
-                            {claimedPlayers.includes(item.id) ? (
-                              <button className="claimButton" style={buttonStyle} onClick={() => handleRemoveClaim(item.id)}>Remove Claim</button>
-                            ) : (
-                              <button className="claimButton" style={buttonStyle} onClick={() => handleAddPlayer(item)}>Add Player</button>
-                            )}
-                          </td>
-                        )}
-                      </tr>
-                    );
-                  })
+                      )}
+                    </tr>
+                  );
+                })
               ) : (
                 <tr>
-                  <td colSpan="9" style={{ textAlign: "center", padding: "1rem" }}>
-                    No players found.
-                  </td>
+                  <td colSpan="12" style={{ textAlign: "center", padding: "1rem" }}>No players found.</td>
                 </tr>
               )}
             </tbody>
           </table>
         </div>
-  
+
         {sortedData.length > 0 && (
           <div className="pagination-buttons">
             <button className="playerButton playerPagButton" style={buttonStyle} onClick={handlePrev} disabled={currentPage === 0}>Previous</button>
-            <span className="page-number">
-              Page {currentPage + 1} of {Math.ceil(sortedData.length / playersPerPage)}
-            </span>
+            <span className="page-number">Page {currentPage + 1} of {Math.ceil(sortedData.length / playersPerPage)}</span>
             <button className="playerButton playerPagButton" style={buttonStyle} onClick={handleNext} disabled={(currentPage + 1) * playersPerPage >= sortedData.length}>Next</button>
           </div>
         )}
-  
+
         <div>
-          <Link to="/all-claims">
-            <button style={buttonStyle}>View Claimed Players</button>
-          </Link>
+          <Link to="/all-claims"><button style={buttonStyle}>View Claimed Players</button></Link>
         </div>
       </div>
-  
-      {modalProps && <Modal {...modalProps} />} {/* Modal render */}
 
+      {modalProps && <Modal {...modalProps} />}
       <Footer />
     </div>
   );
