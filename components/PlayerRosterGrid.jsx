@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { processPlayerStats } from "../src/utils/ProcessPlayerStats";
 import "../src/styles/Roster.css";
 
-export default function PlayerRosterGrid({ players, updatePosition, lockedPositions, currentWeek, themeStyle }) {
+export default function PlayerRosterGrid({ players = [], updatePosition, lockedPositions = [], currentWeek, themeStyle }) {
   const [displayOrder, setDisplayOrder] = useState([]);
   const [initialPositions, setInitialPositions] = useState({});
 
@@ -12,12 +12,19 @@ export default function PlayerRosterGrid({ players, updatePosition, lockedPositi
     return pos.charAt(0).toUpperCase() + pos.slice(1).toLowerCase();
   }
 
-  // Normalize lockedPositions once to capitalized form
-  const normalizedLockedPositions = lockedPositions.map(capitalizePosition);
+  // Normalize lockedPositions once to capitalized form (defensive)
+  const normalizedLockedPositions = (lockedPositions || []).map(capitalizePosition);
 
-  // Capture player order and original positions on first load
+  // Capture player order and original positions on first load (or when players change)
   useEffect(() => {
-    if (players?.length && displayOrder.length === 0) {
+    if (!Array.isArray(players) || players.length === 0) {
+      setDisplayOrder([]);
+      setInitialPositions({});
+      return;
+    }
+
+    // Only initialize once if displayOrder already set, but re-init when different length
+    if (displayOrder.length === 0 || displayOrder.length !== players.length) {
       setDisplayOrder(players.map(player => player.id));
 
       const positionsSnapshot = {};
@@ -26,6 +33,7 @@ export default function PlayerRosterGrid({ players, updatePosition, lockedPositi
       });
       setInitialPositions(positionsSnapshot);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [players]);
 
   if (!players || players.length === 0) {
@@ -48,6 +56,7 @@ export default function PlayerRosterGrid({ players, updatePosition, lockedPositi
             <th style={{ width: "140px" }}>Set Position</th>
             <th style={{ width: "80px" }}>Points</th>
             <th style={{ width: "80px" }}>Avg</th>
+            <th style={{ width: "80px" }}>LY Avg</th> {/* new column */}
             <th style={{ width: "60px" }}>G1</th>
             <th style={{ width: "60px" }}>G2</th>
             <th style={{ width: "60px" }}>G3</th>
@@ -58,6 +67,12 @@ export default function PlayerRosterGrid({ players, updatePosition, lockedPositi
           {displayOrder.map((id) => {
             const player = playersById[id];
             if (!player) return null;
+
+            // Use processPlayerStats to get lyAverage (and other derived fields if needed)
+            const stats = processPlayerStats(player);
+
+            // DEBUG: uncomment to inspect the player and stats objects in the console
+            // console.debug("roster player", player.id, player.name, { player, stats });
 
             const thisWeekScore = player.weekScores?.find(ws => ws.week === currentWeek);
             const prevWeekScores = player.weekScores?.filter(ws => ws.week < currentWeek) || [];
@@ -70,19 +85,17 @@ export default function PlayerRosterGrid({ players, updatePosition, lockedPositi
               if (thisWeekScore?.average) return thisWeekScore.average;
               if (prevWeekScores.length === 0) return 0;
               const pseudoPlayer = { ...player, weekScores: prevWeekScores };
-              const stats = processPlayerStats(pseudoPlayer);
-              return stats.average || 0;
+              const computed = processPlayerStats(pseudoPlayer);
+              return computed.average || 0;
             })();
 
             const series = [g1, g2, g3].every(val => typeof val === "number")
               ? g1 + g2 + g3
               : "-";
 
-            // Normalize allowed positions case & remove duplicates
+            // Normalize allowed positions case & remove duplicates (defensive)
             const normalizedPositions = [
-              ...new Set(
-                player.allowedPositions.map(pos => capitalizePosition(pos))
-              )
+              ...new Set((player.allowedPositions || []).map(pos => capitalizePosition(pos)))
             ];
 
             return (
@@ -94,7 +107,7 @@ export default function PlayerRosterGrid({ players, updatePosition, lockedPositi
                 </td>
                 <td>
                   <div className="fixedCell playerName">
-                    {player.name} ({normalizedPositions[0]})
+                    {player.name} ({normalizedPositions[0] || "-"})
                     {player.isLocked && " 🔒"}
                   </div>
                 </td>
@@ -117,7 +130,8 @@ export default function PlayerRosterGrid({ players, updatePosition, lockedPositi
                   </select>
                 </td>
                 <td>{typeof player.fantasyPoints === "number" ? player.fantasyPoints.toFixed(2) : "-"}</td>
-                <td>{avg.toFixed(2)}</td>
+                <td>{(typeof avg === "number") ? avg.toFixed(2) : "-"}</td>
+                <td>{(typeof stats.lyAverage === "number" && stats.lyAverage > 0) ? stats.lyAverage.toFixed(2) : "-"}</td>
                 <td>{g1}</td>
                 <td>{g2}</td>
                 <td>{g3}</td>
