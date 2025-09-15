@@ -295,9 +295,11 @@ const Stats = () => {
                         {!showLastYear && (
                           <td>
                             {item.team ? (
-                              <Link to={`/team/${encodeURIComponent(item.team)}`}>{item.team}</Link>
+                              <Link to={`/team/${encodeURIComponent(item.team)}`}>
+                                {item.team}
+                              </Link>
                             ) : (
-                              "Free Agent"
+                              <Link to="/players">Free Agent</Link>
                             )}
                           </td>
                         )}
