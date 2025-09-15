@@ -1,39 +1,52 @@
 import React, { useState, useEffect } from "react";
 import { processPlayerStats } from "../src/utils/ProcessPlayerStats";
+import { fetchSpecificWeekLocks } from "../src/utils/api";
 import "../src/styles/Roster.css";
 
 export default function PlayerRosterGrid({ players = [], updatePosition, lockedPositions = [], currentWeek, themeStyle }) {
   const [displayOrder, setDisplayOrder] = useState([]);
   const [initialPositions, setInitialPositions] = useState({});
+  const [weekLocks, setWeekLocks] = useState({});
 
-  // Capitalize position string helper
   function capitalizePosition(pos) {
     if (!pos) return "";
     return pos.charAt(0).toUpperCase() + pos.slice(1).toLowerCase();
   }
 
-  // Normalize lockedPositions once to capitalized form (defensive)
   const normalizedLockedPositions = (lockedPositions || []).map(capitalizePosition);
 
-  // Capture player order and original positions on first load (or when players change)
+  // Load week locks for current week
+  useEffect(() => {
+    const loadLocks = async () => {
+      try {
+        const res = await fetchSpecificWeekLocks(currentWeek);
+        const locksByLeague = {};
+        res.data.forEach(lock => {
+          locksByLeague[lock.league] = new Date(lock.lockTime); // use `league` from your Prisma model
+        });
+        setWeekLocks(locksByLeague);
+      } catch (err) {
+        console.error("Failed to fetch week locks:", err);
+      }
+    };
+    if (currentWeek) loadLocks();
+  }, [currentWeek]);
+
+  // Capture player order and initial positions
   useEffect(() => {
     if (!Array.isArray(players) || players.length === 0) {
       setDisplayOrder([]);
       setInitialPositions({});
       return;
     }
-
-    // Only initialize once if displayOrder already set, but re-init when different length
     if (displayOrder.length === 0 || displayOrder.length !== players.length) {
       setDisplayOrder(players.map(player => player.id));
-
       const positionsSnapshot = {};
       players.forEach(player => {
         positionsSnapshot[player.id] = capitalizePosition(player.setPosition) || "-";
       });
       setInitialPositions(positionsSnapshot);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [players]);
 
   if (!players || players.length === 0) {
@@ -56,11 +69,12 @@ export default function PlayerRosterGrid({ players = [], updatePosition, lockedP
             <th style={{ width: "140px" }}>Set Position</th>
             <th style={{ width: "80px" }}>Points</th>
             <th style={{ width: "80px" }}>Avg</th>
-            <th style={{ width: "80px" }}>LY Avg</th> {/* new column */}
+            <th style={{ width: "80px" }}>LY Avg</th>
             <th style={{ width: "60px" }}>G1</th>
             <th style={{ width: "60px" }}>G2</th>
             <th style={{ width: "60px" }}>G3</th>
-            <th style={{ width: "80px" }}>Series</th>
+            <th style={{ width: "100px" }}>Series</th>
+            <th style={{ width: "140px" }}>Lock Time</th>
           </tr>
         </thead>
         <tbody>
@@ -68,12 +82,7 @@ export default function PlayerRosterGrid({ players = [], updatePosition, lockedP
             const player = playersById[id];
             if (!player) return null;
 
-            // Use processPlayerStats to get lyAverage (and other derived fields if needed)
             const stats = processPlayerStats(player);
-
-            // DEBUG: uncomment to inspect the player and stats objects in the console
-            // console.debug("roster player", player.id, player.name, { player, stats });
-
             const thisWeekScore = player.weekScores?.find(ws => ws.week === currentWeek);
             const prevWeekScores = player.weekScores?.filter(ws => ws.week < currentWeek) || [];
 
@@ -89,28 +98,16 @@ export default function PlayerRosterGrid({ players = [], updatePosition, lockedP
               return computed.average || 0;
             })();
 
-            const series = [g1, g2, g3].every(val => typeof val === "number")
-              ? g1 + g2 + g3
-              : "-";
+            const series = [g1, g2, g3].every(val => typeof val === "number") ? g1 + g2 + g3 : "-";
+            const normalizedPositions = [...new Set((player.allowedPositions || []).map(pos => capitalizePosition(pos)))];
 
-            // Normalize allowed positions case & remove duplicates (defensive)
-            const normalizedPositions = [
-              ...new Set((player.allowedPositions || []).map(pos => capitalizePosition(pos)))
-            ];
+            const lockDate = player.league ? weekLocks[player.league] : null;
+            const lockDisplay = lockDate ? lockDate.toLocaleString() : "-";
 
             return (
               <tr key={player.id} className={player.isLocked ? "lockedPlayer" : ""}>
-                <td>
-                  <div className="fixedCell">
-                    {initialPositions[player.id] ?? "-"}
-                  </div>
-                </td>
-                <td>
-                  <div className="fixedCell playerName">
-                    {player.name} ({normalizedPositions[0] || "-"})
-                    {player.isLocked && " 🔒"}
-                  </div>
-                </td>
+                <td><div className="fixedCell">{initialPositions[player.id] ?? "-"}</div></td>
+                <td><div className="fixedCell playerName">{player.name} ({normalizedPositions[0] || "-"}){player.isLocked && " 🔒"}</div></td>
                 <td>
                   <select
                     value={capitalizePosition(player.setPosition) || ""}
@@ -118,24 +115,19 @@ export default function PlayerRosterGrid({ players = [], updatePosition, lockedP
                     disabled={player.isLocked}
                   >
                     <option value="">Select</option>
-                    {normalizedPositions.map((pos) => (
-                      <option
-                        key={pos}
-                        value={pos}
-                        disabled={normalizedLockedPositions.includes(pos)}
-                      >
-                        {pos}
-                      </option>
+                    {normalizedPositions.map(pos => (
+                      <option key={pos} value={pos} disabled={normalizedLockedPositions.includes(pos)}>{pos}</option>
                     ))}
                   </select>
                 </td>
                 <td>{typeof player.fantasyPoints === "number" ? player.fantasyPoints.toFixed(2) : "-"}</td>
-                <td>{(typeof avg === "number") ? avg.toFixed(2) : "-"}</td>
+                <td>{typeof avg === "number" ? avg.toFixed(2) : "-"}</td>
                 <td>{(typeof stats.lyAverage === "number" && stats.lyAverage > 0) ? stats.lyAverage.toFixed(2) : "-"}</td>
                 <td>{g1}</td>
                 <td>{g2}</td>
                 <td>{g3}</td>
                 <td>{series}</td>
+                <td>{lockDisplay}</td>
               </tr>
             );
           })}

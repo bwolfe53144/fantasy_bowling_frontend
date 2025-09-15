@@ -8,6 +8,7 @@ export const fetchAllClaims = () => API.get('/api/claims/all');
 export const fetchAllLockStatuses = () => API.get(`/get-all-lock-statuses`);
 export const fetchAllRosters = () => API.get(`/roster/all`);
 export const fetchRecentTransactions = (page) => API.get(`/api/transactions/recent?page=${page}&limit=10`);
+export const fetchSpecificWeekLocks = (week) => API.get(`/findSpecificWeekLocks/${week}`);
 export const getAllOwners = () => API.get("/api/owners");
 export const getAvailablePriorYears = () => API.get("/prior-years");
 export const getCompletedLeagues = (week) => API.get(`/findCompletedLeagues/${week}`);
