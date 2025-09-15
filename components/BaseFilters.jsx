@@ -20,7 +20,7 @@ const BaseFilters = ({
   uniqueTeams = [],
   showLastYear,
   setShowLastYear,
-  hideLastYearToggle,
+  hideLastYearToggle = false, // default to false
 }) => {
   const { user } = useContext(AuthContext);
   const { buttonBackground, buttonColor } = getThemeColors(user?.color);
@@ -45,6 +45,7 @@ const BaseFilters = ({
 
   return (
     <div className="baseFilterWrapper">
+      {/* Position Filter */}
       <div className="filterItem">
         <label htmlFor="positionFilter">Position:</label>
         <select
@@ -62,6 +63,7 @@ const BaseFilters = ({
         </select>
       </div>
 
+      {/* League Filter */}
       <div className="filterItem leagueItem" ref={leagueDropdownRef}>
         <label htmlFor="leagueFilter">Leagues:</label>
         <div
@@ -103,6 +105,7 @@ const BaseFilters = ({
         </div>
       </div>
 
+      {/* Current Season Games Filter */}
       <div className="filterItem gamesContainer">
         <label htmlFor="gamesFilter">Min Games (Current):</label>
         <input
@@ -111,15 +114,12 @@ const BaseFilters = ({
           value={gamesFilter || ""}
           onChange={(e) => setGamesFilter(e.target.value ? parseInt(e.target.value, 10) : null)}
         />
-        <button
-          className="resetButton"
-          style={buttonStyle}
-          onClick={() => setGamesFilter(null)}
-        >
+        <button className="resetButton" style={buttonStyle} onClick={() => setGamesFilter(null)}>
           Reset
         </button>
       </div>
 
+      {/* Last Year Games Filter */}
       {showLastYear && (
         <div className="filterItem gamesContainer">
           <label htmlFor="lyGamesFilter">Min Games (Last Year):</label>
@@ -129,16 +129,13 @@ const BaseFilters = ({
             value={lyGamesFilter || ""}
             onChange={(e) => setLyGamesFilter(e.target.value ? parseInt(e.target.value, 10) : null)}
           />
-          <button
-            className="resetButton"
-            style={buttonStyle}
-            onClick={() => setLyGamesFilter(null)}
-          >
+          <button className="resetButton" style={buttonStyle} onClick={() => setLyGamesFilter(null)}>
             Reset
           </button>
         </div>
       )}
 
+      {/* Name Search */}
       <div className="filterItem">
         <label htmlFor="nameSearch">Search Name:</label>
         <input
@@ -151,6 +148,7 @@ const BaseFilters = ({
         />
       </div>
 
+      {/* Team Filter */}
       {teamFilter !== undefined && setTeamFilter && (
         <div className="filterItem">
           <label htmlFor="teamFilter">Team:</label>
@@ -169,14 +167,15 @@ const BaseFilters = ({
         </div>
       )}
 
-      {showLastYear !== undefined && setShowLastYear && !hideLastYearToggle && (
+      {/* LY Toggle Button */}
+      {setShowLastYear && !hideLastYearToggle && (
         <div className="filterItem">
           <button
             className="lastYearButton"
             style={buttonStyle}
             onClick={() => setShowLastYear((prev) => !prev)}
           >
-            {showLastYear ? "Hide Last Year Comparison" : "Show Last Year Comparison"}
+            {showLastYear ? "Hide Last Year Stats" : "Show Last Year Stats"}
           </button>
         </div>
       )}
