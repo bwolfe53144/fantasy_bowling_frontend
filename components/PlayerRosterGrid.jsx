@@ -2,13 +2,7 @@ import React, { useState, useEffect } from "react";
 import { processPlayerStats } from "../src/utils/ProcessPlayerStats";
 import "../src/styles/Roster.css";
 
-export default function PlayerRosterGrid({
-  players,
-  updatePosition,
-  lockedPositions,
-  currentWeek,
-  themeStyle
-}) {
+export default function PlayerRosterGrid({ players, updatePosition, lockedPositions, currentWeek, themeStyle }) {
   const [displayOrder, setDisplayOrder] = useState([]);
   const [initialPositions, setInitialPositions] = useState({});
 
@@ -24,12 +18,11 @@ export default function PlayerRosterGrid({
   // Capture player order and original positions on first load
   useEffect(() => {
     if (players?.length && displayOrder.length === 0) {
-      setDisplayOrder(players.map((player) => player.id));
+      setDisplayOrder(players.map(player => player.id));
 
       const positionsSnapshot = {};
-      players.forEach((player) => {
-        positionsSnapshot[player.id] =
-          capitalizePosition(player.setPosition) || "-";
+      players.forEach(player => {
+        positionsSnapshot[player.id] = capitalizePosition(player.setPosition) || "-";
       });
       setInitialPositions(positionsSnapshot);
     }
@@ -43,7 +36,7 @@ export default function PlayerRosterGrid({
     );
   }
 
-  const playersById = Object.fromEntries(players.map((p) => [p.id, p]));
+  const playersById = Object.fromEntries(players.map(p => [p.id, p]));
 
   return (
     <div className="rosterTableWrapper">
@@ -66,11 +59,8 @@ export default function PlayerRosterGrid({
             const player = playersById[id];
             if (!player) return null;
 
-            const thisWeekScore = player.weekScores?.find(
-              (ws) => ws.week === currentWeek
-            );
-            const prevWeekScores =
-              player.weekScores?.filter((ws) => ws.week < currentWeek) || [];
+            const thisWeekScore = player.weekScores?.find(ws => ws.week === currentWeek);
+            const prevWeekScores = player.weekScores?.filter(ws => ws.week < currentWeek) || [];
 
             const g1 = thisWeekScore?.game1 ?? "-";
             const g2 = thisWeekScore?.game2 ?? "-";
@@ -84,30 +74,19 @@ export default function PlayerRosterGrid({
               return stats.average || 0;
             })();
 
-            const series =
-              [g1, g2, g3].every((val) => typeof val === "number")
-                ? g1 + g2 + g3
-                : "-";
+            const series = [g1, g2, g3].every(val => typeof val === "number")
+              ? g1 + g2 + g3
+              : "-";
 
-            // ✅ Normalize & dedupe positions, guarantee only one FLEX
+            // Normalize allowed positions case & remove duplicates
             const normalizedPositions = [
               ...new Set(
-                player.allowedPositions.map((pos) =>
-                  capitalizePosition(pos.trim())
-                )
+                player.allowedPositions.map(pos => capitalizePosition(pos))
               )
             ];
 
-            // Always make sure BENCH is available as a dropdown option
-            if (!normalizedPositions.includes("Bench")) {
-              normalizedPositions.push("Bench");
-            }
-
             return (
-              <tr
-                key={player.id}
-                className={player.isLocked ? "lockedPlayer" : ""}
-              >
+              <tr key={player.id} className={player.isLocked ? "lockedPlayer" : ""}>
                 <td>
                   <div className="fixedCell">
                     {initialPositions[player.id] ?? "-"}
@@ -137,11 +116,7 @@ export default function PlayerRosterGrid({
                     ))}
                   </select>
                 </td>
-                <td>
-                  {typeof player.fantasyPoints === "number"
-                    ? player.fantasyPoints.toFixed(2)
-                    : "-"}
-                </td>
+                <td>{typeof player.fantasyPoints === "number" ? player.fantasyPoints.toFixed(2) : "-"}</td>
                 <td>{avg.toFixed(2)}</td>
                 <td>{g1}</td>
                 <td>{g2}</td>
