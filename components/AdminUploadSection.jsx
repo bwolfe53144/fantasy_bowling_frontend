@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import {
   createPlayer,
   createWeekScore,
-  fetchRostersByWeek,
+  getRostersForWeek,
   fetchAllLockStatuses,
   updateMultipleRosters,
 } from "../src/utils/api.js";
@@ -119,7 +119,7 @@ const postWeekScoreIfNotExists = async (entry, playerId, weekScores) => {
 };
 
 const updateRostersAfterScoring = async (promotePlayers, targetWeek) => {
-  const rostersResponse = await fetchRostersByWeek(targetWeek);
+  const rostersResponse = await getRostersForWeek(targetWeek);
   const lockStatusesResponse = await fetchAllLockStatuses();
 
   const updatedRosters = await promotePlayers(rostersResponse.data, lockStatusesResponse.data);
