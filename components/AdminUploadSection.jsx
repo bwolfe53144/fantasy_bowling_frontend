@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import {
   createPlayer,
   createWeekScore,
-  fetchAllRosters,
+  fetchRostersByWeek,
   fetchAllLockStatuses,
   updateMultipleRosters,
 } from "../src/utils/api.js";
@@ -118,8 +118,8 @@ const postWeekScoreIfNotExists = async (entry, playerId, weekScores) => {
   console.log(`Inserted score for ${Name} (week ${Week})`, postRes.data);
 };
 
-const updateRostersAfterScoring = async (promotePlayers) => {
-  const rostersResponse = await fetchAllRosters();
+const updateRostersAfterScoring = async (promotePlayers, targetWeek) => {
+  const rostersResponse = await fetchRostersByWeek(targetWeek);
   const lockStatusesResponse = await fetchAllLockStatuses();
 
   const updatedRosters = await promotePlayers(rostersResponse.data, lockStatusesResponse.data);
@@ -152,59 +152,70 @@ const updateRostersAfterScoring = async (promotePlayers) => {
 };
 
 const AdminUploadSection = ({ playerList, weekScores }) => {
-    const [api, setApi] = useState("");
-    const [data, setData] = useState([]);
-    const [showForm, setShowForm] = useState(false);
-  
-    const handleUploadData = async () => {
-      if (!api.trim()) {
-        alert("Please enter an API URL.");
-        return;
-      }
-  
-      alert("submitted");
-  
-      try {
-        const data = await fetchAndParseApiData(api);
-        setData(data);
-  
-        for (const entry of data) {
-          const player = await getOrCreatePlayer(entry, playerList);
-          await postWeekScoreIfNotExists(entry, player.id, weekScores);
+  const [api, setApi] = useState("");
+  const [data, setData] = useState([]);
+  const [showForm, setShowForm] = useState(false);
+
+  const handleUploadData = async () => {
+    if (!api.trim()) {
+      alert("Please enter an API URL.");
+      return;
+    }
+
+    alert("submitted");
+
+    try {
+      const data = await fetchAndParseApiData(api);
+      setData(data);
+
+      // Find the latest week number from the file
+      let latestWeek = 0;
+
+      for (const entry of data) {
+        const player = await getOrCreatePlayer(entry, playerList);
+        await postWeekScoreIfNotExists(entry, player.id, weekScores);
+
+        const parsedWeek = parseInt(entry.Week?.toString().replace(/[^0-9]/g, ""), 10) || 0;
+        if (parsedWeek > latestWeek) {
+          latestWeek = parsedWeek;
         }
-  
-        await updateRostersAfterScoring(promotePlayers);
-      } catch (error) {
-        console.error("Error:", error);
-        alert("Server error.");
       }
-    };
-  
-    return (
-      <div className="admin-section">
-        {showForm ? (
-          <div className="admin-form-card">
-            <h2>Upload Data</h2>
-            <input
-              type="text"
-              value={api}
-              onChange={(e) => setApi(e.target.value)}
-              placeholder="Enter API URL"
-            />
-            <button onClick={handleUploadData} className="admin-button">
-              Upload
-            </button>
-          </div>
-        ) : (
-          <button
-            onClick={() => setShowForm(true)}
-            className="admin-button success"
-          >
-            Put in API URL
-          </button>
-        )}
-      </div>
-    );
+
+      // Only update rosters for the latest week
+      if (latestWeek > 0) {
+        await updateRostersAfterScoring(promotePlayers, latestWeek);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      alert("Server error.");
+    }
   };
-  
-  export default AdminUploadSection;
+
+  return (
+    <div className="admin-section">
+      {showForm ? (
+        <div className="admin-form-card">
+          <h2>Upload Data</h2>
+          <input
+            type="text"
+            value={api}
+            onChange={(e) => setApi(e.target.value)}
+            placeholder="Enter API URL"
+          />
+          <button onClick={handleUploadData} className="admin-button">
+            Upload
+          </button>
+        </div>
+      ) : (
+        <button
+          onClick={() => setShowForm(true)}
+          className="admin-button success"
+        >
+          Put in API URL
+        </button>
+      )}
+    </div>
+  );
+};
+
+export default AdminUploadSection;
