@@ -48,6 +48,8 @@ import { calculateFantasyPoints } from "../utils/FantasyPoints.js";
           "Beavers Latestarters",
           "Cheris Nite Out",
           "Andys Classic",
+          "Sunday AM",
+          "Inner City",
         ];
     
         // Bail out early if triggerLeague is NOT in fantasyLeagues
