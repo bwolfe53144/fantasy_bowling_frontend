@@ -117,11 +117,14 @@ const Players = () => {
     if (searchQuery) {
       data = data.filter(player => player.name.toLowerCase().includes(searchQuery.toLowerCase()));
     }
+    if (lyGamesFilter !== null) {
+      data = data.filter(player => player.lyGames >= lyGamesFilter);
+    }
 
     setFilteredData(data);
     setSortedData(data);
     setCurrentPage(0);
-  }, [searchQuery, gamesFilter, sortPosition, leagueFilter, allPlayers, loading]);
+  }, [searchQuery, gamesFilter, lyGamesFilter, sortPosition, leagueFilter, allPlayers, loading]);
 
   const uniqueLeagues = useMemo(() => {
     // Only show leagues from fantasyLeagues that exist in allPlayers
