@@ -166,7 +166,8 @@ const Rules = () => {
         </p>
         <p>
           If multiple teams place a claim on the same player, one will be chosen at random to receive them. You can track your
-          pending and completed claims anytime from your Profile page.
+          pending and completed claims anytime by clicking the button below available players. You can also see your claims by 
+          clicking the link on your profile page.
         </p>
 
         <h2>Lineups & Roster Management</h2>
