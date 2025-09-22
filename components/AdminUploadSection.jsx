@@ -2,11 +2,7 @@ import React, { useState } from "react";
 import {
   createPlayer,
   createWeekScore,
-  getRostersForWeek,
-  fetchAllLockStatuses,
-  updateMultipleRosters,
 } from "../src/utils/api.js";
-import { promotePlayers } from "../src/utils/PromotePlayers.js";
 
 const normalizeName = (name) => {
   if (!name) return "";
@@ -118,39 +114,6 @@ const postWeekScoreIfNotExists = async (entry, playerId, weekScores) => {
   console.log(`Inserted score for ${Name} (week ${Week})`, postRes.data);
 };
 
-const updateRostersAfterScoring = async (promotePlayers, targetWeek) => {
-  const rostersResponse = await getRostersForWeek(targetWeek);
-  const lockStatusesResponse = await fetchAllLockStatuses();
-
-  const updatedRosters = await promotePlayers(rostersResponse.data, lockStatusesResponse.data);
-
-  const groupedByTeamWeek = updatedRosters.reduce((acc, entry) => {
-    const key = `${entry.teamId}-${entry.week}`;
-    if (!acc[key]) {
-      acc[key] = {
-        teamId: entry.teamId,
-        week: entry.week,
-        players: [],
-      };
-    }
-    acc[key].players.push({
-      playerId: entry.player?.id ?? null,
-      name: entry.player?.name ?? "",
-      position: entry.position ?? "",
-    });
-    return acc;
-  }, {});
-
-  const changeRosterData = Object.values(groupedByTeamWeek);
-  const changeRosterResponse = await updateMultipleRosters(changeRosterData);
-
-  if (changeRosterResponse.status === 200) {
-    alert("Roster updated successfully");
-  } else {
-    alert("Error updating roster.");
-  }
-};
-
 const AdminUploadSection = ({ playerList, weekScores }) => {
   const [api, setApi] = useState("");
   const [data, setData] = useState([]);
@@ -168,23 +131,12 @@ const AdminUploadSection = ({ playerList, weekScores }) => {
       const data = await fetchAndParseApiData(api);
       setData(data);
 
-      // Find the latest week number from the file
-      let latestWeek = 0;
-
       for (const entry of data) {
         const player = await getOrCreatePlayer(entry, playerList);
         await postWeekScoreIfNotExists(entry, player.id, weekScores);
-
-        const parsedWeek = parseInt(entry.Week?.toString().replace(/[^0-9]/g, ""), 10) || 0;
-        if (parsedWeek > latestWeek) {
-          latestWeek = parsedWeek;
-        }
       }
 
-      // Only update rosters for the latest week
-      if (latestWeek > 0) {
-        await updateRostersAfterScoring(promotePlayers, latestWeek);
-      }
+      alert("Week scores uploaded successfully. Roster promotion will occur after week completion.");
     } catch (error) {
       console.error("Error:", error);
       alert("Server error.");

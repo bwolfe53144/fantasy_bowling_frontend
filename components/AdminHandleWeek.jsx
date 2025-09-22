@@ -3,7 +3,11 @@ import {
   completeWeekLock,
   completeSurvivorWeek,
   getIncompleteWeekLocks,
+  getCompletedLeagues,
+  getRostersWithScoresForWeek,
+  updateMultipleRosters,
 } from "../src/utils/api.js";
+import { promotePlayers } from "../src/utils/PromotePlayers.js";
 import { useTeamRecords } from "../src/utils/useTeamRecords.js";
 import Modal from "./Modal";
 import { useModal } from "../hooks/useModal";
@@ -12,7 +16,6 @@ const AdminHandleWeek = () => {
   const [incompleteWeeks, setIncompleteWeeks] = useState([]);
   const [selectedWeek, setSelectedWeek] = useState(null);
   const { updateTeamRecordsAfterUpload } = useTeamRecords();
-
   const [modalProps, showModal] = useModal();
 
   useEffect(() => {
@@ -35,8 +38,10 @@ const AdminHandleWeek = () => {
 
   const handleCompleteWeek = async () => {
     if (!selectedWeek) return;
+    console.log("Selected Week:", selectedWeek);
 
     try {
+      // 1️⃣ Complete the selected league/week
       await completeWeekLock({
         league: selectedWeek.league,
         week: selectedWeek.week,
@@ -48,31 +53,62 @@ const AdminHandleWeek = () => {
         week: selectedWeek.week,
       });
 
-      await showModal({
+      // 2️⃣ Fetch all completed leagues for this week
+      const { data: alreadyCompleted } = await getCompletedLeagues(selectedWeek.week);
+
+      // ✅ Ensure the one we just finished is included
+      const completedLeagues = Array.from(
+        new Set([...alreadyCompleted, selectedWeek.league])
+      );
+      console.log("Completed leagues for this week (with current):", completedLeagues);
+
+      // 3️⃣ Fetch rosters for this week (includes weekScores)
+      const { data: rosters } = await getRostersWithScoresForWeek(selectedWeek.week);
+      console.log(`Fetched ${rosters.length} roster entries`);
+
+      // 4️⃣ Promote players for all completed leagues
+      const updatedRosters = promotePlayers(rosters, selectedWeek.week, completedLeagues);
+
+      // 5️⃣ Prepare roster payload for API
+      const groupedByTeamWeek = updatedRosters.reduce((acc, entry) => {
+        const key = `${entry.teamId}-${entry.week}`;
+        if (!acc[key]) acc[key] = { teamId: entry.teamId, week: entry.week, players: [] };
+        acc[key].players.push({
+          playerId: entry.player?.id ?? null,
+          name: entry.player?.name ?? "",
+          position: entry.position ?? "",
+        });
+        return acc;
+      }, {});
+
+      const changeRosterData = Object.values(groupedByTeamWeek);
+      await updateMultipleRosters(changeRosterData);
+
+      // 6️⃣ Update team records
+      const allCompleted = await updateTeamRecordsAfterUpload(
+        selectedWeek.week,
+        selectedWeek.league
+      );
+
+      // 7️⃣ Show success modal
+      showModal({
         title: "Success",
         message: `Marked ${selectedWeek.league} Week ${selectedWeek.week} as complete.`,
         confirmText: "OK",
         showCancel: false,
       });
 
-      setIncompleteWeeks((prev) =>
-        prev.filter(
-          (w) => !(w.league === selectedWeek.league && w.week === selectedWeek.week)
-        )
+      // 8️⃣ Clean up
+      setIncompleteWeeks(prev =>
+        prev.filter(w => !(w.league === selectedWeek.league && w.week === selectedWeek.week))
       );
 
-      const allCompleted = await updateTeamRecordsAfterUpload(
-        selectedWeek.week,
-        selectedWeek.league
-      );
-      if (!allCompleted) {
-        return;
-      }
-
+      if (!allCompleted) return;
       setSelectedWeek(null);
+
     } catch (err) {
       console.error("Error completing week:", err);
-      await showModal({
+      showModal({
         title: "Error",
         message: "Failed to complete week.",
         confirmText: "OK",
@@ -96,7 +132,7 @@ const AdminHandleWeek = () => {
         className="admin-input"
       >
         <option value="">Select League / Week</option>
-        {incompleteWeeks.map((w) => (
+        {incompleteWeeks.map(w => (
           <option key={`${w.league}-${w.week}`} value={`${w.league}-${w.week}`}>
             {w.league} - Week {w.week}
           </option>
@@ -109,7 +145,6 @@ const AdminHandleWeek = () => {
       >
         Complete Week
       </button>
-
       {modalProps && <Modal {...modalProps} />}
     </div>
   );
