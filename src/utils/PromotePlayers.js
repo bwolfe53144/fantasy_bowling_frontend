@@ -13,24 +13,16 @@ export const promotePlayers = (rosters, targetWeek, completedLeagues) => {
 
   console.log("promotePlayers called for week", targetWeek, "completedLeagues:", completedLeagueNames);
 
-  // Work with the rosters for the requested week
   const weekRosters = rosters.filter(r => r.week === targetWeek);
 
-  // Add gamesBowled and whether player's league is completed
+  // Add gamesBowled + leagueCompleted
   weekRosters.forEach(r => {
     const ws = r.player?.weekScores?.find(ws => ws.week === r.week);
     r.gamesBowled = [ws?.game1, ws?.game2, ws?.game3].filter(g => typeof g === "number").length;
     r.leagueCompleted = completedLeagueNames.includes(r.player?.league);
   });
 
-  console.log(`\n=== Player / League Completed Snapshot for week ${targetWeek} ===`);
-  weekRosters.forEach(r => {
-    console.log(
-      `${r.player?.name ?? "UNKNOWN"} | League: ${r.player?.league ?? "??"} | leagueCompleted: ${r.leagueCompleted} | Position: ${r.position} | GamesBowled: ${r.gamesBowled}`
-    );
-  });
-
-  // Group by team-week for promotion logic
+  // Group by team-week
   const grouped = {};
   weekRosters.forEach(r => {
     const key = `${r.teamId}-${r.week}`;
@@ -41,79 +33,72 @@ export const promotePlayers = (rosters, targetWeek, completedLeagues) => {
   Object.entries(grouped).forEach(([teamWeek, teamRosters]) => {
     const assignedPlayers = new Set();
 
-    console.log(`\n--- Team ${teamWeek} Roster BEFORE promotions ---`);
+    console.log(`\n--- Team ${teamWeek} BEFORE promotions ---`);
     teamRosters.forEach(r => {
       console.log(`${r.player.name} | ${r.position} | games: ${r.gamesBowled}`);
     });
 
-    // Step 1: Promote any starters that need replacement (gamesBowled === 0 && leagueCompleted === true)
+    // Step 1: Fill starters if missing or invalid
     starterPositions.forEach(pos => {
       const starter = teamRosters.find(r => r.position === pos);
-      if (!starter || (starter.gamesBowled === 0 && starter.leagueCompleted === true)) {
-    
-        // FIX: select candidates in flex/flex bench order
+
+      if (!starter || (starter.gamesBowled === 0 && starter.leagueCompleted)) {
         const candidates = flexBenchPositions
           .map(fb => teamRosters.find(r =>
             r.position === fb &&
             !assignedPlayers.has(r.player.name) &&
-            (r.leagueCompleted === false || (r.leagueCompleted === true && r.gamesBowled === 3)) &&
-            (pos === "Flex" ? true : r.player.position === starter?.player?.position)
+            (r.leagueCompleted === false || (r.leagueCompleted && r.gamesBowled === 3))
           ))
-          .filter(Boolean); // remove nulls
-    
+          .filter(Boolean);
+
+        let candidate = null;
         if (candidates.length > 0) {
-          const candidate = candidates[0]; // first eligible in bench order
-          console.log(`🔁 Replacing ${starter?.player.name || 'empty'} at ${pos} with ${candidate.player.name} from ${candidate.position}`);
-          if (starter) starter.position = "";
+          if (pos === "Flex" || !starter) {
+            candidate = candidates[0]; // any valid player
+          } else {
+            // Try to match position, fallback to first
+            candidate =
+              candidates.find(c => c.player.position === starter.player?.position) ||
+              candidates[0];
+          }
+        }
+
+        if (candidate) {
+          console.log(`🔁 Filling ${pos} with ${candidate.player.name} (from ${candidate.position})`);
+          if (starter) starter.position = ""; // free old starter
           candidate.position = pos;
           assignedPlayers.add(candidate.player.name);
         } else {
-          console.log(`⚠️ No suitable replacement for position ${pos} on teamWeek ${teamWeek}`);
+          console.log(`⚠️ No suitable replacement for ${pos}`);
         }
       }
     });
 
-    // Step 2: Re-bench displaced non-zero game players
-    const usedPositions = new Set(teamRosters.map(r => r.position));
-    let flexBenchCounter = 1;
+    // Step 2: Re-bench displaced players
     teamRosters.forEach(r => {
-      if (!r.position && (r.gamesBowled > 0 || r.leagueCompleted === false)) {
-        let newBench;
-        do {
-          newBench = `Flex Bench ${flexBenchCounter++}`;
-        } while (usedPositions.has(newBench) && flexBenchCounter <= 9);
-
-        if (flexBenchCounter <= 10) {
-          r.position = newBench;
-          usedPositions.add(newBench);
-          console.log(`📥 Re-benching ${r.player.name} → ${newBench}`);
-        } else {
-          console.warn(`⚠️ Too many players, no bench spot for ${r.player.name}`);
-        }
+      if (!r.position && (r.gamesBowled > 0 || !r.leagueCompleted)) {
+        r.position = "TO_BE_BENCHED"; // placeholder for now
       }
     });
 
-    // Step 3: Push zero-game & completed players to bottom benches
-    let nextBench = 9;
+    // Step 3: Push missed players to bench bottom
     teamRosters.forEach(r => {
-      if (r.gamesBowled === 0 && r.leagueCompleted === true) {
-        while (nextBench > 0) {
-          const benchName = `Flex Bench ${nextBench}`;
-          const occupied = teamRosters.find(p => p.position === benchName);
-          if (!occupied) {
-            r.position = benchName;
-            console.log(`📉 Player missed all games → ${r.player.name} moved to ${benchName}`);
-            nextBench--;
-            break;
-          }
-          nextBench--;
-        }
-        if (!r.position) console.warn(`⚠️ No available bottom bench for ${r.player.name}`);
+      if (r.gamesBowled === 0 && r.leagueCompleted) {
+        r.position = "TO_BE_BENCHED"; // also bench them
       }
+    });
+
+    // Step 4: Normalize benches sequentially (no gaps/dupes)
+    const benchPlayers = teamRosters
+      .filter(r => r.position.startsWith("Flex Bench") || r.position === "TO_BE_BENCHED")
+      .sort((a, b) => (a.player.name > b.player.name ? 1 : -1)); // deterministic order
+
+    benchPlayers.forEach((r, idx) => {
+      r.position = `Flex Bench ${idx + 1}`;
     });
   });
 
-  // Debug table at the end
+  // Debug table
   const sorted = [...weekRosters].sort((a, b) => a.week - b.week);
   console.table(
     sorted.map(r => {
