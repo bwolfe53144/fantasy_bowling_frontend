@@ -1,17 +1,13 @@
 export const promotePlayers = (rosters, targetWeek, completedLeagues) => {
-  const numberedPositions = ["1", "2", "3", "4", "5"];
-  const starterPositions = [...numberedPositions, "Flex"];
+  const starterPositions = ["1", "2", "3", "4", "5", "Flex"];
   const flexBenchPositions = [
     "Flex Bench 1","Flex Bench 2","Flex Bench 3","Flex Bench 4",
     "Flex Bench 5","Flex Bench 6","Flex Bench 7","Flex Bench 8","Flex Bench 9"
   ];
 
-  // Normalize completedLeagues into an array of league names (strings)
   const completedLeagueNames = (completedLeagues || []).map(c =>
     typeof c === "string" ? c : (c.league || c.name || String(c))
   );
-
-  console.log("promotePlayers called for week", targetWeek, "completedLeagues:", completedLeagueNames);
 
   const weekRosters = rosters.filter(r => r.week === targetWeek);
 
@@ -22,7 +18,7 @@ export const promotePlayers = (rosters, targetWeek, completedLeagues) => {
     r.leagueCompleted = completedLeagueNames.includes(r.player?.league);
   });
 
-  // Group by team-week
+  // Group by team
   const grouped = {};
   weekRosters.forEach(r => {
     const key = `${r.teamId}-${r.week}`;
@@ -30,91 +26,126 @@ export const promotePlayers = (rosters, targetWeek, completedLeagues) => {
     grouped[key].push(r);
   });
 
-  Object.entries(grouped).forEach(([teamWeek, teamRosters]) => {
-    const assignedPlayers = new Set();
+  Object.values(grouped).forEach(teamRosters => {
 
-    console.log(`\n--- Team ${teamWeek} BEFORE promotions ---`);
-    teamRosters.forEach(r => {
-      console.log(`${r.player.name} | ${r.position} | games: ${r.gamesBowled}`);
-    });
-
-    // Step 1: Fill starters if missing or invalid
+    // Step 1: Fill missing starter positions
     starterPositions.forEach(pos => {
       const starter = teamRosters.find(r => r.position === pos);
-
       if (!starter || (starter.gamesBowled === 0 && starter.leagueCompleted)) {
-        const candidates = flexBenchPositions
-          .map(fb => teamRosters.find(r =>
-            r.position === fb &&
-            !assignedPlayers.has(r.player.name) &&
-            (r.leagueCompleted === false || (r.leagueCompleted && r.gamesBowled === 3))
-          ))
-          .filter(Boolean);
 
         let candidate = null;
-        if (candidates.length > 0) {
-          if (pos === "Flex" || !starter) {
-            candidate = candidates[0]; // any valid player
-          } else {
-            // Try to match position, fallback to first
-            candidate =
-              candidates.find(c => c.player.position === starter.player?.position) ||
-              candidates[0];
+        let candidateIndex = null;
+
+        if (pos === "Flex") {
+          // For Flex starter, pick top eligible Flex Bench
+          for (let i = 0; i < flexBenchPositions.length; i++) {
+            const fb = flexBenchPositions[i];
+            const p = teamRosters.find(r =>
+              r.position === fb &&
+              (r.leagueCompleted === false || (r.leagueCompleted && r.gamesBowled === 3))
+            );
+            if (p) {
+              candidate = p;
+              candidateIndex = fb;
+              break;
+            }
+          }
+        } else {
+          // For 1–5, find player with matching natural position
+          // First check Flex slot
+          const flexPlayer = teamRosters.find(r =>
+            r.position === "Flex" &&
+            r.player.position === pos &&
+            (r.leagueCompleted === false || (r.leagueCompleted && r.gamesBowled === 3))
+          );
+          if (flexPlayer) {
+            candidate = flexPlayer;
+            candidateIndex = "Flex";
+          }
+
+          // Then check Flex Bench
+          if (!candidate) {
+            for (let i = 0; i < flexBenchPositions.length; i++) {
+              const fb = flexBenchPositions[i];
+              const p = teamRosters.find(r =>
+                r.position === fb &&
+                r.player.position === pos &&
+                (r.leagueCompleted === false || (r.leagueCompleted && r.gamesBowled === 3))
+              );
+              if (p) {
+                candidate = p;
+                candidateIndex = fb;
+                break;
+              }
+            }
           }
         }
 
         if (candidate) {
-          console.log(`🔁 Filling ${pos} with ${candidate.player.name} (from ${candidate.position})`);
-          if (starter) starter.position = ""; // free old starter
+          const oldPosition = candidate.position;
+          if (starter) starter.position = ""; // free starter
           candidate.position = pos;
-          assignedPlayers.add(candidate.player.name);
-        } else {
-          console.log(`⚠️ No suitable replacement for ${pos}`);
+          console.log(`🔁 ${candidate.player.name} promoted from ${oldPosition} → ${pos}`);
+
+          // Step 2: Shift down remaining flex/flex bench players after candidate's original position
+          if (candidateIndex !== null) {
+            const candIndexNum = candidateIndex === "Flex" ? 1 : parseInt(candidateIndex.replace("Flex Bench ", ""), 10);
+            const shiftPlayers = teamRosters
+              .filter(r => r.position && r.position.startsWith("Flex Bench"))
+              .sort((a, b) => parseInt(a.position.replace("Flex Bench ", "")) - parseInt(b.position.replace("Flex Bench ", "")));
+
+            shiftPlayers.forEach(r => {
+              const idx = parseInt(r.position.replace("Flex Bench ", ""), 10);
+              if (candidateIndex === "Flex" && idx >= 1) {
+                // Flex Bench 1 → Flex
+                if (idx === 1) {
+                  console.log(`🔀 ${r.player.name} moved from ${r.position} → Flex`);
+                  r.position = "Flex";
+                } else {
+                  const newPos = `Flex Bench ${idx - 1}`;
+                  console.log(`🔀 ${r.player.name} moved from ${r.position} → ${newPos}`);
+                  r.position = newPos;
+                }
+              } else if (candidateIndex !== "Flex" && idx > candIndexNum) {
+                const newPos = `Flex Bench ${idx - 1}`;
+                console.log(`🔀 ${r.player.name} moved from ${r.position} → ${newPos}`);
+                r.position = newPos;
+              }
+            });
+          }
         }
       }
     });
 
-    // Step 2: Re-bench displaced players
+    // Step 3: Re-bench displaced or missed players
     teamRosters.forEach(r => {
-      if (!r.position && (r.gamesBowled > 0 || !r.leagueCompleted)) {
-        r.position = "TO_BE_BENCHED"; // placeholder for now
+      if (!r.position || r.position === "") {
+        r.position = "TO_BE_BENCHED";
+        console.log(`📥 ${r.player.name} → TO_BE_BENCHED`);
       }
-    });
-
-    // Step 3: Push missed players to bench bottom
-    teamRosters.forEach(r => {
       if (r.gamesBowled === 0 && r.leagueCompleted) {
-        r.position = "TO_BE_BENCHED"; // also bench them
+        r.position = "TO_BE_BENCHED";
+        console.log(`📉 ${r.player.name} missed all games → TO_BE_BENCHED`);
       }
     });
 
-    // Step 4: Normalize benches sequentially (no gaps/dupes)
+    // Step 4: Normalize bench sequentially (only inactive/TO_BE_BENCHED)
     const benchPlayers = teamRosters
-      .filter(r => r.position.startsWith("Flex Bench") || r.position === "TO_BE_BENCHED")
-      .sort((a, b) => (a.player.name > b.player.name ? 1 : -1)); // deterministic order
+      .filter(r => r.position === "TO_BE_BENCHED" || r.position.startsWith("Flex Bench"))
+      .sort((a, b) => {
+        const aIdx = a.position === "TO_BE_BENCHED" ? Infinity : parseInt(a.position.replace("Flex Bench ", ""));
+        const bIdx = b.position === "TO_BE_BENCHED" ? Infinity : parseInt(b.position.replace("Flex Bench ", ""));
+        return aIdx - bIdx;
+      });
 
     benchPlayers.forEach((r, idx) => {
+      const oldPos = r.position;
       r.position = `Flex Bench ${idx + 1}`;
+      if (oldPos !== r.position) {
+        console.log(`🔢 ${r.player.name} renumbered ${oldPos} → ${r.position}`);
+      }
     });
   });
-
-  // Debug table
-  const sorted = [...weekRosters].sort((a, b) => a.week - b.week);
-  console.table(
-    sorted.map(r => {
-      const ws = r.player.weekScores?.find(ws => ws.week === r.week);
-      return {
-        week: r.week,
-        teamId: r.teamId,
-        name: r.player.name,
-        league: r.player.league,
-        position: r.position,
-        average: ws?.average ?? "N/A",
-        gamesBowled: r.gamesBowled,
-        leagueCompleted: r.leagueCompleted
-      };
-    })
-  );
 
   return rosters;
 };
