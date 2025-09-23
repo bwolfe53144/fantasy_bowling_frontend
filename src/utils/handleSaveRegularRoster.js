@@ -29,12 +29,23 @@ export const handleSaveRegularRoster = async ({
   const availableFlexBench = flexBenchPool.filter((pos) => !usedPositions.has(pos));
   const unassignedPlayers = players.filter((p) => !p.setPosition);
   const shuffled = [...unassignedPlayers].sort(() => 0.5 - Math.random());
-
+  
   let flexBenchIndex = 0;
   const updatedUnassigned = shuffled.map((p) => {
-    if (flexBenchIndex < availableFlexBench.length) {
-      return { ...p, setPosition: availableFlexBench[flexBenchIndex++] };
+    // Skip already used bench slots
+    while (
+      flexBenchIndex < availableFlexBench.length &&
+      usedPositions.has(availableFlexBench[flexBenchIndex])
+    ) {
+      flexBenchIndex++;
     }
+  
+    if (flexBenchIndex < availableFlexBench.length) {
+      const assigned = availableFlexBench[flexBenchIndex++];
+      usedPositions.add(assigned); // ✅ mark it used
+      return { ...p, setPosition: assigned };
+    }
+  
     return p;
   });
 
