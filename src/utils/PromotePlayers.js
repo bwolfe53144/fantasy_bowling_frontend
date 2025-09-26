@@ -81,17 +81,6 @@ export const promotePlayers = (rosters, targetWeek, completedLeagues) => {
           }
         }
 
-        // Fallback: if no eligible candidate, pick anyone from Flex/Flex Bench
-        if (!candidate) {
-          const fallback = teamRosters.find(r =>
-            r.position === "Flex" || flexBenchPositions.includes(r.position)
-          );
-          if (fallback) {
-            candidate = fallback;
-            candidateIndex = fallback.position;
-          }
-        }
-
         if (candidate) {
           const oldPosition = candidate.position;
           if (starter) starter.position = ""; // free starter
@@ -108,6 +97,7 @@ export const promotePlayers = (rosters, targetWeek, completedLeagues) => {
             shiftPlayers.forEach(r => {
               const idx = parseInt(r.position.replace("Flex Bench ", ""), 10);
               if (candidateIndex === "Flex" && idx >= 1) {
+                // Flex Bench 1 → Flex
                 if (idx === 1) {
                   console.log(`🔀 ${r.player.name} moved from ${r.position} → Flex`);
                   r.position = "Flex";
@@ -141,19 +131,19 @@ export const promotePlayers = (rosters, targetWeek, completedLeagues) => {
 
     // Step 4: Normalize bench sequentially (only inactive/TO_BE_BENCHED)
     const benchPlayers = teamRosters
-    .filter(r => r.position === "TO_BE_BENCHED" || r.position.startsWith("Flex Bench"))
-    .sort((a, b) => {
-      const aIdx = a.position.startsWith("Flex Bench") ? parseInt(a.position.replace("Flex Bench ", "")) : Infinity;
-      const bIdx = b.position.startsWith("Flex Bench") ? parseInt(b.position.replace("Flex Bench ", "")) : Infinity;
-      return aIdx - bIdx;
-    });
+      .filter(r => r.position === "TO_BE_BENCHED" || r.position.startsWith("Flex Bench"))
+      .sort((a, b) => {
+        const aIdx = a.position === "TO_BE_BENCHED" ? Infinity : parseInt(a.position.replace("Flex Bench ", ""));
+        const bIdx = b.position === "TO_BE_BENCHED" ? Infinity : parseInt(b.position.replace("Flex Bench ", ""));
+        return aIdx - bIdx;
+      });
 
     benchPlayers.forEach((r, idx) => {
-    const oldPos = r.position;
-    r.position = `Flex Bench ${idx + 1}`;
-    if (oldPos !== r.position) {
-      console.log(`🔢 ${r.player.name} renumbered ${oldPos} → ${r.position}`);
-    }
+      const oldPos = r.position;
+      r.position = `Flex Bench ${idx + 1}`;
+      if (oldPos !== r.position) {
+        console.log(`🔢 ${r.player.name} renumbered ${oldPos} → ${r.position}`);
+      }
     });
   });
 
