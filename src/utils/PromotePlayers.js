@@ -27,7 +27,6 @@ export const promotePlayers = (rosters, targetWeek, completedLeagues) => {
   });
 
   Object.entries(grouped).forEach(([teamKey, teamRosters]) => {
-    // Separate eligible vs ineligible
     let eligible = teamRosters.filter(r => !r.leagueCompleted || r.gamesBowled >= 3);
     let ineligible = teamRosters.filter(r => r.leagueCompleted && r.gamesBowled < 3);
 
@@ -39,51 +38,49 @@ export const promotePlayers = (rosters, targetWeek, completedLeagues) => {
     eligible = sortByBench(eligible);
     ineligible = sortByBench(ineligible);
 
-    const changes = [];
-
     rankPositions.forEach(pos => {
-      // check if an eligible player is already in this position
-      let current = teamRosters.find(r => r.position === pos && eligible.includes(r));
-      if (current) return; // do not move anyone
-
       let player;
+      let oldPosition;
 
       if (["1","2","3","4","5"].includes(pos)) {
-        // Starters: pick eligible Flex first, then any eligible matching player.position
-        const idxFlex = eligible.findIndex(r => r.position === "Flex" && r.player.position === pos);
-        if (idxFlex !== -1) player = eligible.splice(idxFlex,1)[0];
-        else {
-          const idxEligible = eligible.findIndex(r => r.player.position === pos);
-          if (idxEligible !== -1) player = eligible.splice(idxEligible,1)[0];
-          else {
-            const idxFlexIneligible = ineligible.findIndex(r => r.position === "Flex" && r.player.position === pos);
-            if (idxFlexIneligible !== -1) player = ineligible.splice(idxFlexIneligible,1)[0];
+        // check if current starter in that position is eligible
+        const currentStarter = eligible.find(r => r.player.position === pos && rankPositions.slice(0,5).includes(r.position));
+        
+        if (currentStarter) {
+            // already eligible in starter slot — keep them
+            player = currentStarter;
+            // remove from eligible so we don't pick them again later
+            eligible = eligible.filter(r => r !== player);
+        } else {
+            // starter empty or ineligible — pick Flex first, then eligible, then ineligible
+            const idxFlex = eligible.findIndex(r => r.position === "Flex" && r.player.position === pos);
+            if (idxFlex !== -1) { player = eligible.splice(idxFlex,1)[0]; }
             else {
-              const idxIneligible = ineligible.findIndex(r => r.player.position === pos);
-              if (idxIneligible !== -1) player = ineligible.splice(idxIneligible,1)[0];
+                const idxEligible = eligible.findIndex(r => r.player.position === pos);
+                if (idxEligible !== -1) { player = eligible.splice(idxEligible,1)[0]; }
+                else {
+                    const idxFlexIneligible = ineligible.findIndex(r => r.position === "Flex" && r.player.position === pos);
+                    if (idxFlexIneligible !== -1) { player = ineligible.splice(idxFlexIneligible,1)[0]; }
+                    else {
+                        const idxIneligible = ineligible.findIndex(r => r.player.position === pos);
+                        if (idxIneligible !== -1) { player = ineligible.splice(idxIneligible,1)[0]; }
+                    }
+                }
             }
-          }
         }
-      } else {
-        // Flex / Bench: pick next eligible, fallback to ineligible
+    } else {
+        // Flex / Bench positions
         player = eligible.shift() || ineligible.shift();
-      }
+    }
 
       if (player) {
-        const oldPos = player.position;
+        oldPosition = player.position;
         player.position = pos;
-        if (oldPos !== pos) {
-          changes.push({ name: player.player.name, from: oldPos, to: pos });
+        if (oldPosition !== pos) {
+          console.log(`Team ${teamKey}: ${player.player.name} moved from ${oldPosition} → ${pos}`);
         }
       }
     });
-
-    // log only players that changed positions
-    if (changes.length) {
-      changes.forEach(c =>
-        console.log(`Team ${teamKey}: ${c.name} moved from ${c.from} → ${c.to}`)
-      );
-    }
   });
 
   return rosters;
