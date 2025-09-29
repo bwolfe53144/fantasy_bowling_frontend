@@ -40,42 +40,43 @@ export const promotePlayers = (rosters, targetWeek, completedLeagues) => {
           // For Flex starter, pick top eligible Flex Bench
           for (let i = 0; i < flexBenchPositions.length; i++) {
             const fb = flexBenchPositions[i];
-            const p = teamRosters.find(r =>
-              r.position === fb &&
-              (r.leagueCompleted === false || (r.leagueCompleted && r.gamesBowled === 3))
-            );
+            const p = teamRosters.find(r => r.position === fb);
             if (p) {
-              candidate = p;
-              candidateIndex = fb;
-              break;
+              const eligible = (p.leagueCompleted === false || (p.leagueCompleted && p.gamesBowled === 3));
+              console.log(`🔍 [Flex check] ${p.player.name} at ${fb} | gamesBowled=${p.gamesBowled} | leagueCompleted=${p.leagueCompleted} | eligible=${eligible}`);
+              if (eligible) {
+                candidate = p;
+                candidateIndex = fb;
+                break;
+              }
             }
           }
         } else {
           // For 1–5, find player with matching natural position
           // First check Flex slot
-          const flexPlayer = teamRosters.find(r =>
-            r.position === "Flex" &&
-            r.player.position === pos &&
-            (r.leagueCompleted === false || (r.leagueCompleted && r.gamesBowled === 3))
-          );
+          const flexPlayer = teamRosters.find(r => r.position === "Flex");
           if (flexPlayer) {
-            candidate = flexPlayer;
-            candidateIndex = "Flex";
+            const eligible = (flexPlayer.player.position === pos && (flexPlayer.leagueCompleted === false || (flexPlayer.leagueCompleted && flexPlayer.gamesBowled === 3)));
+            console.log(`🔍 [Starter ${pos}] Flex candidate ${flexPlayer.player.name} | naturalPos=${flexPlayer.player.position} | gamesBowled=${flexPlayer.gamesBowled} | leagueCompleted=${flexPlayer.leagueCompleted} | eligible=${eligible}`);
+            if (eligible) {
+              candidate = flexPlayer;
+              candidateIndex = "Flex";
+            }
           }
 
           // Then check Flex Bench
           if (!candidate) {
             for (let i = 0; i < flexBenchPositions.length; i++) {
               const fb = flexBenchPositions[i];
-              const p = teamRosters.find(r =>
-                r.position === fb &&
-                r.player.position === pos &&
-                (r.leagueCompleted === false || (r.leagueCompleted && r.gamesBowled === 3))
-              );
+              const p = teamRosters.find(r => r.position === fb);
               if (p) {
-                candidate = p;
-                candidateIndex = fb;
-                break;
+                const eligible = (p.player.position === pos && (p.leagueCompleted === false || (p.leagueCompleted && p.gamesBowled === 3)));
+                console.log(`🔍 [Starter ${pos}] Bench candidate ${p.player.name} at ${fb} | naturalPos=${p.player.position} | gamesBowled=${p.gamesBowled} | leagueCompleted=${p.leagueCompleted} | eligible=${eligible}`);
+                if (eligible) {
+                  candidate = p;
+                  candidateIndex = fb;
+                  break;
+                }
               }
             }
           }
@@ -97,7 +98,6 @@ export const promotePlayers = (rosters, targetWeek, completedLeagues) => {
             shiftPlayers.forEach(r => {
               const idx = parseInt(r.position.replace("Flex Bench ", ""), 10);
               if (candidateIndex === "Flex" && idx >= 1) {
-                // Flex Bench 1 → Flex
                 if (idx === 1) {
                   console.log(`🔀 ${r.player.name} moved from ${r.position} → Flex`);
                   r.position = "Flex";
@@ -148,18 +148,14 @@ export const promotePlayers = (rosters, targetWeek, completedLeagues) => {
       .forEach(r => {
         const oldPos = r.position;
         r.position = `Flex Bench ${benchNum++}`;
-        if (oldPos !== r.position) {
-          console.log(`🔢 ${r.player.name} renumbered ${oldPos} → ${r.position}`);
-        }
+        if (oldPos !== r.position) console.log(`🔢 ${r.player.name} renumbered ${oldPos} → ${r.position}`);
       });
 
     // Missed-all at the end
     missedBench.forEach(r => {
       const oldPos = r.position;
       r.position = `Flex Bench ${benchNum++}`;
-      if (oldPos !== r.position) {
-        console.log(`🔢 ${r.player.name} renumbered ${oldPos} → ${r.position}`);
-      }
+      if (oldPos !== r.position) console.log(`🔢 ${r.player.name} renumbered ${oldPos} → ${r.position}`);
     });
   });
 
