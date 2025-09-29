@@ -38,40 +38,43 @@ export const promotePlayers = (rosters, targetWeek, completedLeagues) => {
     eligible = sortByBench(eligible);
     ineligible = sortByBench(ineligible);
 
+    // record current starters so we know who is already assigned
+    const currentStarters = {};
+    rankPositions.slice(0,5).forEach(pos => {
+      const starter = teamRosters.find(r => r.position === pos);
+      if (starter && eligible.includes(starter)) currentStarters[pos] = starter;
+    });
+
     rankPositions.forEach(pos => {
       let player;
       let oldPosition;
 
       if (["1","2","3","4","5"].includes(pos)) {
-        // check if current starter in that position is eligible
-        const currentStarter = eligible.find(r => r.player.position === pos && rankPositions.slice(0,5).includes(r.position));
-        
-        if (currentStarter) {
-            // already eligible in starter slot — keep them
-            player = currentStarter;
-            // remove from eligible so we don't pick them again later
-            eligible = eligible.filter(r => r !== player);
+        if (currentStarters[pos]) {
+          // eligible starter already in place
+          player = currentStarters[pos];
+          eligible = eligible.filter(r => r !== player);
         } else {
-            // starter empty or ineligible — pick Flex first, then eligible, then ineligible
-            const idxFlex = eligible.findIndex(r => r.position === "Flex" && r.player.position === pos);
-            if (idxFlex !== -1) { player = eligible.splice(idxFlex,1)[0]; }
+          // pick from Flex first, then eligible, then ineligible
+          const idxFlex = eligible.findIndex(r => r.position === "Flex" && r.player.position === pos);
+          if (idxFlex !== -1) player = eligible.splice(idxFlex,1)[0];
+          else {
+            const idxEligible = eligible.findIndex(r => r.player.position === pos);
+            if (idxEligible !== -1) player = eligible.splice(idxEligible,1)[0];
             else {
-                const idxEligible = eligible.findIndex(r => r.player.position === pos);
-                if (idxEligible !== -1) { player = eligible.splice(idxEligible,1)[0]; }
-                else {
-                    const idxFlexIneligible = ineligible.findIndex(r => r.position === "Flex" && r.player.position === pos);
-                    if (idxFlexIneligible !== -1) { player = ineligible.splice(idxFlexIneligible,1)[0]; }
-                    else {
-                        const idxIneligible = ineligible.findIndex(r => r.player.position === pos);
-                        if (idxIneligible !== -1) { player = ineligible.splice(idxIneligible,1)[0]; }
-                    }
-                }
+              const idxFlexIneligible = ineligible.findIndex(r => r.position === "Flex" && r.player.position === pos);
+              if (idxFlexIneligible !== -1) player = ineligible.splice(idxFlexIneligible,1)[0];
+              else {
+                const idxIneligible = ineligible.findIndex(r => r.player.position === pos);
+                if (idxIneligible !== -1) player = ineligible.splice(idxIneligible,1)[0];
+              }
             }
+          }
         }
-    } else {
-        // Flex / Bench positions
+      } else {
+        // Flex / Bench: pick next eligible, fallback to ineligible
         player = eligible.shift() || ineligible.shift();
-    }
+      }
 
       if (player) {
         oldPosition = player.position;
