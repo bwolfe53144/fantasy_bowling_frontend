@@ -113,6 +113,8 @@ export const promotePlayers = (rosters, targetWeek, completedLeagues) => {
               }
             });
           }
+        } else {
+          console.log(`⚠️ No candidate found for starter position ${pos}`);
         }
       }
     });
@@ -129,18 +131,32 @@ export const promotePlayers = (rosters, targetWeek, completedLeagues) => {
       }
     });
 
-    // Step 4: Normalize bench sequentially (only inactive/TO_BE_BENCHED)
-    const benchPlayers = teamRosters
-      .filter(r => r.position === "TO_BE_BENCHED" || r.position.startsWith("Flex Bench"))
-      .sort((a, b) => {
-        const aIdx = a.position === "TO_BE_BENCHED" ? Infinity : parseInt(a.position.replace("Flex Bench ", ""));
-        const bIdx = b.position === "TO_BE_BENCHED" ? Infinity : parseInt(b.position.replace("Flex Bench ", ""));
-        return aIdx - bIdx;
+    // Step 4: Normalize bench sequentially
+    const benchPlayers = teamRosters.filter(r =>
+      r.position === "TO_BE_BENCHED" || r.position.startsWith("Flex Bench")
+    );
+
+    // Split: normal vs missed-all
+    const normalBench = benchPlayers.filter(r => r.position !== "TO_BE_BENCHED" && r.gamesBowled > 0);
+    const missedBench = benchPlayers.filter(r => r.gamesBowled === 0);
+
+    let benchNum = 1;
+
+    // Already-benched first
+    normalBench
+      .sort((a, b) => parseInt(a.position.replace("Flex Bench ", "")) - parseInt(b.position.replace("Flex Bench ", "")))
+      .forEach(r => {
+        const oldPos = r.position;
+        r.position = `Flex Bench ${benchNum++}`;
+        if (oldPos !== r.position) {
+          console.log(`🔢 ${r.player.name} renumbered ${oldPos} → ${r.position}`);
+        }
       });
 
-    benchPlayers.forEach((r, idx) => {
+    // Missed-all at the end
+    missedBench.forEach(r => {
       const oldPos = r.position;
-      r.position = `Flex Bench ${idx + 1}`;
+      r.position = `Flex Bench ${benchNum++}`;
       if (oldPos !== r.position) {
         console.log(`🔢 ${r.player.name} renumbered ${oldPos} → ${r.position}`);
       }
