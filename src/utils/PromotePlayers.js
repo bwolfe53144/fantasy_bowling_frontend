@@ -80,6 +80,18 @@ export const promotePlayers = (rosters, targetWeek, completedLeagues) => {
       }
     });
 
+    // Step 2.5: Deduplicate players (keep first entry per playerId)
+const uniqueTeamRosters = [];
+const seenPlayers = new Set();
+
+teamRosters.forEach(r => {
+  const pid = r.player?.id || r.playerId; // whatever unique identifier you use
+  if (!seenPlayers.has(pid)) {
+    seenPlayers.add(pid);
+    uniqueTeamRosters.push(r);
+  }
+});
+
     // Step 3: Normalize bench sequentially
     const benchPlayers = teamRosters
       .filter(r => r.position === "TO_BE_BENCHED" || r.position.startsWith("Flex Bench"))
