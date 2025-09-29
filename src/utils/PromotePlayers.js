@@ -27,11 +27,10 @@ export const promotePlayers = (rosters, targetWeek, completedLeagues) => {
   });
 
   Object.entries(grouped).forEach(([teamKey, teamRosters]) => {
-    // separate eligible and ineligible
+    // Separate eligible vs ineligible
     let eligible = teamRosters.filter(r => !r.leagueCompleted || r.gamesBowled >= 3);
     let ineligible = teamRosters.filter(r => r.leagueCompleted && r.gamesBowled < 3);
 
-    // sort eligible/ineligible by bench order for proper Flex→Bench walk
     const benchOrder = [
       "Flex","Flex Bench 1","Flex Bench 2","Flex Bench 3","Flex Bench 4",
       "Flex Bench 5","Flex Bench 6","Flex Bench 7","Flex Bench 8","Flex Bench 9"
@@ -40,12 +39,17 @@ export const promotePlayers = (rosters, targetWeek, completedLeagues) => {
     eligible = sortByBench(eligible);
     ineligible = sortByBench(ineligible);
 
-    // assign positions top-down
+    const changes = [];
+
     rankPositions.forEach(pos => {
+      // check if an eligible player is already in this position
+      let current = teamRosters.find(r => r.position === pos && eligible.includes(r));
+      if (current) return; // do not move anyone
+
       let player;
 
       if (["1","2","3","4","5"].includes(pos)) {
-        // Starters: pick Flex first matching player.position, then eligible, then ineligible
+        // Starters: pick eligible Flex first, then any eligible matching player.position
         const idxFlex = eligible.findIndex(r => r.position === "Flex" && r.player.position === pos);
         if (idxFlex !== -1) player = eligible.splice(idxFlex,1)[0];
         else {
@@ -66,12 +70,20 @@ export const promotePlayers = (rosters, targetWeek, completedLeagues) => {
       }
 
       if (player) {
-        if (player.position !== pos) {
-          console.log(`Team ${teamKey}: ${player.player.name} moved from ${player.position} → ${pos}`);
-          player.position = pos;
+        const oldPos = player.position;
+        player.position = pos;
+        if (oldPos !== pos) {
+          changes.push({ name: player.player.name, from: oldPos, to: pos });
         }
       }
     });
+
+    // log only players that changed positions
+    if (changes.length) {
+      changes.forEach(c =>
+        console.log(`Team ${teamKey}: ${c.name} moved from ${c.from} → ${c.to}`)
+      );
+    }
   });
 
   return rosters;
