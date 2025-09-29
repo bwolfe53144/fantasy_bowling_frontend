@@ -44,73 +44,67 @@ export const promotePlayers = (rosters, targetWeek, completedLeagues) => {
   });
 
   Object.entries(grouped).forEach(([teamKey, teamRosters]) => {
-    // Promote starters
+    // --- STARTER PROMOTION LOGIC ---
     const starters = teamRosters.filter(r => starterPositions.includes(r.position));
     let availablePlayers = teamRosters.filter(r => !starters.includes(r));
 
-    const missingPositions = starterPositions.filter(pos =>
-      !starters.some(r => r.position === pos)
-    );
+    // Promote positions 1–5
+    ["1", "2", "3", "4", "5"].forEach(pos => {
+      // First, look for eligible Flex players (Flex starting position or Flex-eligible)
+      const flexEligible = availablePlayers.filter(r =>
+        r.player.position === "Flex" &&
+        (!r.leagueCompleted || r.gamesBowled >= 3)
+      );
+      let playerToAssign = flexEligible[0];
 
-    missingPositions.forEach(pos => {
-      let eligible = [];
-
-      // Step 1: For positions 1-5, try Flex players first
-      if (pos !== "Flex") {
-        eligible = availablePlayers.filter(r =>
-          r.position === "Flex" && (!r.leagueCompleted || r.gamesBowled >= 3)
+      if (!playerToAssign) {
+        // No Flex-eligible player, look for eligible players with matching position
+        const matching = availablePlayers.filter(r =>
+          r.player.position === pos &&
+          (!r.leagueCompleted || r.gamesBowled >= 3)
         );
+        playerToAssign = matching[0];
       }
 
-      // Step 2: If no eligible Flex or it's the Flex position, try any eligible player
-      if (eligible.length === 0) {
-        eligible = availablePlayers.filter(r => !r.leagueCompleted || r.gamesBowled >= 3);
-      }
-
-      if (eligible.length > 0) {
-        const playerToAssign = eligible[0]; // preserve order
-        console.log(`➡️ Assigning ${playerToAssign.player.name} to position ${pos} for team ${teamKey}`);
+      if (playerToAssign) {
         playerToAssign.position = pos;
         availablePlayers = availablePlayers.filter(r => r !== playerToAssign);
-      } else {
-        console.log(`❌ No eligible players to fill position ${pos} for team ${teamKey}`);
+        starters.push(playerToAssign);
       }
     });
 
-    console.log(`✅ Final starters for team ${teamKey}:`);
-    teamRosters.filter(r => starterPositions.includes(r.position))
-      .forEach(r => console.log(`Player: ${r.player.name} | Position: ${r.position}`));
+    // Now fill the Flex starter spot
+    if (!starters.some(r => r.position === "Flex")) {
+      const flexCandidate = availablePlayers.find(r =>
+        (!r.leagueCompleted || r.gamesBowled >= 3)
+      );
+      if (flexCandidate) {
+        flexCandidate.position = "Flex";
+        availablePlayers = availablePlayers.filter(r => r !== flexCandidate);
+      }
+    }
 
-    // --- FLEX BENCH REASSIGNMENT LOGIC (UNCHANGED) ---
+    // --- FLEX BENCH REASSIGNMENT LOGIC ---
     const allBenchPlayers = [
       ...teamRosters.filter(r => !starterPositions.includes(r.position)),
       ...(benchedByTeam[teamKey] || [])
     ];
 
-    const sortedBench = allBenchPlayers.sort((a, b) => {
-      const idxA = flexBenchPositions.indexOf(a.position);
-      const idxB = flexBenchPositions.indexOf(b.position);
-      return idxA - idxB;
-    });
-
-    console.log(`📝 Bench order BEFORE reassignment for team ${teamKey}:`);
-    sortedBench.forEach(r =>
-      console.log(
-        `Player: ${r.player.name} | Current Position: ${r.position} | GamesBowled: ${r.gamesBowled} | LeagueCompleted: ${r.leagueCompleted}`
-      )
-    );
-
     const eligibleBench = [];
     const ineligibleBench = [];
-    sortedBench.forEach(r => {
-      if (!r.leagueCompleted || r.gamesBowled >= 3) eligibleBench.push(r);
-      else ineligibleBench.push(r);
+    allBenchPlayers.forEach(r => {
+      if (!r.leagueCompleted || r.gamesBowled >= 3) {
+        eligibleBench.push(r);
+      } else {
+        ineligibleBench.push(r);
+      }
     });
 
     const reorderedBench = [...eligibleBench, ...ineligibleBench];
-
     reorderedBench.forEach((r, idx) => {
-      if (flexBenchPositions[idx]) r.position = flexBenchPositions[idx];
+      if (flexBenchPositions[idx]) {
+        r.position = flexBenchPositions[idx];
+      }
     });
   });
 
