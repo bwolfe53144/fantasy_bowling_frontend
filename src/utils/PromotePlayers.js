@@ -82,20 +82,28 @@ export const promotePlayers = (rosters, targetWeek, completedLeagues) => {
 
     // Step 3: Normalize bench sequentially
     const benchPlayers = teamRosters
-      .filter(r => r.position === "TO_BE_BENCHED" || r.position.startsWith("Flex Bench"))
-      .sort((a, b) => {
-        const aIdx = a.position.startsWith("Flex Bench") ? parseInt(a.position.replace("Flex Bench ", "")) : Infinity;
-        const bIdx = b.position.startsWith("Flex Bench") ? parseInt(b.position.replace("Flex Bench ", "")) : Infinity;
-        return aIdx - bIdx;
-      });
+  .filter(r => r.position === "TO_BE_BENCHED" || r.position.startsWith("Flex Bench"));
 
-    benchPlayers.forEach((r, idx) => {
-      const oldPos = r.position;
-      r.position = `Flex Bench ${idx + 1}`;
-      if (oldPos !== r.position) {
-        console.log(`🔢 ${r.player.name} renumbered ${oldPos} → ${r.position}`);
-      }
-    });
+// Split normal vs missed
+const normalBench = benchPlayers.filter(r => r.position.startsWith("Flex Bench") && r.gamesBowled > 0);
+const missedBench = benchPlayers.filter(r => r.gamesBowled === 0);
+
+// Renumber normal bench first
+let benchNum = 1;
+normalBench
+  .sort((a, b) => parseInt(a.position.replace("Flex Bench ", "")) - parseInt(b.position.replace("Flex Bench ", "")))
+  .forEach(r => {
+    const oldPos = r.position;
+    r.position = `Flex Bench ${benchNum++}`;
+    if (oldPos !== r.position) console.log(`🔢 ${r.player.name} renumbered ${oldPos} → ${r.position}`);
+  });
+
+// Then renumber missed players at the end
+missedBench.forEach(r => {
+  const oldPos = r.position;
+  r.position = `Flex Bench ${benchNum++}`;
+  if (oldPos !== r.position) console.log(`🔢 ${r.player.name} renumbered ${oldPos} → ${r.position}`);
+});
   });
 
   return rosters;
