@@ -45,16 +45,17 @@ export const promotePlayers = (rosters, targetWeek, completedLeagues) => {
       if (starter && eligible.includes(starter)) currentStarters[pos] = starter;
     });
 
-    // assign positions top-down
     rankPositions.forEach(pos => {
       let player;
       let oldPosition;
 
       if (["1","2","3","4","5"].includes(pos)) {
         if (currentStarters[pos]) {
+          // eligible starter already in place
           player = currentStarters[pos];
           eligible = eligible.filter(r => r !== player);
         } else {
+          // pick from Flex first, then eligible, then ineligible
           const idxFlex = eligible.findIndex(r => r.position === "Flex" && r.player.position === pos);
           if (idxFlex !== -1) player = eligible.splice(idxFlex,1)[0];
           else {
@@ -71,6 +72,7 @@ export const promotePlayers = (rosters, targetWeek, completedLeagues) => {
           }
         }
       } else {
+        // Flex / Bench: pick next eligible, fallback to ineligible
         player = eligible.shift() || ineligible.shift();
       }
 
@@ -79,23 +81,6 @@ export const promotePlayers = (rosters, targetWeek, completedLeagues) => {
         player.position = pos;
         if (oldPosition !== pos) {
           console.log(`Team ${teamKey}: ${player.player.name} moved from ${oldPosition} → ${pos}`);
-        }
-      }
-    });
-
-    // Move remaining ineligible players in 1–5 or Flex to first available Flex Bench slot
-    const benchSlots = rankPositions.slice(6); // Flex Bench 1–9
-    let benchIndex = 0;
-    teamRosters.forEach(r => {
-      if ((r.gamesBowled < 3 || r.leagueCompleted) && ["1","2","3","4","5","Flex"].includes(r.position)) {
-        while (benchIndex < benchSlots.length && teamRosters.some(p => p.position === benchSlots[benchIndex])) {
-          benchIndex++;
-        }
-        if (benchIndex < benchSlots.length) {
-          const oldPos = r.position;
-          r.position = benchSlots[benchIndex];
-          console.log(`Team ${teamKey}: ${r.player.name} moved from ${oldPos} → ${benchSlots[benchIndex]}`);
-          benchIndex++;
         }
       }
     });
