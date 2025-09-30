@@ -46,10 +46,11 @@ import { calculateFantasyPoints } from "../utils/FantasyPoints.js";
         const fantasyLeagues = [
           "Ren Faire",
           "Beavers Latestarters",
-          "Cheris Nite Out",
+          "Cheris Night Out",
           "Andys Classic",
           "Sunday AM",
           "Inner City",
+          "Heyden Classic"
         ];
     
         // Bail out early if triggerLeague is NOT in fantasyLeagues
