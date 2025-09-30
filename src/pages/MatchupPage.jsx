@@ -210,7 +210,7 @@ export default function MatchupPage() {
                         <td>
                           {team1Player ? (
                             <Link to={`/player/${team1Player.player.name}`}>
-                              {team1Player.player.name}
+                              {team1Player.player.name} ({team1Player.player.position})
                             </Link>
                           ) : (
                             "-"
@@ -230,7 +230,7 @@ export default function MatchupPage() {
                         <td>
                           {team2Player ? (
                             <Link to={`/player/${team2Player.player.name}`}>
-                              {team2Player.player.name}
+                              {team2Player.player.name} ({team2Player.player.position})
                             </Link>
                           ) : (
                             "-")}
