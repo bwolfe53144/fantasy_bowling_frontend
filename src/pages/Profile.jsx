@@ -222,7 +222,9 @@ const Profile = () => {
             Customize My Profile
           </Link>
           <Claims myClaims={myClaims} />
-
+          {allClaims.length - myClaims.length > 0 && (
+            <Link to="/all-claims">📍 View All Claimed Players</Link>
+          )}
           {myPlayerStats && myPlayerStats.length > 0 && (
             <div>
               <h2>🎳 My Bowling Stats</h2>
