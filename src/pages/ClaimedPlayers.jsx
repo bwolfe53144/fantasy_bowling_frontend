@@ -79,6 +79,19 @@ const ClaimedPlayers = () => {
     return <LoadingScreen />;
   }
 
+  if (!user) {
+    return (
+      <div className="pageContainer claimed-bg">
+        <Header onToggleMenu={setIsMenuOpen} isMenuOpen={isMenuOpen} />
+        <Navbar />
+        <div className="mainPage my-claimed-players">
+          <p>You must be logged in to view claimed players.</p>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
+
   return (
     <div className="pageContainer claimed-bg">
       <div className="background-overlay"></div>
