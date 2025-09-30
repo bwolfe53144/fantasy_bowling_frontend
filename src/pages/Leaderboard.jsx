@@ -65,11 +65,19 @@ const Leaderboard = () => {
       setEndWeek(startWeek);
     }
   }, [startWeek]);
+  
 
   const allLeagues = useMemo(() => {
     const leagues = players ? Array.from(new Set(players.map((p) => p.league).filter(Boolean))) : [];
     return leagues.sort();
   }, [players]);
+
+  useEffect(() => {
+    if (allLeagues.length > 0 && selectedLeagues.length === 0) {
+      // Select all leagues except "Heyden Classic"
+      setSelectedLeagues(allLeagues.filter((league) => league !== "Heyden Classic"));
+    }
+  }, [allLeagues]);
 
   const toggleLeague = (league) => {
     setSelectedLeagues((prev) =>
