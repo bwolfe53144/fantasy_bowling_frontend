@@ -45,7 +45,6 @@ const SurvivorLeaguePage = () => {
     const fetchCurrentWeek = async () => {
       try {
         const res = await getLeagueCurrentWeek(league);
-        console.log(res.data.currentWeek);
         setCurrentWeek(res.data.currentWeek);
       } catch (err) {
         console.error("Failed to fetch current week:", err);
