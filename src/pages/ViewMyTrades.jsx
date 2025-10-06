@@ -16,7 +16,7 @@ import "../styles/ViewAllTrades.css";
 const ViewMyTrades = () => {
   const { user, loading } = useContext(AuthContext);
   const { isDarkMode } = useContext(ThemeContext);
-
+  const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [trades, setTrades] = useState([]);
   const [loadingTrades, setLoadingTrades] = useState(false);
@@ -132,21 +132,36 @@ const ViewMyTrades = () => {
 
                     {isRecipient && trade.status !== "ACCEPTED" && (
                       <>
-                        <button
-                          className="tradeButton"
-                          style={{ background: buttonBackground, color: buttonColor }}
-                          onClick={() => handleAcceptTrade(trade.id)}
-                        >
-                          Accept
-                        </button>
-                        <button
-                          className="tradeButton gray"
-                          onClick={() => handleDeclineTrade(trade.id)}
-                        >
-                          Decline
-                        </button>
+                        {trade.players.filter(p => p.role === "OFFERED").length > trade.players.filter(p => p.role === "REQUESTED").length ? (
+                          // Trade is uneven, need to drop -> link to viewTrade page
+                          <button
+                            className="tradeButton"
+                            style={{ background: buttonBackground, color: buttonColor }}
+                            onClick={() => navigate(`/view-trade/${trade.id}`)}
+                          >
+                            View Trade
+                          </button>
+                        ) : (
+                          // Even trade -> allow direct accept/decline
+                          <>
+                            <button
+                              className="tradeButton"
+                              style={{ background: buttonBackground, color: buttonColor }}
+                              onClick={() => handleAcceptTrade(trade.id)}
+                            >
+                              Accept
+                            </button>
+                            <button
+                              className="tradeButton gray"
+                              onClick={() => handleDeclineTrade(trade.id)}
+                            >
+                              Decline
+                            </button>
+                          </>
+                        )}
                       </>
                     )}
+
                   </div>
                 </div>
               );

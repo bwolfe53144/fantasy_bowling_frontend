@@ -186,21 +186,32 @@ const ViewAllTrades = () => {
                           Cancel Trade
                         </button>
                       ) : trade.toTeamId === user.team.id && trade.status !== "ACCEPTED" ? (
-                        <>
-                          <button
+                        // Check if user needs to drop someone (more than 1 offered player)
+                        trade.players.filter(p => p.role === "OFFERED").length > 1 ? (
+                          <a
+                            href={`/view-trade/${trade.id}`}
                             className="tradeButton"
                             style={{ background: buttonBackground, color: buttonColor }}
-                            onClick={() => handleAcceptTrade(trade.id)}
                           >
-                            Accept
-                          </button>
-                          <button
-                            className="tradeButton gray"
-                            onClick={() => handleDeclineTrade(trade.id)}
-                          >
-                            Decline
-                          </button>
-                        </>
+                            View Trade
+                          </a>
+                        ) : (
+                          <>
+                            <button
+                              className="tradeButton"
+                              style={{ background: buttonBackground, color: buttonColor }}
+                              onClick={() => handleAcceptTrade(trade.id)}
+                            >
+                              Accept
+                            </button>
+                            <button
+                              className="tradeButton gray"
+                              onClick={() => handleDeclineTrade(trade.id)}
+                            >
+                              Decline
+                            </button>
+                          </>
+                        )
                       ) : null
                     ) : !trade.userVote ? (
                       <>

@@ -65,13 +65,20 @@ const ViewTrade = () => {
   const droppedFromPlayers = trade.drops.filter(d => d.teamId === trade.fromTeamId) || [];
   const droppedToPlayers   = trade.drops.filter(d => d.teamId === trade.toTeamId) || [];
 
-  // Assuming user.team.players contains current roster for drop selection
-  const myTeamPlayers = user?.team?.players || [];
+  // Filter eligible players for dropdown:
+  const eligibleDropPlayers = (user?.team?.players || []).filter(p => {
+    // Exclude players already involved in any trade
+    return !p.tradePlayers || p.tradePlayers.length === 0;
+  });
 
   // Accept trade
   const handleAcceptTrade = async (tradeId) => {
     if (offeredPlayers.length > 1 && !selectedDrop) {
-      alert("Please select a player to drop before accepting the trade.");
+      await showResultModal({
+        title: "Select a Player",
+        message: "Please select a player to drop before accepting the trade.",
+        confirmText: "OK",
+      });
       return;
     }
 
@@ -186,14 +193,16 @@ const ViewTrade = () => {
               <li key={p.id}>{p.player.name}</li>
             ))}
           </ul>
+
           <h3>Players Requested:</h3>
           <ul>
             {requestedPlayers.map(p => (
               <li key={p.id}>{p.player.name}</li>
             ))}
           </ul>
+
           {/* Dropdown for selecting a player to drop */}
-          {offeredPlayers.length > 1 && (
+          {offeredPlayers.length > 1 && eligibleDropPlayers.length > 0 && (
             <div className="dropSelector">
               <label htmlFor="dropPlayer">Select a player to drop:</label>
               <select
@@ -202,7 +211,7 @@ const ViewTrade = () => {
                 onChange={(e) => setSelectedDrop(e.target.value)}
               >
                 <option value="">--Select player--</option>
-                {myTeamPlayers.map(p => (
+                {eligibleDropPlayers.map(p => (
                   <option key={p.id} value={p.id}>{p.name}</option>
                 ))}
               </select>

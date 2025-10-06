@@ -50,7 +50,13 @@ const Trade = () => {
     );
   }, [otherTeamRoster]);
 
-  // Selection helpers
+  // Can select player helper
+  const canSelectPlayer = (p) => {
+    const inTrade = p.tradePlayers?.some(tp => tp.trade.status === "ACCEPTED" || tp.trade.status === "PENDING");
+    const inClaim = p.claims?.some(claim => !claim.resolved) || p.dropClaimants?.some(c => !c.claim.resolved);
+    return !inTrade && !inClaim;
+  };
+
   const toggleSelectPlayer = (pid) => {
     setSelectedPlayers(prev =>
       prev.includes(pid) ? prev.filter(id => id !== pid) : [...prev, pid]
@@ -65,20 +71,12 @@ const Trade = () => {
 
   const handleDropPlayerChange = (e) => setDropPlayer(e.target.value);
 
-  const canSelectPlayer = (p) => {
-    const inTrade = p.tradePlayers?.some(tp => tp.trade.status === "ACCEPTED" || tp.trade.status === "PENDING");
-    const inClaim = p.claims?.some(claim => !claim.resolved) || p.dropClaimants?.some(c => !c.claim.resolved);
-    return !inTrade && !inClaim;
-  };
-
-  const myTeamPlayerIdsInvolved = useMemo(() => {
-    if (!user?.team?.players) return new Set();
-    return new Set(
-      user.team.players
-        .filter(p => !canSelectPlayer(p))
-        .map(p => p.id)
+  // Eligible drop players (exclude selected players and those in trades/claims)
+  const eligibleDropPlayers = useMemo(() => {
+    return roster.filter(
+      (p) => canSelectPlayer(p) && !selectedPlayers.includes(p.id)
     );
-  }, [user?.team?.players]);
+  }, [roster, selectedPlayers]);
 
   // Pre-select the target player
   useEffect(() => {
@@ -87,11 +85,16 @@ const Trade = () => {
 
   const { buttonBackground, buttonColor } = getThemeColors(user?.color, isDarkMode);
 
-  // Trade validation
+  // Trade validation: must be even or off by 1, drop required if off by 1
   const isTradeValid = useMemo(() => {
     if (!selectedPlayers.length || !requestedPlayers.length) return false;
-    if (selectedPlayers.length >= requestedPlayers.length) return true;
-    return dropPlayer !== null;
+
+    const diff = Math.abs(selectedPlayers.length - requestedPlayers.length);
+
+    if (diff > 1) return false; // too uneven
+    if (diff === 1 && !dropPlayer) return false; // drop required
+
+    return true;
   }, [selectedPlayers, requestedPlayers, dropPlayer]);
 
   const handleSubmitTrade = async () => {
@@ -125,7 +128,7 @@ const Trade = () => {
         toTeamId: player.team.id,
         offeredPlayerIds: selectedPlayers,
         requestedPlayerIds: requestedPlayers,
-        dropPlayerIds: dropPlayer ? [dropPlayer] : [], // ✅ FIXED
+        dropPlayerIds: dropPlayer ? [dropPlayer] : [],
       });
 
       await showResultModal({
@@ -213,16 +216,22 @@ const Trade = () => {
         )}
 
         {/* Drop player selector */}
-        {requestedPlayers.length > selectedPlayers.length && (
+        {Math.abs(selectedPlayers.length - requestedPlayers.length) === 1 && (
           <>
             <h3>Select a Player to Drop if Trade Proceeds</h3>
             <select className="tradeInput" value={dropPlayer || ""} onChange={handleDropPlayerChange}>
               <option value="" disabled>Select player to drop</option>
-              {roster.map(p => (
+              {eligibleDropPlayers.map(p => (
                 <option key={p.id} value={p.id}>{p.name} ({p.position})</option>
               ))}
             </select>
           </>
+        )}
+
+        {!isTradeValid && (
+          <p style={{ color: "red" }}>
+            Trade must be even or off by only 1 player. Please adjust your selections.
+          </p>
         )}
 
         <button className="tradeSubmit"
