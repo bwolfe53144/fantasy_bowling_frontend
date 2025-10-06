@@ -55,7 +55,7 @@ export const getWeeks = () => API.get("/weeks");
 export const getWeekScoreForWeek = (week) => API.get(`/weekscoreForWeek/${week}`);
 
 // POST requests
-export const acceptTrade = (id) => API.post(`/api/trades/${id}/accept`);
+export const acceptTrade = async (tradeId, dropPlayerId = null) => { return await API.post(`/api/trades/${tradeId}/accept`, { dropPlayerId });};
 export const addComment = (content, messageId, authorId) => API.post('/add-comment', { content, messageId, authorId });
 export const addPriorYearStanding = (data) => API.post("/api/prior-year-standings", data);
 export const assignPlayerBadge = (data) => API.post("/api/badges", data);
@@ -95,8 +95,7 @@ export const signUp = (data) => API.post("/signup", data);
 export const starMessage = (messageId, userId) => API.post(`/star-message/${messageId}`, { userId });
 export const submitRegularRoster = (payload) => API.post("/roster/regular", payload);
 export const submitSurvivorPicks = (league, teamName, picks) => API.post(`/api/survivor-picks/${league}/${teamName}`, { picks });export const updateColor = (userId, color) => API.patch("/update-color", { userId, color });
-export const submitTradeVote = (tradeId, teamId, approved) =>
-    API.post(`/api/trades/${tradeId}/vote`, { tradeId, teamId, approved, });
+export const submitTradeVote = (tradeId, teamId, approved) => API.post(`/api/trades/${tradeId}/vote`, { tradeId, teamId, approved, });
 export const updateMultipleRosters = (changeRosterData) => API.post(`/multiple-rosters`, { rosters: changeRosterData });
 export const uploadAvatar = (formData, token) => API.post("/upload-avatar", formData, { headers: { "Content-Type": "multipart/form-data", Authorization: `Bearer ${token}` } });
 

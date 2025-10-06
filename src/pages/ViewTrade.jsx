@@ -28,6 +28,9 @@ const ViewTrade = () => {
 
   const { buttonBackground, buttonColor } = getThemeColors(user?.color, isDarkMode);
 
+  // Dropdown state for selecting a player to drop
+  const [selectedDrop, setSelectedDrop] = useState("");
+
   // Toggle menu class
   useEffect(() => {
     document.body.classList.toggle("menuOpen", isMenuOpen);
@@ -62,8 +65,16 @@ const ViewTrade = () => {
   const droppedFromPlayers = trade.drops.filter(d => d.teamId === trade.fromTeamId) || [];
   const droppedToPlayers   = trade.drops.filter(d => d.teamId === trade.toTeamId) || [];
 
+  // Assuming user.team.players contains current roster for drop selection
+  const myTeamPlayers = user?.team?.players || [];
+
   // Accept trade
   const handleAcceptTrade = async (tradeId) => {
+    if (offeredPlayers.length > 1 && !selectedDrop) {
+      alert("Please select a player to drop before accepting the trade.");
+      return;
+    }
+
     const confirmed = await showConfirmModal({
       title: "Confirm Accept",
       message: "Are you sure you want to accept this trade?",
@@ -75,7 +86,7 @@ const ViewTrade = () => {
     if (!confirmed) return;
 
     try {
-      await acceptTrade(tradeId);
+      await acceptTrade(tradeId, selectedDrop); // Pass selectedDrop to API
       await showResultModal({
         title: "Trade Accepted!",
         message: "You have successfully accepted this trade.",
@@ -175,13 +186,28 @@ const ViewTrade = () => {
               <li key={p.id}>{p.player.name}</li>
             ))}
           </ul>
-
           <h3>Players Requested:</h3>
           <ul>
             {requestedPlayers.map(p => (
               <li key={p.id}>{p.player.name}</li>
             ))}
           </ul>
+          {/* Dropdown for selecting a player to drop */}
+          {offeredPlayers.length > 1 && (
+            <div className="dropSelector">
+              <label htmlFor="dropPlayer">Select a player to drop:</label>
+              <select
+                id="dropPlayer"
+                value={selectedDrop}
+                onChange={(e) => setSelectedDrop(e.target.value)}
+              >
+                <option value="">--Select player--</option>
+                {myTeamPlayers.map(p => (
+                  <option key={p.id} value={p.id}>{p.name}</option>
+                ))}
+              </select>
+            </div>
+          )}
 
           {droppedFromPlayers.length > 0 && (
             <>
