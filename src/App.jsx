@@ -36,6 +36,10 @@ import PreviousYearStandings from "./pages/PreviousYearStandings";
 import OwnerDetail from "./pages/OwnerDetail";
 import AllOwners from "./pages/AllOwners";
 import Draft from "./pages/Draft";
+import Trade from "./pages/Trade";
+import ViewTrade from "./pages/ViewTrade";
+import ViewAllTrades from "./pages/ViewAllTrades";
+import ViewMyTrades from "./pages/ViewMyTrades";
 import Other from "./Other";
 import ErrorPage from "./pages/ErrorPage";
 import { unlockAudio } from "./utils/audioManager";
@@ -98,6 +102,10 @@ function App() {
           <Route path="/previous-standings/:year" element={<PreviousYearStandings />} />
           <Route path="/owner/:ownerName" element={<OwnerDetail />} />
           <Route path="/owners" element={<AllOwners />} />
+          <Route path="/propose-trade/:team/:id" element={<Trade />} />
+          <Route path="/view-trade/:id" element={<ViewTrade />} />
+          <Route path="/view-all-trades" element={<ViewAllTrades />} />
+          <Route path="/view-my-trades" element={<ViewMyTrades />} />
           <Route path="/" element={<Home />} />
           <Route path="*" element={<ErrorPage />} />
         </Routes>

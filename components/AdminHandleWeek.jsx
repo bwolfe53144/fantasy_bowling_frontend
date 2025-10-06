@@ -68,7 +68,6 @@ const AdminHandleWeek = () => {
 
       // 4️⃣ Promote players for all completed leagues
       const updatedRosters = promotePlayers(rosters, selectedWeek.week, completedLeagues);
-
       // 5️⃣ Prepare roster payload for API
       const groupedByTeamWeek = updatedRosters.reduce((acc, entry) => {
         const key = `${entry.teamId}-${entry.week}`;

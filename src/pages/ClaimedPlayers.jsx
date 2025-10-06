@@ -120,12 +120,33 @@ const ClaimedPlayers = () => {
               <p>No recent transactions.</p>
             ) : (
               <ul className={isLoading ? "dimmed" : ""}>
-                {transactions.map(tx => (
-                  <li key={tx.id}>
-                    <strong>{tx.teamName}</strong> {tx.action === "add" ? "added" : "dropped"}{" "}
-                    <em>{tx.playerName}</em> — {new Date(tx.timestamp).toLocaleString()}
-                  </li>
-                ))}
+                {transactions.map(tx => {
+                  const isVeto = tx.action.startsWith("Trade vetoed");
+
+                  return (
+                    <li key={tx.id}>
+                      {isVeto ? (
+                        // Only show the veto message
+                        <span>{tx.action}</span>
+                      ) : (
+                        <>
+                          <strong>{tx.teamName}</strong>{" "}
+                          {tx.action === "add"
+                            ? "added"
+                            : tx.action === "drop"
+                            ? "dropped"
+                            : tx.action === "traded for"
+                            ? "traded for"
+                            : tx.action === "traded"
+                            ? "traded"
+                            : tx.action}{" "}
+                          <em>{tx.playerName}</em>
+                        </>
+                      )}{" "}
+                      — {new Date(tx.timestamp).toLocaleString()}
+                    </li>
+                  );
+                })}
               </ul>
             )}
             {isLoading && <div className="loader-overlay">Loading...</div>}

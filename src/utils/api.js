@@ -45,6 +45,8 @@ export const getTeamRanks = (league, teamName) => API.get(`/api/team/${encodeURI
 export const getTeams = () => API.get("/teams");
 export const getTeamsForHome = () => API.get('/teamsForHome');
 export const getTotalLeagues = () => API.get('/totalLeagues');
+export const getTradeById = (id) => API.get(`/api/trades/${id}`);
+export const getTrades = () => API.get("/trades");
 export const getUnassignedPlayers = () => API.get('/unassigned-players');
 export const getUser = (token) => API.get("/user", { headers: { Authorization: `Bearer ${token}` },});  
 export const getUsers = () => API.get('/api/get-users');
@@ -53,10 +55,12 @@ export const getWeeks = () => API.get("/weeks");
 export const getWeekScoreForWeek = (week) => API.get(`/weekscoreForWeek/${week}`);
 
 // POST requests
+export const acceptTrade = (id) => API.post(`/api/trades/${id}/accept`);
 export const addComment = (content, messageId, authorId) => API.post('/add-comment', { content, messageId, authorId });
 export const addPriorYearStanding = (data) => API.post("/api/prior-year-standings", data);
 export const assignPlayerBadge = (data) => API.post("/api/badges", data);
 export const assignPlayerToTeam = (data) => API.post('/api/assign-player-to-team', data);
+export const changeTeamName = (userId, newTeamName) => API.patch("/change-team-name", { userId, newTeamName });
 export const changeUserRole = (data) => API.post('/api/change-role', data);
 export const claimWithDrop = (claimPlayerId, dropPlayerId, userId) => API.post("/api/claims/with-drop", { claimPlayerId, dropPlayerId: dropPlayerId || null, userId });
 export const clearPlayersFromTeams = () => API.post('/clear-players');
@@ -67,15 +71,18 @@ export const createPlayer = (newPlayer) => API.post(`/api/player`, newPlayer);
 export const createSurvivorTeam = (data) => API.post('/api/survivor/signup', data);
 export const createTeam = (userId, teamName) => API.post('/create-team', { userId, teamName });
 export const createWeekScore = (newScore) => API.post(`/api/weekscore`, newScore);
+export const declineTrade = (id) => API.post(`/api/trades/${id}/decline`);
 export const forgotPassword = (data) => API.post("/auth/forgot-password", data);
 export const generatePlayoffs = (data) => API.post('/api/playoffs/generate', data);
 export const generateRoster = (teamId, week) => API.post('/generate-roster', { teamId, week });
 export const generateTheSchedule = (data) => API.post('/generate-schedule', data);
 export const globalStarMessage = (messageId) => API.post(`/api/messages/${messageId}/global-star`);
+export const markTradeViewed = (tradeId) => {return API.post("/trades/mark-viewed", { id: tradeId }); };
 export const pickPlayer = (data) => API.post('/api/draft/pick', data);
 export const postMessage = ({ title, content, authorId }) => API.post(`/messages`, { title, content, authorId });
 export const postRoster = (teamId, week, players) => API.post(`/roster`, { teamId, week, players });
 export const processClaim = (payload) => API.post('/api/admin-process-claim', payload);
+export const proposeTrade = (payload) => API.post('/api/trades/propose', payload);
 export const resetPassword = (token, data) => API.post(`/auth/reset-password/${token}`, data);
 export const resetPositions = () => API.post('/reset-positions');
 export const resetRosters = (season) => API.post('/reset-rosters', { season: parseInt(season) });
@@ -88,9 +95,10 @@ export const signUp = (data) => API.post("/signup", data);
 export const starMessage = (messageId, userId) => API.post(`/star-message/${messageId}`, { userId });
 export const submitRegularRoster = (payload) => API.post("/roster/regular", payload);
 export const submitSurvivorPicks = (league, teamName, picks) => API.post(`/api/survivor-picks/${league}/${teamName}`, { picks });export const updateColor = (userId, color) => API.patch("/update-color", { userId, color });
+export const submitTradeVote = (tradeId, teamId, approved) =>
+    API.post(`/api/trades/${tradeId}/vote`, { tradeId, teamId, approved, });
 export const updateMultipleRosters = (changeRosterData) => API.post(`/multiple-rosters`, { rosters: changeRosterData });
 export const uploadAvatar = (formData, token) => API.post("/upload-avatar", formData, { headers: { "Content-Type": "multipart/form-data", Authorization: `Bearer ${token}` } });
-export const changeTeamName = (userId, newTeamName) => API.patch("/change-team-name", { userId, newTeamName });
 
 // DELETE requests
 export const clearPlayerTransactions = () => API.delete(`/api/clear-transactions`);

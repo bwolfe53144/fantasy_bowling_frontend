@@ -17,7 +17,7 @@ const DropClaimPlayer = () => {
   const { isDarkMode } = useContext(ThemeContext);
   const { playerId, playerName, playerLeague, playerPosition } = useParams();
   const navigate = useNavigate();
-
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [playerToDrop, setPlayerToDrop] = useState(null);
   const [roster, setRoster] = useState([]);
   const [isClaiming, setIsClaiming] = useState(false);
@@ -26,6 +26,11 @@ const DropClaimPlayer = () => {
   // useModal returns [modalProps, showModal]
   const [confirmModalProps, showConfirmModal] = useModal();
   const [resultModalProps, showResultModal] = useModal();
+
+    useEffect(() => {
+      document.body.classList.toggle("menuOpen", isMenuOpen);
+      return () => document.body.classList.remove("menuOpen");
+    }, [isMenuOpen]);
 
   useEffect(() => {
     if (user && user.team) {
@@ -78,15 +83,24 @@ const DropClaimPlayer = () => {
     }
   };
 
+  const canDropPlayer = (player) => {
+    if (!player.tradePlayers || player.tradePlayers.length === 0) return true;
+  
+    return !player.tradePlayers.some(tp =>
+      tp.trade.status === "ACCEPTED" ||
+      (tp.trade.status === "PENDING" && tp.trade.fromTeam?.id === user.team.id)
+    );
+  };
+
   if (loading) return <LoadingScreen />;
 
   return (
     <div className="pageContainer dropClaimPage">
-      <Header onToggleMenu={() => {}} isMenuOpen={false} />
+      <Header onToggleMenu={setIsMenuOpen} isMenuOpen={isMenuOpen} />
       <Navbar />
       <div className="mainPage">
         <h1>Claim and Drop Player</h1>
-        <p>
+        <p className="claim-p">
           You are about to claim this player:{" "}
           <strong>{playerName}</strong> – <strong>{playerLeague}</strong>
           <br />
@@ -111,19 +125,24 @@ const DropClaimPlayer = () => {
 
         {roster && roster.length > 0 ? (
           <div>
-            {roster.map((player) => (
-              <div key={player.id}>
-                <label>
-                  <input
-                    type="radio"
-                    value={player.id}
-                    checked={playerToDrop?.id === player.id}
-                    onChange={() => setPlayerToDrop(player)}
-                  />
-                  {player.name} <em>({player.position || "N/A"})</em>
-                </label>
-              </div>
-            ))}
+            {roster.map((player) => {
+              const dropDisabled = !canDropPlayer(player);
+              return (
+                <div key={player.id} style={{ opacity: dropDisabled ? 0.5 : 1 }}>
+                  <label>
+                    <input
+                      type="radio"
+                      value={player.id}
+                      checked={playerToDrop?.id === player.id}
+                      onChange={() => setPlayerToDrop(player)}
+                      disabled={dropDisabled}
+                    />
+                    {player.name} <em>({player.position || "N/A"})</em>
+                    {dropDisabled && " — Currently In A Trade"}
+                  </label>
+                </div>
+              );
+            })}
             <button
               onClick={handleStartClaim}
               disabled={roster.length === 15 && !playerToDrop}

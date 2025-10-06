@@ -18,6 +18,20 @@
   text-align: left;
 }
 
+.tradeButton {
+  margin-top: 10px;
+  font-weight: bold;
+  background-color: transparent;
+  color: #007bff;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+}
+.tradeButton:hover {
+  border-color: transparent;
+  text-decoration: underline;
+}
+
 /* Responsive styles for small screens */
 @media (max-width: 600px) {
   .pageContainer.profile {

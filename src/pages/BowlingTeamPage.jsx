@@ -70,16 +70,31 @@ const BowlingTeamPage = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [teamRes, rankRes] = await Promise.all([
+        const [teamRes, rankRes] = await Promise.allSettled([
           getTeamPlayers(teamName),
           getTeamRanks(league, teamName)
         ]);
-        setTeamData(teamRes.data);
-        setTeamRank(rankRes.data.rank);
+  
+        if (teamRes.status === "fulfilled") {
+          setTeamData(teamRes.value.data);
+        } else {
+          console.error("Failed to fetch team data:", teamRes.reason);
+        }
+  
+        if (rankRes.status === "fulfilled") {
+          setTeamRank(rankRes.value.data.rank);
+        } else {
+          // Only log if it's not a simple 404
+          const status = rankRes.reason?.response?.status;
+          if (status !== 404) {
+            console.error("Failed to fetch team rank:", rankRes.reason);
+          }
+        }
       } catch (error) {
-        console.error("Failed to fetch data:", error);
+        console.error("Unexpected error fetching team data:", error);
       }
     };
+  
     fetchData();
   }, [teamName, league]);
 
@@ -178,7 +193,7 @@ const BowlingTeamPage = () => {
         <h2>Team Stats</h2>
         {stats ? <StatsTable stats={stats} /> : <p>No stats available for this team.</p>}
 
-        {teamRank && (
+        {teamRank ? (
           <>
             <h2>Team Rankings</h2>
             <table className="statTable">
@@ -194,60 +209,70 @@ const BowlingTeamPage = () => {
               <tbody>
                 <tr>
                   <td>
-                    {teamRank.avgRank > 0 && (
+                    {teamRank.avgRank ? (
                       <>
                         {teamRank.avgRank}{" "}
-                        <span className={getPercentClass(teamRank.avgPercent)}>
-                          ({teamRank.avgPercent}%)
+                        <span className={getPercentClass(teamRank.avgPercent ?? 0)}>
+                          ({teamRank.avgPercent ?? 0}%)
                         </span>
                       </>
+                    ) : (
+                      "N/A"
                     )}
                   </td>
                   <td>
-                    {teamRank.fanPoints > 0 && (
+                    {teamRank.fanPoints ? (
                       <>
                         {teamRank.fanPoints}{" "}
-                        <span className={getPercentClass(teamRank.fanPercent)}>
-                          ({teamRank.fanPercent}%)
+                        <span className={getPercentClass(teamRank.fanPercent ?? 0)}>
+                          ({teamRank.fanPercent ?? 0}%)
                         </span>
                       </>
+                    ) : (
+                      "N/A"
                     )}
                   </td>
                   <td>
-                    {teamRank.fanPPG > 0 && (
+                    {teamRank.fanPPG ? (
                       <>
                         {teamRank.fanPPG}{" "}
-                        <span className={getPercentClass(teamRank.fanPPGPercent)}>
-                          ({teamRank.fanPPGPercent}%)
+                        <span className={getPercentClass(teamRank.fanPPGPercent ?? 0)}>
+                          ({teamRank.fanPPGPercent ?? 0}%)
                         </span>
                       </>
+                    ) : (
+                      "N/A"
                     )}
                   </td>
                   <td>
-                    {teamRank.seriesRank > 0 && (
+                    {teamRank.seriesRank ? (
                       <>
                         {teamRank.seriesRank}{" "}
-                        <span className={getPercentClass(teamRank.seriesPercent)}>
-                          ({teamRank.seriesPercent}%)
+                        <span className={getPercentClass(teamRank.seriesPercent ?? 0)}>
+                          ({teamRank.seriesPercent ?? 0}%)
                         </span>
                       </>
+                    ) : (
+                      "N/A"
                     )}
                   </td>
                   <td>
-                    {teamRank.pinfallRank > 0 && (
+                    {teamRank.pinfallRank ? (
                       <>
                         {teamRank.pinfallRank}{" "}
-                        <span className={getPercentClass(teamRank.pinfallPercent)}>
-                          ({teamRank.pinfallPercent}%)
+                        <span className={getPercentClass(teamRank.pinfallPercent ?? 0)}>
+                          ({teamRank.pinfallPercent ?? 0}%)
                         </span>
                       </>
+                    ) : (
+                      "N/A"
                     )}
                   </td>
                 </tr>
               </tbody>
             </table>
           </>
-        )}
+        ) : null}
       </div>
       <Footer />
     </div>

@@ -1,5 +1,5 @@
 import { useEffect, useState, useContext } from "react";
-import { Navigate, Link } from "react-router-dom";
+import { useNavigate, Navigate, Link } from "react-router-dom";
 import { AuthContext } from "../utils/AuthContext.jsx";
 import Header from "../../components/Header.jsx";
 import Navbar from "../../components/Navbar.jsx";
@@ -18,6 +18,8 @@ import {
   getRecentMatches,
   getPlayerByName,
   getUserSurvivorEntries,
+  getTrades,
+  markTradeViewed,
 } from "../utils/api.js";
 import { fetchCompletedWeeks } from "../utils/weekHelpers.js";
 import { getThemeColors } from "../utils/themeColors.js";
@@ -32,6 +34,8 @@ const Profile = () => {
   const { isDarkMode } = useContext(ThemeContext);
   const [myClaims, setMyClaims] = useState([]);
   const [allClaims, setAllClaims] = useState([]);
+  const [myTrades, setMyTrades] = useState([]);
+  const [allTrades, setAllTrades] = useState([]);
   const [recentMatches, setRecentMatches] = useState([]);
   const [enrichedMatches, setEnrichedMatches] = useState([]);
   const [currentWeek, setCurrentWeek] = useState(null);
@@ -40,7 +44,7 @@ const Profile = () => {
   const [myPlayerStats, setMyPlayerStats] = useState(null);
   const [mySurvivorLeagues, setMySurvivorLeagues] = useState([]);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-
+  const navigate = useNavigate();
   const { buttonBackground, buttonColor } = getThemeColors(user?.color, isDarkMode);
 
   const buttonStyle = {
@@ -92,7 +96,7 @@ const Profile = () => {
         setAllClaims(all);
 
         const mine = all.filter((claim) =>
-          claim.teams.some((t) => t.id === user.team?.id)
+          user?.team?.id ? claim.teams.some((t) => t.id === user.team.id) : false
         );
         setMyClaims(mine);
       } catch (err) {
@@ -113,6 +117,25 @@ const Profile = () => {
       }
     })();
   }, [user, currentWeek]);
+
+  useEffect(() => {
+    if (!user?.team?.id) return;
+
+    (async () => {
+      try {
+        const res = await getTrades();
+        const trades = res.data || [];
+        setAllTrades(trades);
+
+        const mine = trades.filter(
+          (t) => user?.team?.id ? t.fromTeamId === user.team.id || t.toTeamId === user.team.id : false
+        );
+        setMyTrades(mine);
+      } catch (err) {
+        console.error("Error fetching trades:", err);
+      }
+    })();
+  }, [user]);
 
   useEffect(() => {
     if (!user?.id) return;
@@ -149,7 +172,6 @@ const Profile = () => {
 
     for (const { week, rosters, scores } of weekData) {
       const teamScores = {};
-
       rosters
         .filter((r) => validPositions.includes(r.position))
         .forEach((r) => {
@@ -169,9 +191,7 @@ const Profile = () => {
       const isCompleted = completedWeeks.includes(week);
       const scores = weekTeamScores[week] || {};
 
-      if (isCompleted) {
-        return match;
-      }
+      if (isCompleted) return match;
 
       return {
         ...match,
@@ -208,6 +228,34 @@ const Profile = () => {
     })();
   }, [user]);
 
+  const allTradesCount = user?.team?.id
+    ? allTrades.filter(
+        (t) =>
+          t.fromTeamId === user.team.id ||
+          t.toTeamId === user.team.id ||
+          t.status === "ACCEPTED"
+      ).length
+    : 0;
+
+  const handleTradeClick = async () => {
+    if (!myTrades?.length) return;
+
+    const pendingTrade = myTrades.find(
+      (t) => t.toTeamId === user.team?.id && t.status === "PENDING"
+    );
+
+    if (pendingTrade) {
+      try {
+        markTradeViewed(pendingTrade.id);
+        navigate(`/view-trade/${pendingTrade.id}`);
+      } catch (err) {
+        console.error("Failed to mark trade as viewed:", err);
+      }
+    } else {
+      navigate(`/view-my-trades`);
+    }
+  };
+
   if (loading) return <LoadingScreen />;
   if (!user) return <Navigate to="/signin" replace />;
 
@@ -225,6 +273,21 @@ const Profile = () => {
           {allClaims.length - myClaims.length > 0 && (
             <Link to="/all-claims">📍 View All Claimed Players</Link>
           )}
+          {myTrades.length > 0 && (
+            <div>
+              <button className="tradeButton" onClick={handleTradeClick}>
+                {myTrades.some(t => t.toTeamId === user.team?.id && t.status === "PENDING")
+                  ? `📝 ${myTrades.find(t => t.toTeamId === user.team?.id && t.status === "PENDING")?.fromTeam?.name || "Unknown"} requested a trade`
+                  : `📝 View My Trades (${myTrades.length})`}
+              </button>
+            </div>
+          )}
+
+          {allTradesCount > 0 && (
+            <div style={{ marginTop: "10px" }}>
+              <Link to="/view-all-trades">📝 View All Trades ({allTradesCount})</Link>
+            </div>
+          )}
           {myPlayerStats && myPlayerStats.length > 0 && (
             <div>
               <h2>🎳 My Bowling Stats</h2>
@@ -232,7 +295,7 @@ const Profile = () => {
             </div>
           )}
 
-          {user.team && enrichedMatches.length > 0 && (
+          {user?.team?.id && enrichedMatches.length > 0 && (
             <MatchupTable
               matches={enrichedMatches}
               teamName={user.team.name}
@@ -246,7 +309,6 @@ const Profile = () => {
               <h2>My Survivor Leagues</h2>
               <ul>
                 {mySurvivorLeagues.map((entry) => {
-                  // Determine status text and color
                   let statusText = "Active";
                   let statusColor = "green";
 
@@ -265,12 +327,7 @@ const Profile = () => {
                       </Link>
                       <div>
                         {entry.teamName}:{" "}
-                        <span
-                          style={{
-                            color: statusColor,
-                            fontWeight: "bold",
-                          }}
-                        >
+                        <span style={{ color: statusColor, fontWeight: "bold" }}>
                           {statusText}
                         </span>
                       </div>
@@ -318,3 +375,4 @@ const Profile = () => {
 };
 
 export default Profile;
+

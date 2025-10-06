@@ -219,13 +219,11 @@ const AdminPage = () => {
               <AdminClaims />
               <AdminRoleChange users={users} />
               <AdminAssignPlayer teams={teams} />
-              {/* 
               <AdminScheduleGenerator
                   setSkipWeeksArray={setSkipWeeksArray}
                   weeks={weeks}
                   setWeeks={setWeeks}
               /> 
-              */}
               <button
                 onClick={() => setShowLockSetter(true)}
                 className="admin-button"

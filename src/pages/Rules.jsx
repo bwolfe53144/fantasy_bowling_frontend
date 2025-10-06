@@ -134,24 +134,28 @@ const Rules = () => {
           </p>
         </div>
 
-        <h2>Draft</h2>
+        <h2>Trades</h2>
         <p>
-          We will have an online draft on September 14th at 12:30 PM. I will have a draft party at my house for those interested, 
-          but bring your own laptop (You can draft on your phone as well, 
-          just easier to do on a computer). I'd advise against doing 
-          the draft on the mobile app, it needs to get refreshed if 
-          you move tabs, and sound doesn't work on there all the time. 
-          The draft will be a snake draft. For example, 1 picks then 2... 
-          then 2nd to last, then last, then last, then 2nd to last, ..., 
-          then 2nd, then 1st. The draft order will be determined by
-          your bowling average for those teams drafting themselves.
+          Trades allow teams to offer and exchange players with other teams. Here’s how they work:
         </p>
-        <p>
-          You will also be able to automatically draft yourself based on how many teams we have
-          and your average. For example, if there are 20 teams and I have the 30th best average, I could get myself automatically
-          in the third round. Also, if you bowl in multiple leagues that are included, you can draft yourself in the previous round
-          as well.
-        </p>
+        <ul>
+          <li>Only one trade can be proposed for a player at a time. You cannot propose a trade if a pending trade already exists for that player.</li>
+          <li>Once a trade is <strong>accepted</strong>, any involved claimed players are cleared and the trade is finalized.</li>
+          <li>Pending trades can be <strong>canceled or declined</strong> by the proposing or receiving team before acceptance.</li>
+          <li>Declining a trade does <strong>not</strong> affect any existing player claims.</li>
+          <li>Players involved in a pending trade (offered or requested) are grayed out on the trade and free agency pages to prevent duplicates.</li>
+          <li>If a player in a trade is <strong>dropped</strong> before acceptance, the trade is automatically removed.</li>
+          <li>When making free agency moves, you cannot drop players that you have offered in a pending trade or that are part of an accepted trade.</li>
+          <li>Teams can vote on trades involving other teams. The system records whether you voted to approve or veto a trade.
+            You are not able to see who anyone else voted for. 
+          </li>
+          <li>For a trade to be vetoed, it must have over 2/3rds of the vote against it, with a minimum of 6 votes. You are unable
+            to vote on a trade that you are involved in. Admin votes (Brian W. and Mike T.) will count as 2, but as for anyone else 
+            they can not vote on their own trades.
+          </li>
+          <li>Pending trades are only visible to teams involved.</li>
+          <li>Trades are processed at 7 AM after a minimum of 24 hours after the trade was accepted.</li>
+        </ul>
 
         <h2>Free Agency</h2>
         <p>
@@ -189,6 +193,25 @@ const Rules = () => {
         <p>
           The rest of your bowlers (who weren’t used that week) remain eligible and can be used in future weeks. The game continues
           until only one team remains — the last team standing wins.
+        </p>
+
+        <h2>Draft</h2>
+        <p>
+          We will have an online draft on September 14th at 12:30 PM. I will have a draft party at my house for those interested, 
+          but bring your own laptop (You can draft on your phone as well, 
+          just easier to do on a computer). I'd advise against doing 
+          the draft on the mobile app, it needs to get refreshed if 
+          you move tabs, and sound doesn't work on there all the time. 
+          The draft will be a snake draft. For example, 1 picks then 2... 
+          then 2nd to last, then last, then last, then 2nd to last, ..., 
+          then 2nd, then 1st. The draft order will be determined by
+          your bowling average for those teams drafting themselves.
+        </p>
+        <p>
+          You will also be able to automatically draft yourself based on how many teams we have
+          and your average. For example, if there are 20 teams and I have the 30th best average, I could get myself automatically
+          in the third round. Also, if you bowl in multiple leagues that are included, you can draft yourself in the previous round
+          as well.
         </p>
 
         <h2>More Information</h2>

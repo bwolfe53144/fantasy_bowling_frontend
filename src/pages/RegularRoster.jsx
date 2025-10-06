@@ -84,6 +84,7 @@ export default function RegularRoster() {
       if (user?.team?.name) {
         try {
           const res = await getTeamByName(user.team.name);
+          console.log(res.data)
           setTeamWithScores(res.data);
         } catch (err) {
           console.error("Error fetching team data:", err);
@@ -135,6 +136,16 @@ export default function RegularRoster() {
       setAssignedPositions(initAssignments);
     }
   }, [teamWithScores]);
+
+  const canDropPlayer = (player) => {
+    console.log(teamWithScores.players.map(p => ({ name: p.name, tradePlayers: p.tradePlayers })));
+    if (!player.tradePlayers || player.tradePlayers.length === 0) return true;
+  
+    return !player.tradePlayers.some(tp =>
+      tp.trade?.status === "ACCEPTED" || 
+      (tp.trade?.status === "PENDING" && tp.trade.fromTeam?.id === user.team.id)
+    );
+  };
 
   const updatePosition = (id, newPosition) => {
     if (!newPosition.startsWith("Flex Bench")) {
@@ -261,6 +272,7 @@ export default function RegularRoster() {
                       <button
                         className="drop-button"
                         onClick={() => dropMyPlayer(player.id)}
+                        disabled={!canDropPlayer(player)}
                       >
                         Drop
                       </button>
