@@ -183,6 +183,7 @@ const Rules = () => {
           started yet. If you prefer to manage week-to-week, the <strong>Roster</strong> page allows you to update your lineup
           each week individually. This flexibility gives you full control over how you manage your team strategy.
         </p>
+        <p>On the player page, there is a dropdown button that allows for you to add that player, drop them, or propose a trade.</p>
 
         <h2>Survivor League</h2>
         <p>
