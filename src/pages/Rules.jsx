@@ -140,6 +140,9 @@ const Rules = () => {
         </p>
         <ul>
           <li>Only one trade can be proposed for a player at a time. You cannot propose a trade if a pending trade already exists for that player.</li>
+          <li>Trades must be equal in terms of players. If you offer fewer players to one team, you must select a player to drop. 
+            If you offer more players, the other team must pick someone to drop before accepting the trade.
+          </li>
           <li>Once a trade is <strong>accepted</strong>, any involved claimed players are cleared and the trade is finalized.</li>
           <li>Pending trades can be <strong>canceled or declined</strong> by the proposing or receiving team before acceptance.</li>
           <li>Declining a trade does <strong>not</strong> affect any existing player claims.</li>
