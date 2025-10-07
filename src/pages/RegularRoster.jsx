@@ -84,7 +84,6 @@ export default function RegularRoster() {
       if (user?.team?.name) {
         try {
           const res = await getTeamByName(user.team.name);
-          console.log(res.data)
           setTeamWithScores(res.data);
         } catch (err) {
           console.error("Error fetching team data:", err);
