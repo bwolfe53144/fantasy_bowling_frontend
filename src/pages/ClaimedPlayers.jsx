@@ -37,6 +37,7 @@ const ClaimedPlayers = () => {
       try {
         const res = await fetchAllClaims();
         setAllClaims(res.data.allClaimedPlayers || []);
+        console.log(res.data.allClaimedPlayers);
       } catch (err) {
         console.error("Error fetching claimed players:", err);
       }
