@@ -137,7 +137,6 @@ export default function RegularRoster() {
   }, [teamWithScores]);
 
   const canDropPlayer = (player) => {
-    console.log(teamWithScores.players.map(p => ({ name: p.name, tradePlayers: p.tradePlayers })));
     if (!player.tradePlayers || player.tradePlayers.length === 0) return true;
   
     return !player.tradePlayers.some(tp =>
