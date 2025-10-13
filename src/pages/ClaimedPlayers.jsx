@@ -124,21 +124,10 @@ const ClaimedPlayers = () => {
                 {transactions.map(tx => {
                   const isVeto = tx.action.startsWith("Trade vetoed");
 
-                  // Convert timestamp to Central Time
-                  const centralTime = new Date(tx.timestamp).toLocaleString("en-US", {
-                    timeZone: "America/Chicago",
-                    year: "numeric",
-                    month: "2-digit",
-                    day: "2-digit",
-                    hour: "2-digit",
-                    minute: "2-digit",
-                    second: "2-digit",
-                    hour12: false, // 24-hour format
-                  });
-
                   return (
                     <li key={tx.id}>
                       {isVeto ? (
+                        // Only show the veto message
                         <span>{tx.action}</span>
                       ) : (
                         <>
@@ -155,7 +144,7 @@ const ClaimedPlayers = () => {
                           <em>{tx.playerName}</em>
                         </>
                       )}{" "}
-                      — {centralTime}
+                      — {new Date(tx.timestamp).toLocaleString()}
                     </li>
                   );
                 })}
