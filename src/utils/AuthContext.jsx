@@ -5,7 +5,7 @@ import { getUser, getTeams, getPlayers, getWeeks } from "./api";
 export const AuthContext = createContext();
 
 const socket = io(import.meta.env.VITE_API_URL, {
-  transports: ["websocket"], // helps avoid polling issues
+  transports: ["websocket"],
 });
 
 const AuthProvider = ({ children }) => {
@@ -17,10 +17,12 @@ const AuthProvider = ({ children }) => {
   const [loadingTeams, setLoadingTeams] = useState(true);
   const [loadingPlayers, setLoadingPlayers] = useState(true);
   const [loadingWeekScores, setLoadingWeekScores] = useState(true);
+  const [lastStatsUpdate, setLastStatsUpdate] = useState(null);
 
   const isAndroidApp = /fantasybowling\/android/i.test(navigator.userAgent);
   const storage = isAndroidApp ? localStorage : sessionStorage;
 
+  // ------------------ FETCH FUNCTIONS ------------------
   const fetchUser = useCallback(async () => {
     const token = storage.getItem("token");
     if (!token || token === "undefined" || token === "null") {
@@ -63,7 +65,7 @@ const AuthProvider = ({ children }) => {
     try {
       const res = await getPlayers();
       setPlayers(res.data);
-      return res.data; // Return players for caller
+      return res.data;
     } catch (error) {
       console.error("Error fetching players", error);
       setPlayers([]);
@@ -86,6 +88,7 @@ const AuthProvider = ({ children }) => {
     }
   }, []);
 
+  // ------------------ INITIAL LOAD ------------------
   useEffect(() => {
     fetchUser();
     fetchTeams();
@@ -93,21 +96,19 @@ const AuthProvider = ({ children }) => {
     fetchWeekScores();
   }, [fetchUser, fetchTeams, fetchPlayers, fetchWeekScores]);
 
-  // 🔥 Listen for server broadcasts and refresh data
+  // ------------------ SOCKET LISTENER ------------------
   useEffect(() => {
     socket.on("statsUpdated", () => {
-      console.log("📊 Stats updated, refreshing players and weekScores...");
-      fetchPlayers();
-      fetchWeekScores();
+      console.log("📊 Stats updated — will refresh next route change or on demand");
+      setLastStatsUpdate(Date.now());
     });
 
     return () => {
       socket.off("statsUpdated");
     };
-  }, [fetchPlayers, fetchWeekScores]);
+  }, []);
 
-  const loading = loadingUser || loadingTeams || loadingPlayers || loadingWeekScores;
-
+  // ------------------ AUTH FUNCTIONS ------------------
   const login = (token) => {
     storage.setItem("token", token);
     setLoadingUser(true);
@@ -119,6 +120,12 @@ const AuthProvider = ({ children }) => {
     setUser(null);
   };
 
+  const loading =
+    loadingUser || loadingTeams || loadingPlayers || loadingWeekScores;
+
+  const clearStatsUpdate = () => setLastStatsUpdate(null);
+
+  // ------------------ CONTEXT VALUE ------------------
   return (
     <AuthContext.Provider
       value={{
@@ -131,7 +138,9 @@ const AuthProvider = ({ children }) => {
         login,
         logout,
         loadPlayers: fetchPlayers,
-        refreshWeekScores: fetchWeekScores, // expose this too
+        refreshWeekScores: fetchWeekScores,
+        lastStatsUpdate,
+        clearStatsUpdate,
       }}
     >
       {children}
@@ -140,3 +149,5 @@ const AuthProvider = ({ children }) => {
 };
 
 export default AuthProvider;
+
+
