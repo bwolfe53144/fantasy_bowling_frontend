@@ -51,6 +51,7 @@ const ClaimedPlayers = () => {
     try {
       const res = await fetchRecentTransactions(page);
       setTransactions(res.data.transactions);
+      console.log(res.data.transactions);
       setCurrentPage(res.data.currentPage);
       setTotalPages(res.data.totalPages);
     } catch (err) {
@@ -120,35 +121,23 @@ const ClaimedPlayers = () => {
             {transactions.length === 0 ? (
               <p>No recent transactions.</p>
             ) : (
-              <ul className={isLoading ? "dimmed" : ""}>
-                {transactions.map(tx => {
-                  const isVeto = tx.action.startsWith("Trade vetoed");
-
-                  return (
-                    <li key={tx.id}>
-                      {isVeto ? (
-                        // Only show the veto message
-                        <span>{tx.action}</span>
-                      ) : (
-                        <>
-                          <strong>{tx.teamName}</strong>{" "}
-                          {tx.action === "add"
-                            ? "added"
-                            : tx.action === "drop"
-                            ? "dropped"
-                            : tx.action === "traded for"
-                            ? "traded for"
-                            : tx.action === "traded"
-                            ? "traded"
-                            : tx.action}{" "}
-                          <em>{tx.playerName}</em>
-                        </>
-                      )}{" "}
-                      — {new Date(tx.timestamp)}
-                    </li>
-                  );
-                })}
-              </ul>
+              <ul>
+  {transactions.map(tx => (
+    <li key={tx.id}>
+      <strong>{tx.teamName}</strong>{" "}
+      {tx.action === "add" ? "added" : tx.action === "drop" ? "dropped" : tx.action}{" "}
+      <em>{tx.playerName}</em> —{" "}
+      {new Date(tx.timestamp).toLocaleString(undefined, {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "numeric",
+        minute: "2-digit",
+        hour12: true, // 12-hour format
+      })}
+    </li>
+  ))}
+</ul>
             )}
             {isLoading && <div className="loader-overlay">Loading...</div>}
           </div>
