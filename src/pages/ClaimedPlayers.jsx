@@ -144,7 +144,7 @@ const ClaimedPlayers = () => {
                           <em>{tx.playerName}</em>
                         </>
                       )}{" "}
-                      — {new Date(tx.timestamp).toLocaleString()}
+                      — {new Date(tx.timestamp).toLocaleString("en-US", { timeZone: "America/Chicago" })}
                     </li>
                   );
                 })}
