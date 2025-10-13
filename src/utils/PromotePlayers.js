@@ -39,27 +39,34 @@ export const promotePlayers = (rosters, targetWeek, completedLeagues) => {
       (a, b) => rankPositions.indexOf(a.position) - rankPositions.indexOf(b.position)
     );
 
-    // --- FIXED SWAP LOGIC FOR POSITIONS 1–5 ---
+    // For positions 1–5: if ineligible, try to swap with first eligible of same position
     for (let i = 0; i < 5; i++) {
       const starter = ordered[i];
-      const targetPos = rankPositions[i]; // This is the intended slot (1–5)
-
-      if (!starter?.isEligible) {
-        // Look only for eligible players who have the **same position as the target slot**
+      const targetPos = rankPositions[i]; // "1"-"5"
+    
+      // Check if there is any eligible player for this position
+      const hasEligibleOfPosition = ordered.some(
+        (r, idx) =>
+          idx >= i && r.isEligible && r.player?.position === starter.player?.position
+      );
+    
+      if (!hasEligibleOfPosition) {
+        // No eligible of this position: force the starter to be eligible
+        starter.isEligible = true;
+      } else if (!starter?.isEligible) {
+        // There is an eligible replacement, swap with the first one found
         const replacementIndex = ordered.findIndex(
           (r, idx) =>
             idx > i &&
             r.isEligible &&
-            r.player?.position === targetPos
+            r.player?.position === starter.player?.position
         );
-
         if (replacementIndex !== -1) {
           const replacement = ordered[replacementIndex];
           [ordered[i], ordered[replacementIndex]] = [replacement, starter];
           hadChanges = true;
           console.log(`🔁 ${starter.player?.name} swapped with ${replacement.player?.name} for slot ${targetPos}`);
         }
-        // If no one matches the position, leave starter in place
       }
     }
 
