@@ -124,10 +124,16 @@ const ClaimedPlayers = () => {
                 {transactions.map(tx => {
                   const isVeto = tx.action.startsWith("Trade vetoed");
 
+                  // Parse timestamp safely on the client
+                  let timestampStr = "";
+                  if (typeof window !== "undefined" && tx.timestamp) {
+                    const date = new Date(tx.timestamp);
+                    timestampStr = date.toLocaleString("en-US", { timeZone: "America/Chicago" });
+                  }
+
                   return (
                     <li key={tx.id}>
                       {isVeto ? (
-                        // Only show the veto message
                         <span>{tx.action}</span>
                       ) : (
                         <>
@@ -144,11 +150,12 @@ const ClaimedPlayers = () => {
                           <em>{tx.playerName}</em>
                         </>
                       )}{" "}
-                      — {new Date(tx.timestamp).toLocaleString("en-US", { timeZone: "America/Chicago" })}
+                      — {timestampStr || "Loading..."}
                     </li>
                   );
                 })}
               </ul>
+
             )}
             {isLoading && <div className="loader-overlay">Loading...</div>}
           </div>
