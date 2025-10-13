@@ -16,14 +16,7 @@ const ClaimedPlayers = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [clientReady, setClientReady] = useState(false); // for client-side only rendering
 
-  // Mark component as client-ready
-  useEffect(() => {
-    setClientReady(true);
-  }, []);
-
-  // Toggle menu class
   useEffect(() => {
     document.body.classList.toggle("menuOpen", isMenuOpen);
     return () => document.body.classList.remove("menuOpen");
@@ -39,7 +32,6 @@ const ClaimedPlayers = () => {
     };
   }, []);
 
-  // Fetch all claimed players
   useEffect(() => {
     const getAllClaims = async () => {
       try {
@@ -54,7 +46,6 @@ const ClaimedPlayers = () => {
     if (user) getAllClaims();
   }, [user]);
 
-  // Fetch recent transactions
   const fetchTransactions = useCallback(async (page = 1) => {
     setIsLoading(true);
     try {
@@ -114,7 +105,7 @@ const ClaimedPlayers = () => {
             <p>No players are currently claimed.</p>
           ) : (
             <ul>
-              {allClaims.map(claim => (
+              {allClaims.map((claim) => (
                 <li key={claim.playerId}>
                   <strong>{claim.playerName}</strong> ({claim.league}) — Claimed by{" "}
                   <em>{claim.teams.map(t => t.name).join(", ")}</em> — {claim.timeLeft}
@@ -123,7 +114,6 @@ const ClaimedPlayers = () => {
             </ul>
           )}
         </div>
-
         <div className="transactionsSection">
           <h2>Recent Transactions</h2>
           <div className="transaction-wrapper">
@@ -134,14 +124,10 @@ const ClaimedPlayers = () => {
                 {transactions.map(tx => {
                   const isVeto = tx.action.startsWith("Trade vetoed");
 
-                  // Only parse and format timestamp on client
-                  const timestampStr = clientReady && tx.timestamp
-                    ? new Date(tx.timestamp).toLocaleString("en-US", { timeZone: "America/Chicago" })
-                    : "Loading...";
-
                   return (
                     <li key={tx.id}>
                       {isVeto ? (
+                        // Only show the veto message
                         <span>{tx.action}</span>
                       ) : (
                         <>
@@ -158,7 +144,7 @@ const ClaimedPlayers = () => {
                           <em>{tx.playerName}</em>
                         </>
                       )}{" "}
-                      — {timestampStr}
+                      — {new Date(tx.timestamp).toLocaleString()}
                     </li>
                   );
                 })}
@@ -166,7 +152,6 @@ const ClaimedPlayers = () => {
             )}
             {isLoading && <div className="loader-overlay">Loading...</div>}
           </div>
-
           <div className="pagination">
             <button className="claimPagButton" onClick={handlePreviousPage} disabled={currentPage <= 1}>
               Previous
