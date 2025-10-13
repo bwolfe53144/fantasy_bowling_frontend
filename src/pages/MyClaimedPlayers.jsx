@@ -7,7 +7,7 @@ import LoadingScreen from "../../components/LoadingScreen";
 import Modal from "../../components/Modal.jsx";
 import { useModal } from "../../hooks/useModal.js";
 import { AuthContext } from "../utils/AuthContext";
-import { deleteClaim, getMyClaims } from "../utils/api";
+import { deleteClaim, getMyClaims } from "../utils/api"; 
 import "../styles/MyClaimedPlayers.css";
 
 const MyClaimedPlayers = () => {
@@ -16,9 +16,10 @@ const MyClaimedPlayers = () => {
   const [myClaims, setMyClaims] = useState([]);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [fadingOutIds, setFadingOutIds] = useState([]);
+  const [claimsLoading, setClaimsLoading] = useState(true); // NEW loading state
   const [modalProps, showModal] = useModal();
 
-
+  // Background setup
   useEffect(() => {
     document.documentElement.classList.add("claimed-bg");
     document.body.classList.add("claimed-bg");
@@ -28,11 +29,13 @@ const MyClaimedPlayers = () => {
     };
   }, []);
 
+  // Menu toggle
   useEffect(() => {
     document.body.classList.toggle("menuOpen", isMenuOpen);
     return () => document.body.classList.remove("menuOpen");
   }, [isMenuOpen]);
 
+  // Fetch claims when user is available
   useEffect(() => {
     if (user) {
       fetchClaims();
@@ -40,11 +43,14 @@ const MyClaimedPlayers = () => {
   }, [user]);
 
   const fetchClaims = async () => {
+    setClaimsLoading(true);
     try {
       const res = await getMyClaims(user?.token);
       setMyClaims(res.data.myClaimedPlayers || []);
     } catch (err) {
       console.error("Error fetching my claimed players:", err);
+    } finally {
+      setClaimsLoading(false);
     }
   };
 
@@ -56,19 +62,20 @@ const MyClaimedPlayers = () => {
       cancelText: "Cancel",
       showCancel: true,
     });
-  
+
     if (!confirmed) return;
-  
+
     try {
+      // Trigger fade-out animation
       setFadingOutIds((prev) => [...prev, playerId]);
-  
+
       setTimeout(async () => {
         await deleteClaim(playerId, user.id, user.token);
         setMyClaims((prevClaims) =>
           prevClaims.filter((claim) => claim.playerId !== playerId)
         );
         setFadingOutIds((prev) => prev.filter((id) => id !== playerId));
-  
+
         await showModal({
           title: "Success",
           message: "Claim removed.",
@@ -85,20 +92,21 @@ const MyClaimedPlayers = () => {
     }
   };
 
-  if (loading) {
+  if (loading || claimsLoading) {
+    // Show loader until both AuthContext and claims are ready
     return <LoadingScreen />;
   }
 
   return (
     <div className="pageContainer claimed-bg">
       <div className="background-overlay"></div>
-  
+
       <Header onToggleMenu={setIsMenuOpen} isMenuOpen={isMenuOpen} />
       <Navbar />
       
       <div className="mainPage my-claimed-players">
         <h2>My Claimed Players</h2>
-  
+
         {myClaims.length === 0 ? (
           <div className="empty-message">
             <p>You haven't claimed any players yet.</p>
@@ -132,9 +140,8 @@ const MyClaimedPlayers = () => {
           </ul>
         )}
         {modalProps && <Modal {...modalProps} />}
-
       </div>
-  
+
       <Footer page={myClaims} />
     </div>
   );

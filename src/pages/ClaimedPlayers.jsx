@@ -14,9 +14,11 @@ const ClaimedPlayers = () => {
   const [transactions, setTransactions] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isClaimsLoading, setIsClaimsLoading] = useState(true);
+  const [isTransactionsLoading, setIsTransactionsLoading] = useState(true);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
+  // Toggle body class for menu
   useEffect(() => {
     document.body.classList.toggle("menuOpen", isMenuOpen);
     return () => document.body.classList.remove("menuOpen");
@@ -32,21 +34,26 @@ const ClaimedPlayers = () => {
     };
   }, []);
 
+  // Fetch all claims
   useEffect(() => {
     const getAllClaims = async () => {
+      setIsClaimsLoading(true);
       try {
         const res = await fetchAllClaims();
         setAllClaims(res.data.allClaimedPlayers || []);
       } catch (err) {
         console.error("Error fetching claimed players:", err);
+      } finally {
+        setIsClaimsLoading(false);
       }
     };
 
     if (user) getAllClaims();
   }, [user]);
 
+  // Fetch transactions
   const fetchTransactions = useCallback(async (page = 1) => {
-    setIsLoading(true);
+    setIsTransactionsLoading(true);
     try {
       const res = await fetchRecentTransactions(page);
       setTransactions(res.data.transactions);
@@ -55,7 +62,7 @@ const ClaimedPlayers = () => {
     } catch (err) {
       console.error("Error fetching transactions:", err);
     } finally {
-      setIsLoading(false);
+      setIsTransactionsLoading(false);
     }
   }, [user]);
 
@@ -64,20 +71,14 @@ const ClaimedPlayers = () => {
   }, [user, currentPage, fetchTransactions]);
 
   const handlePreviousPage = () => {
-    if (currentPage > 1) {
-      setCurrentPage(prev => prev - 1);
-    }
+    if (currentPage > 1) setCurrentPage(prev => prev - 1);
   };
 
   const handleNextPage = () => {
-    if (currentPage < totalPages) {
-      setCurrentPage(prev => prev + 1);
-    }
+    if (currentPage < totalPages) setCurrentPage(prev => prev + 1);
   };
 
-  if (loading) {
-    return <LoadingScreen />;
-  }
+  if (loading) return <LoadingScreen />;
 
   if (!user) {
     return (
@@ -98,12 +99,15 @@ const ClaimedPlayers = () => {
       <Header onToggleMenu={setIsMenuOpen} isMenuOpen={isMenuOpen} />
       <Navbar />
       <div className="mainPage my-claimed-players">
+        {/* Claims Section */}
         <div className="claimsSection">
           <h2>All Claimed Players</h2>
-          {allClaims.length === 0 ? (
+          {isClaimsLoading ? (
+            <div className="loader-overlay">Loading...</div>
+          ) : allClaims.length === 0 ? (
             <p>No players are currently claimed.</p>
           ) : (
-            <ul>
+            <ul className="loaded">
               {allClaims.map((claim) => (
                 <li key={claim.playerId}>
                   <strong>{claim.playerName}</strong> ({claim.league}) — Claimed by{" "}
@@ -113,32 +117,44 @@ const ClaimedPlayers = () => {
             </ul>
           )}
         </div>
+
+        {/* Transactions Section */}
         <div className="transactionsSection">
           <h2>Recent Transactions</h2>
           <div className="transaction-wrapper">
-            {transactions.length === 0 ? (
+            {isTransactionsLoading ? (
+              <div className="loader-overlay">Loading...</div>
+            ) : transactions.length === 0 ? (
               <p>No recent transactions.</p>
             ) : (
-              <ul>
+              <ul className="loaded">
                 {transactions.map(tx => {
-                  const date = new Date(tx.timestamp);
-
-                  const hours = date.getHours();
-                  const minutes = String(date.getMinutes()).padStart(2, "0");
-                  const ampm = hours >= 12 ? "PM" : "AM";
-                  const displayHours = hours % 12 || 12;
-
-                  const timestampStr = `${date.getMonth()+1}/${date.getDate()}/${date.getFullYear()} ${displayHours}:${minutes} ${ampm}`;
-
+                  const isVeto = tx.action.startsWith("Trade vetoed");
                   return (
                     <li key={tx.id}>
-                      <strong>{tx.teamName}</strong> {tx.action} <em>{tx.playerName}</em> — {timestampStr}
+                      {isVeto ? (
+                        <span>{tx.action}</span>
+                      ) : (
+                        <>
+                          <strong>{tx.teamName}</strong>{" "}
+                          {tx.action === "add"
+                            ? "added"
+                            : tx.action === "drop"
+                            ? "dropped"
+                            : tx.action === "traded for"
+                            ? "traded for"
+                            : tx.action === "traded"
+                            ? "traded"
+                            : tx.action}{" "}
+                          <em>{tx.playerName}</em>
+                        </>
+                      )}{" "}
+                      — {new Date(tx.timestamp).toLocaleString()}
                     </li>
                   );
                 })}
               </ul>
             )}
-            {isLoading && <div className="loader-overlay">Loading...</div>}
           </div>
           <div className="pagination">
             <button className="claimPagButton" onClick={handlePreviousPage} disabled={currentPage <= 1}>
