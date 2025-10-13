@@ -286,8 +286,8 @@ const SurvivorLeaguePage = () => {
             {Math.round(cutoff * 100)}% of scores in that league. Once a bowler is used, 
             they cannot be picked again.
           </p>
-          {(!currentWeek || currentWeek < 7) && (
-            <p>Survivor leagues start week 6.</p>
+          {(!currentWeek || currentWeek < 11) && (
+            <p>Survivor leagues start week 10.</p>
           )}
           <p>
             The last team standing wins. Remaining bowlers not used in a week are eligible for later weeks.
