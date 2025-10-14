@@ -17,16 +17,17 @@ export default function PlayerStatsTable({ players, isSinglePlayerPage = false, 
 
   useEffect(() => {
     if (players?.length) {
-      const weeks = [...new Set(players.flatMap((p) => p.weekScores?.map((ws) => ws.week) || []))]
-        .sort((a, b) => a - b);
+      const weeks = [...new Set(players.flatMap((p) => p.weekScores?.map((ws) => ws.week) || []))].sort(
+        (a, b) => a - b
+      );
       setAvailableWeeks(weeks);
       setSelectedWeek(weeks.at(-1) ?? null);
     }
   }, [players]);
 
-  if (!players || players.length === 0) return <p>No players on this team.</p>;
+  if (!players || players.length === 0) return <p>No stats this year</p>;
 
-  const allSameName = players.every(p => getBaseName(p.name) === getBaseName(players[0].name));
+  const allSameName = players.every((p) => getBaseName(p.name) === getBaseName(players[0].name));
   const showPosition = !allSameName;
 
   const renderPlayerLabel = (player) => {
@@ -36,21 +37,13 @@ export default function PlayerStatsTable({ players, isSinglePlayerPage = false, 
   };
 
   return (
-    <div
-      className="playerStatsTable"
-      style={{
-        "--header-bg": backgroundColor,
-        "--header-color": color,
-      }}
-    >
+    <div className="playerStatsTable" style={{ "--header-bg": backgroundColor, "--header-color": color }}>
       <label htmlFor="weekSelect">Select Week:</label>
-      <select
-        className="weekSelect"
-        value={selectedWeek ?? ""}
-        onChange={(e) => setSelectedWeek(Number(e.target.value))}
-      >
-        {availableWeeks.map(week => (
-          <option key={week} value={week}>Week {week}</option>
+      <select className="weekSelect" value={selectedWeek ?? ""} onChange={(e) => setSelectedWeek(Number(e.target.value))}>
+        {availableWeeks.map((week) => (
+          <option key={week} value={week}>
+            Week {week}
+          </option>
         ))}
       </select>
 
@@ -60,15 +53,12 @@ export default function PlayerStatsTable({ players, isSinglePlayerPage = false, 
             <thead>
               <tr>
                 <th className="sticky-col">
-                  {isSinglePlayerPage
-                    ? "League"
-                    : isTeamPage
-                    ? "Player Name"
-                    : "Player Name (League)"}
+                  {isSinglePlayerPage ? "League" : isTeamPage ? "Player Name" : "Player Name (League)"}
                 </th>
                 {showPosition && <th>Team Pos</th>}
                 <th>Points</th>
                 <th>Avg</th>
+                <th>Last Year Avg</th>
                 <th>G1</th>
                 <th>G2</th>
                 <th>G3</th>
@@ -78,10 +68,10 @@ export default function PlayerStatsTable({ players, isSinglePlayerPage = false, 
             <tbody>
               {players
                 .sort((a, b) => (parseInt(a.position) || 99) - (parseInt(b.position) || 99))
-                .map(player => {
-                  const thisWeekScore = player.weekScores?.find(ws => ws.week === selectedWeek);
+                .map((player) => {
+                  const thisWeekScore = player.weekScores?.find((ws) => ws.week === selectedWeek);
                   const relevantScores = [
-                    ...(player.weekScores?.filter(ws => ws.week < selectedWeek) || []),
+                    ...(player.weekScores?.filter((ws) => ws.week < selectedWeek) || []),
                     ...(thisWeekScore ? [thisWeekScore] : []),
                   ];
                   const stats = processPlayerStats({ ...player, weekScores: relevantScores });
@@ -90,20 +80,23 @@ export default function PlayerStatsTable({ players, isSinglePlayerPage = false, 
                   const g1 = thisWeekScore?.game1 ?? "-";
                   const g2 = thisWeekScore?.game2 ?? "-";
                   const g3 = thisWeekScore?.game3 ?? "-";
-                  const series = [g1, g2, g3].every(val => typeof val === "number") ? g1 + g2 + g3 : "-";
+                  const series = [g1, g2, g3].every((val) => typeof val === "number") ? g1 + g2 + g3 : "-";
+
+                  const lastYearAvg = player.lyAverage ? parseFloat(player.lyAverage) : null;
 
                   return (
                     <tr key={`${player.name}-${player.league}`}>
                       <td className="sticky-col">
-                        {isSinglePlayerPage ? player.league : (
-                          <Link to={`/player/${encodeURIComponent(player.name)}`}>
-                            {renderPlayerLabel(player)}
-                          </Link>
+                        {isSinglePlayerPage ? (
+                          player.league
+                        ) : (
+                          <Link to={`/player/${encodeURIComponent(player.name)}`}>{renderPlayerLabel(player)}</Link>
                         )}
                       </td>
                       {showPosition && <td>{player.position || "-"}</td>}
                       <td>{typeof fantasyPoints === "number" ? fantasyPoints.toFixed(2) : "-"}</td>
                       <td>{stats.average?.toFixed(2) ?? "-"}</td>
+                      <td>{lastYearAvg?.toFixed(2) ?? "-"}</td>
                       <td>{g1}</td>
                       <td>{g2}</td>
                       <td>{g3}</td>

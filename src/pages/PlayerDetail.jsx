@@ -57,11 +57,21 @@ const PlayerDetail = () => {
     const fetchPlayer = async () => {
       try {
         const response = await getPlayerByName(decodedName);
-        setPlayerData(response.data);
+  
+        // Filter out players with no weekScores
+        const filteredPlayers = response.data.players.filter(
+          (p) => p.weekScores && p.weekScores.length > 0
+        );
+  
+        setPlayerData({
+          ...response.data,
+          players: filteredPlayers,
+        });
       } catch (error) {
         console.error("Failed to fetch player:", error);
       }
     };
+  
     fetchPlayer();
   }, [decodedName]);
 
