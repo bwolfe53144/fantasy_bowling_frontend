@@ -59,7 +59,7 @@ const Signin = () => {
 
     try {
       await forgotPassword({ email: forgotEmail });
-      setForgotSuccess("Check your email for password reset instructions.");
+      setForgotSuccess("Check your email for password reset instructions. Might be in spam if you do not see it.");
     } catch (err) {
       setError(err.response?.data?.error || "Failed to send password reset email.");
     }
