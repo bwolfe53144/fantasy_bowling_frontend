@@ -61,19 +61,24 @@ export const promotePlayers = (rosters, targetWeek, completedLeagues) => {
       }
     }
 
-    // --- Step 2: Promote all remaining eligible players up the Flex chain ---
+    // --- Step 2: Promote eligible Flex/Flex Bench players upward in their chain ---
     const finalRoster = [];
-    const eligibleQueue = ordered.filter(r => r.isEligible);
-    const ineligibleQueue = ordered.filter(r => !r.isEligible);
+    const flexChainPositions = rankPositions.slice(5); // Flex + Flex Benches
+    const eligibleFlex = ordered.filter(r => r.isEligible && flexChainPositions.includes(r.position));
+    const ineligibleFlex = ordered.filter(r => !r.isEligible && flexChainPositions.includes(r.position));
 
-    rankPositions.forEach(pos => {
-      // First try to find an eligible player whose current position matches or is below
-      const nextEligibleIndex = eligibleQueue.findIndex(r => rankPositions.indexOf(r.position) >= rankPositions.indexOf(pos));
-      if (nextEligibleIndex !== -1) {
-        finalRoster.push(eligibleQueue.splice(nextEligibleIndex, 1)[0]);
+    // Keep starter positions as is (already handled in Step 1)
+    finalRoster.push(...ordered.slice(0, 5));
+
+    // Fill Flex chain positions in order, same-position only, eligible first
+    flexChainPositions.forEach(pos => {
+      const idx = eligibleFlex.findIndex(r => true); // pick next eligible flex player
+      if (idx !== -1) {
+        finalRoster.push(eligibleFlex.splice(idx, 1)[0]);
+      } else if (ineligibleFlex.length) {
+        finalRoster.push(ineligibleFlex.shift());
       } else {
-        // No eligible player available, use ineligible if any
-        if (ineligibleQueue.length) finalRoster.push(ineligibleQueue.shift());
+        finalRoster.push({ position: pos, player: { name: "Vacant" }, isEligible: false });
       }
     });
 
@@ -99,6 +104,5 @@ export const promotePlayers = (rosters, targetWeek, completedLeagues) => {
 
   return rosters;
 };
-
 
 
