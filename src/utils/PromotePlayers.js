@@ -34,10 +34,51 @@ export const promotePlayers = (rosters, targetWeek, completedLeagues) => {
   Object.entries(grouped).forEach(([teamKey, teamRosters]) => {
     let hadChanges = false;
 
-    // Sort by rank order
-    let ordered = teamRosters.sort(
-      (a, b) => rankPositions.indexOf(a.position) - rankPositions.indexOf(b.position)
-    );
+    // Sort by rank/eligibility order
+    function normalizePosition(pos) {
+      return pos ? pos.trim().replace(/\b\w/g, c => c.toUpperCase()) : pos;
+    }
+
+    const getRankIndex = pos => {
+      const idx = rankPositions.indexOf(pos);
+      return idx === -1 ? rankPositions.length + 100 : idx;
+    };
+    
+    let ordered = teamRosters
+      .map(r => ({ ...r, position: normalizePosition(r.position) }))
+      .sort((a, b) => {
+        if (a.isEligible !== b.isEligible) return a.isEligible ? -1 : 1;
+        return getRankIndex(a.position) - getRankIndex(b.position);
+      });
+
+    console.log(ordered);
+
+    const finalRoster = [];
+    for (let i=1; i <= 5; i++) {
+        const index = ordered.findIndex(element => element.player.position === String(i));
+      const firstMatch = ordered[index];
+      finalRoster.push(firstMatch);
+      ordered.splice(index, 1);
+  }
+    //Add the flex players
+    finalRoster.push(...ordered);
+    console.log(finalRoster);
+
+    finalRoster.forEach((r, i) => {
+      const idx = rosters.findIndex(orig => orig.player?.id === r.player?.id);
+      const oldPos = rosters[idx].position;
+      const newPos = rankPositions[i];
+      if (oldPos !== newPos) {
+        console.log(`➡️ ${r.player?.name} moved from ${oldPos} → ${newPos}`);
+        rosters[idx].position = newPos;
+      }
+    });
+  });
+
+  return rosters;
+};
+
+/*
 
     // --- Step 1: Handle starters 1–5 ---
     for (let i = 0; i < 5; i++) {
@@ -103,6 +144,6 @@ export const promotePlayers = (rosters, targetWeek, completedLeagues) => {
   });
 
   return rosters;
-};
+};*/
 
 
