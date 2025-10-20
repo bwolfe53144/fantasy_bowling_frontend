@@ -81,7 +81,6 @@ const Profile = () => {
     (async () => {
       try {
         const res = await getCurrentWeekLocksByLeague();
-        console.log("Current Week Locks by League:", res.data);
         setCurrentWeekLocksByLeague(res.data);
       } catch (err) {
         console.error("Error fetching current week locks by league:", err);
