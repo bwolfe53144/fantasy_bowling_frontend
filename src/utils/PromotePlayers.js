@@ -51,8 +51,6 @@ export const promotePlayers = (rosters, targetWeek, completedLeagues) => {
         return getRankIndex(a.position) - getRankIndex(b.position);
       });
 
-    console.log(ordered);
-
     const finalRoster = [];
     for (let i = 1; i <= 5; i++) {
       const index = ordered.findIndex(element => element.player.position === String(i));
