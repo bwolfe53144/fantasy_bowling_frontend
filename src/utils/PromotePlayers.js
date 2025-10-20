@@ -80,6 +80,7 @@ export const promotePlayers = (rosters, targetWeek, completedLeagues) => {
       if (oldPos !== newPos) {
         console.log(`➡️ ${r.player?.name} moved from ${oldPos} → ${newPos}`);
         rosters[idx].position = newPos;
+        r.position = newPos;
         hadChanges = true;
       }
     });
