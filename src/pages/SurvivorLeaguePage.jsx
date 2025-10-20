@@ -234,9 +234,9 @@ const SurvivorLeaguePage = () => {
         {userEntry && !userEntry.eliminated && !winnerEntry && (
           <>
             <button style={buttonStyle} className="survivorAction" onClick={handleOpenPickSection}>
-              {currentWeek && currentWeek >= 6
+              {currentWeek && currentWeek >= 10
                 ? `Make Week ${currentWeek} picks`
-                : "Make Week 6 picks"}
+                : "Make Week 10 picks"}
             </button>
 
             {showPickSection && (

@@ -149,7 +149,7 @@ const Survivor = () => {
               The last team standing wins. The rest of your bowlers who are not used for the week are eligible to use later.
             </p>
             <p>
-              Survivor leagues will start week 6.
+              Survivor leagues will start week 10.
             </p>
             <p style={{ fontStyle: "italic" }}>
               Sign up or log in to create your Survivor team and join the fun!
