@@ -14,6 +14,7 @@ export const getAvailablePriorYears = () => API.get("/prior-years");
 export const getCompletedLeagues = (week) => API.get(`/findCompletedLeagues/${week}`);
 export const getCompletedWeekLocks = () => API.get("/api/weeklocks/completed");
 export const getCurrentWeek = () => API.get('/getCurrentWeek');
+export const getCurrentWeekLocksByLeague = () => API.get("/api/weeklocks/currentWeekLocksByLeague");
 export const getDraftState = () => API.get('/api/draft');
 export const getEligibleSurvivorPlayers = (league, teamName) => API.get(`/api/survivor-eligible-players/${encodeURIComponent(league)}/${encodeURIComponent(teamName)}`);
 export const getIncompleteWeekLocks = () => API.get('/api/weeklocks/incomplete');

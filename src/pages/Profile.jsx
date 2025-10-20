@@ -17,6 +17,7 @@ import {
   getStarredMessages,
   getRecentMatches,
   getPlayerByName,
+  getCurrentWeekLocksByLeague,
   getUserSurvivorEntries,
   getTrades,
   markTradeViewed,
@@ -44,6 +45,8 @@ const Profile = () => {
   const [myPlayerStats, setMyPlayerStats] = useState(null);
   const [mySurvivorLeagues, setMySurvivorLeagues] = useState([]);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [currentWeekLocksByLeague, setCurrentWeekLocksByLeague] = useState([]);
+  const [showWeekLocks, setShowWeekLocks] = useState(false);
   const navigate = useNavigate();
   const { buttonBackground, buttonColor } = getThemeColors(user?.color, isDarkMode);
 
@@ -51,6 +54,7 @@ const Profile = () => {
     backgroundColor: buttonBackground,
     color: buttonColor,
     minWidth: "90px",
+    margin: "1rem",
     border: "none",
     cursor: "pointer",
   };
@@ -70,6 +74,20 @@ const Profile = () => {
       }
     })();
   }, []);
+
+  useEffect(() => {
+    if (!user) return;
+  
+    (async () => {
+      try {
+        const res = await getCurrentWeekLocksByLeague();
+        console.log("Current Week Locks by League:", res.data);
+        setCurrentWeekLocksByLeague(res.data);
+      } catch (err) {
+        console.error("Error fetching current week locks by league:", err);
+      }
+    })();
+  }, [user]);
 
   useEffect(() => {
     if (!user?.id) return;
@@ -237,6 +255,19 @@ const Profile = () => {
       ).length
     : 0;
 
+    const handleToggleWeekLocks = async () => {
+      if (!showWeekLocks && currentWeekLocksByLeague.length === 0) {
+        try {
+          const res = await getCurrentWeekLocksByLeague(); // API call
+          setCurrentWeekLocksByLeague(res.data);
+          console.log("Week locks:", res.data);
+        } catch (err) {
+          console.error("Error fetching week locks:", err);
+        }
+      }
+      setShowWeekLocks(prev => !prev);
+    };
+
   const handleTradeClick = async () => {
     if (!myTrades?.length) return;
 
@@ -288,6 +319,35 @@ const Profile = () => {
               <Link to="/view-all-trades">📝 View All Trades ({allTradesCount})</Link>
             </div>
           )}
+          <div className="league-locks">
+            <button style={buttonStyle} onClick={handleToggleWeekLocks}>
+              {showWeekLocks ? "Hide League Lock Times" : "Show League Lock Times"}
+            </button>
+
+            {showWeekLocks && currentWeekLocksByLeague.length > 0 && (
+              <ul className="lock-times-list">
+                {currentWeekLocksByLeague.map((lock, idx) => {
+                  const lockDate = new Date(lock.lockTime);
+                  const formattedDate = lockDate.toLocaleDateString(undefined, {
+                    month: "short",
+                    day: "numeric",
+                    year: "numeric",
+                  });
+                  const formattedTime = lockDate.toLocaleTimeString(undefined, {
+                    hour: "numeric",
+                    minute: "2-digit",
+                    hour12: true,
+                  });
+
+                  return (
+                    <li key={idx}>
+                      <strong>{lock.league}</strong> - Week {lock.week} - {formattedDate} at {formattedTime}
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
+          </div>
           {myPlayerStats && myPlayerStats.length > 0 && (
             <div>
               <h2>🎳 My Bowling Stats</h2>
