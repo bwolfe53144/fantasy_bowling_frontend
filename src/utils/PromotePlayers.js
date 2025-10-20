@@ -70,7 +70,6 @@ export const promotePlayers = (rosters, targetWeek, completedLeagues) => {
     }
     //Add the flex players
     finalRoster.push(...ordered);
-    console.log(finalRoster);
 
     finalRoster.forEach((r, i) => {
       const idx = rosters.findIndex(orig => orig.player?.id === r.player?.id);
