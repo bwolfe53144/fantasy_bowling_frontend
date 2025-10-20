@@ -18,6 +18,11 @@
   text-align: left;
 }
 
+.profileClaimText,
+.tradeButton {
+  margin-left: 1rem;
+}
+
 .tradeButton {
   margin-top: 10px;
   font-weight: bold;

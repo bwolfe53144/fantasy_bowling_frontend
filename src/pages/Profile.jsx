@@ -314,7 +314,7 @@ const Profile = () => {
           )}
 
           {allTradesCount > 0 && (
-            <div style={{ marginTop: "10px" }}>
+            <div className="tradeButton">
               <Link to="/view-all-trades">📝 View All Trades ({allTradesCount})</Link>
             </div>
           )}

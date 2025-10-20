@@ -1,8 +1,9 @@
 import { Link } from "react-router-dom";
+import "../src/styles/Profile.css";
 
 const Claims = ({ myClaims }) => {
   if (myClaims.length === 0) {
-    return <p>You have no claims currently.</p>;
+    return <p className="profileClaimText">You have no claims currently.</p>;
   }
 
   return (
