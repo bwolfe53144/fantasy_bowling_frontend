@@ -201,7 +201,7 @@ const Survivor = () => {
                   return (
                     <div key={league}>
                       <h3>{league}</h3>
-                      <p>Sign up before week 6!</p>
+                      <p>Sign up before week 10!</p>
 
                       {!isActive ? (
                         <button style={buttonStyle} onClick={() => handleStartSignup(league)}>
