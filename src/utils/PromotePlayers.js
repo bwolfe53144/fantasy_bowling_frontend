@@ -1,10 +1,10 @@
-export const promotePlayers = (rosters, targetWeek, completedLeagues) => {
+export const promotePlayers = (rosters, targetWeek, league, completedLeagues) => {
   const rankPositions = [
     "1","2","3","4","5","Flex",
     "Flex Bench 1","Flex Bench 2","Flex Bench 3","Flex Bench 4",
     "Flex Bench 5","Flex Bench 6","Flex Bench 7","Flex Bench 8","Flex Bench 9"
   ];
-
+  
   const completedLeagueNames = (completedLeagues || []).map(c =>
     typeof c === "string" ? c : (c.league || c.name || String(c))
   );
@@ -32,6 +32,11 @@ export const promotePlayers = (rosters, targetWeek, completedLeagues) => {
 
   // --- Process each team ---
   Object.entries(grouped).forEach(([teamKey, teamRosters]) => {
+    const hasIneligible = teamRosters.some(
+      r => r.player?.league === league && !r.isEligible
+    );
+    if (!hasIneligible) return;
+
     let hadChanges = false;
 
     // Sort by rank/eligibility order
@@ -76,7 +81,10 @@ export const promotePlayers = (rosters, targetWeek, completedLeagues) => {
       if (idx === -1) return;
       const oldPos = rosters[idx].position;
       const newPos = rankPositions[i];
-      if (oldPos !== newPos) {
+      const normalizeForCompare = str =>
+        str?.trim().toLowerCase().replace(/\s+/g, " ") || "";
+      
+      if (normalizeForCompare(oldPos) !== normalizeForCompare(newPos)) {
         console.log(`➡️ ${r.player?.name} moved from ${oldPos} → ${newPos}`);
         rosters[idx].position = newPos;
         r.position = newPos;
