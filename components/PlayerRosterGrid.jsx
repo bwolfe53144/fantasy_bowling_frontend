@@ -10,7 +10,10 @@ export default function PlayerRosterGrid({ players = [], updatePosition, lockedP
 
   function capitalizePosition(pos) {
     if (!pos) return "";
-    return pos.charAt(0).toUpperCase() + pos.slice(1).toLowerCase();
+    return pos
+      .split(" ")
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+      .join(" ");
   }
 
   const normalizedLockedPositions = (lockedPositions || []).map(capitalizePosition);

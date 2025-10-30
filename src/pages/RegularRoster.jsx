@@ -16,7 +16,10 @@ import "../styles/RegularRoster.css";
 
 function capitalizePosition(pos) {
   if (!pos) return "";
-  return pos.charAt(0).toUpperCase() + pos.slice(1).toLowerCase();
+  return pos
+    .split(" ")
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(" ");
 }
 
 export default function RegularRoster() {
