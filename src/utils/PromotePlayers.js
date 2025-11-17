@@ -74,7 +74,12 @@ export const promotePlayers = (rosters, targetWeek, league, completedLeagues) =>
       }
     }
     //Add the flex players
-    finalRoster.push(...ordered);
+    const remainingPositions = rankPositions.slice(finalRoster.length);
+
+    ordered.forEach((r, idx) => {
+      r.position = remainingPositions[idx] ?? "Extra";
+      finalRoster.push(r);
+    });
 
     finalRoster.forEach((r, i) => {
       const idx = rosters.findIndex(orig => orig.player?.id === r.player?.id);
@@ -95,11 +100,11 @@ export const promotePlayers = (rosters, targetWeek, league, completedLeagues) =>
     if (hadChanges) {
       console.log(`\n===== Team ${teamKey} (Week ${targetWeek}) =====`);
       finalRoster.forEach(r => {
-        console.log(
-          `${r.position.padEnd(12)} | ${r.player?.name || "Vacant"} | ${
-            r.isEligible ? "✅ Eligible" : "❌ Ineligible"
-          }`
-        );
+        const posText = (r.position ?? "").padEnd(12); // default to empty string if undefined
+        const nameText = r.player?.name ?? "Vacant";
+        const eligibilityText = r.isEligible ? "✅ Eligible" : "❌ Ineligible";
+      
+        console.log(`${posText} | ${nameText} | ${eligibilityText}`);
       });
     }
   });

@@ -3,18 +3,15 @@ import { buildFallbackRoster } from "./buildFallbackRoster.js";
 import { saveFallbackRoster } from "./saveFallbackRoster.js";
 import { getRoster, getTeamByName } from "./api.js";
 
-// Starter positions order
-const starterOrder = ["1", "2", "3", "4", "5", "flex"];
-
-// Normalize position string helper
-export const normalize = (pos) => pos?.trim().toLowerCase();
+// Starter positions order (keep 'Flex' capitalized to match DB)
+const starterOrder = ["1", "2", "3", "4", "5", "Flex"];
 
 // Map starters to a dictionary of pos -> player
 export const mapStarters = (roster) => {
   const map = {};
   roster.forEach(entry => {
     const player = entry.player || entry;
-    const pos = normalize(entry.position || player.position);
+    const pos = entry.position || player.position; // keep original casing
     if (starterOrder.includes(pos)) {
       map[pos] = player;
     }

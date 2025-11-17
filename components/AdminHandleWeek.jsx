@@ -6,6 +6,7 @@ import {
   getCompletedLeagues,
   getRostersWithScoresForWeek,
   updateMultipleRosters,
+  saveTeamSnapshot,
 } from "../src/utils/api.js";
 import { promotePlayers } from "../src/utils/PromotePlayers.js";
 import { useTeamRecords } from "../src/utils/useTeamRecords.js";
@@ -66,6 +67,28 @@ const AdminHandleWeek = () => {
       const { data: rosters } = await getRostersWithScoresForWeek(selectedWeek.week);
       console.log(`Fetched ${rosters.length} roster entries`);
 
+      const teamsById = rosters.reduce((acc, r) => {
+        if (!acc[r.teamId]) acc[r.teamId] = [];
+        acc[r.teamId].push(r);
+        return acc;
+      }, {});
+      
+      for (const [teamId, teamRosters] of Object.entries(teamsById)) {
+        const snapshot = {};
+        teamRosters.forEach(r => {
+          if (r.position && r.player?.name) {
+            snapshot[r.position] = r.player.name;
+          }
+        });
+      
+        try {
+          await saveTeamSnapshot(teamId, selectedWeek.week, snapshot);
+          console.log(`📸 Snapshot saved for team ${teamId}, week ${selectedWeek.week}`);
+        } catch (err) {
+          console.error("Failed to save snapshot:", err);
+        }
+      }
+      
       // 4️⃣ Promote players for all completed leagues
       const updatedRosters = promotePlayers(rosters, selectedWeek.week, selectedWeek.league, completedLeagues);
       // 5️⃣ Prepare roster payload for API

@@ -45,6 +45,7 @@ export const getTeamPlayers = (teamName) => API.get(`/api/team/${encodeURICompon
 export const getTeamRanks = (league, teamName) => API.get(`/api/team/${encodeURIComponent(league)}/${encodeURIComponent(teamName)}/ranks`);
 export const getTeams = () => API.get("/teams");
 export const getTeamsForHome = () => API.get('/teamsForHome');
+export const getTeamSnapshot = (teamId, week) => API.get(`/api/teams/${teamId}/snapshot/${week}`);
 export const getTotalLeagues = () => API.get('/totalLeagues');
 export const getTradeById = (id) => API.get(`/api/trades/${id}`);
 export const getTrades = () => API.get("/trades");
@@ -89,6 +90,7 @@ export const resetPositions = () => API.post('/reset-positions');
 export const resetRosters = (season) => API.post('/reset-rosters', { season: parseInt(season) });
 export const resetSurvivorLeague = (league) => API.post("/survivor/reset-league", { league });
 export const saveRoster = (payload) => API.post('/roster', payload);
+export const saveTeamSnapshot = (teamId, week, snapshot) => API.post(`/api/teams/${teamId}/snapshot/${week}`, { snapshot });
 export const sendStatsUpdateEmails = () => API.post('/api/admin/send-stats-update-email');
 export const setLocktimes = (payload) => API.post('/api/setLocktimes', payload);
 export const signIn = (data) => API.post("/signin", data);
