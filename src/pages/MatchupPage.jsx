@@ -65,18 +65,24 @@ export default function MatchupPage() {
 
   const handleViewSnapshots = async () => {
     if (!match) return;
-    try {
-      const [snap1Res, snap2Res] = await Promise.all([
-        getTeamSnapshot(match.team1.id, match.week),
-        getTeamSnapshot(match.team2.id, match.week),
-      ]);
-      setTeam1Snapshot(snap1Res.data);
-      setTeam2Snapshot(snap2Res.data);
-      setShowSnapshots((prev) => !prev); // toggle on/off
-    } catch (err) {
-      console.error("Error fetching snapshots:", err);
-      alert("Unable to load snapshots.");
+  
+    if (!showSnapshots) {
+      // Only fetch if not already showing
+      try {
+        const [snap1Res, snap2Res] = await Promise.all([
+          getTeamSnapshot(match.team1.id, match.week),
+          getTeamSnapshot(match.team2.id, match.week),
+        ]);
+        setTeam1Snapshot(snap1Res.data);
+        setTeam2Snapshot(snap2Res.data);
+      } catch (err) {
+        console.error("Error fetching snapshots:", err);
+        alert("Unable to load snapshots.");
+        return; // Don't toggle if failed
+      }
     }
+  
+    setShowSnapshots((prev) => !prev); // toggle on/off
   };
 
   const displayPos = (pos) => {
@@ -106,13 +112,6 @@ export default function MatchupPage() {
 
         <div className="scrollWrapper">
           <MatchupHeader team1={match.team1} team2={match.team2} />
-
-          <div style={{ marginBottom: "1rem" }}>
-            <button onClick={handleViewSnapshots} className="snapshotBtn">
-              {showSnapshots ? "Hide Snapshots" : "View Snapshot Lineups"}
-            </button>
-          </div>
-
           <table className="bowlerTable">
             <thead style={tableHeaderStyle}>
               <tr>
@@ -249,6 +248,13 @@ export default function MatchupPage() {
               })()}
             </tbody>
           </table>
+          {user?.role === "SUPERADMIN" && (
+            <div>
+              <button onClick={handleViewSnapshots} className="snapshotBtn">
+                {showSnapshots ? "Hide Snapshots" : "View Snapshot Lineups"}
+              </button>
+            </div>
+          )}
         </div>
       </div>
       <Footer />
