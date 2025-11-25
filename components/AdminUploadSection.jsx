@@ -213,7 +213,8 @@ const postWeekScoreIfNotExists = async (entry, playerId, weekScores) => {
     if (validCombos.length === 0) {
       console.warn(`Cannot match series for ${Name} (Week ${parsedWeek}), using original games`);
     } else if (validCombos.length === 1) {
-      adjustedGames = adjustedGames.map((g, idx) => (validCombos[0].includes(idx) ? g : null));
+      // ✅ Automatically null out games not in the valid combo
+      adjustedGames = adjustedGames.map((g, idx) => validCombos[0].includes(idx) ? g : null);
     } else {
       const gameOptions = validCombos
         .map((combo, i) => {
@@ -235,6 +236,7 @@ const postWeekScoreIfNotExists = async (entry, playerId, weekScores) => {
 
       const choice = parseInt(manualChoice, 10);
       if (!isNaN(choice) && choice >= 1 && choice <= validCombos.length) {
+        // ✅ Null out any games not included in the chosen combo
         adjustedGames = adjustedGames.map((g, idx) =>
           validCombos[choice - 1].includes(idx) ? g : null
         );
@@ -260,6 +262,7 @@ const postWeekScoreIfNotExists = async (entry, playerId, weekScores) => {
   const postRes = await createWeekScore(newScore);
   console.log(`Inserted score for ${Name} (week ${Week})`, postRes.data);
 };
+
 
 const AdminUploadSection = ({ playerList, weekScores }) => {
   const [api, setApi] = useState("");
@@ -342,7 +345,13 @@ const AdminUploadSection = ({ playerList, weekScores }) => {
         const pairedLane = lane % 2 === 0 ? lane - 1 : lane + 1;
         const opponent = laneTeamMap[league][week][pairedLane] || "Bye";
         entry.Opponent = opponent;
-      
+        if (lane % 2 === 0) {
+          // Even lane → show previous + current
+          entry.Lanes = `${lane - 1}/${lane}`;
+        } else {
+          // Odd lane → show current + next
+          entry.Lanes = `${lane}/${lane + 1}`;
+        }        
         await postWeekScoreIfNotExists(entry, player.id, weekScores);
       }
 
